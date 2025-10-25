@@ -1,11 +1,51 @@
 import React, { useState, useEffect } from 'react';
 import { motion, useMotionValue, useTransform, useSpring } from 'framer-motion';
-import { ChevronDown, Github, Linkedin, Mail, User } from 'lucide-react';
+import { ChevronDown, Github, Linkedin, Mail, Instagram } from 'lucide-react';
 
 const Hero = ({ setActiveSection }) => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [isHovering, setIsHovering] = useState(false);
-  const [avatarClicked, setAvatarClicked] = useState(false);
+  const [hoveredIcon, setHoveredIcon] = useState(null);
+
+  // 社交媒体图标数据
+  const socialIcons = [
+    {
+      name: 'GitHub',
+      icon: Github,
+      color: '#333',
+      url: 'https://github.com',
+      angle: 0
+    },
+    {
+      name: 'LinkedIn',
+      icon: Linkedin,
+      color: '#0077b5',
+      url: 'https://linkedin.com',
+      angle: 72
+    },
+    {
+      name: 'Instagram',
+      icon: Instagram,
+      color: '#E4405F',
+      url: 'https://instagram.com',
+      angle: 144
+    },
+    {
+      name: 'Bilibili',
+      icon: null, // 使用文字
+      color: '#00A1D6',
+      url: 'https://bilibili.com',
+      angle: 216,
+      text: 'B'
+    },
+    {
+      name: 'XiaoHongShu',
+      icon: null, // 使用文字
+      color: '#FF2442',
+      url: 'https://xiaohongshu.com',
+      angle: 288,
+      text: '小'
+    }
+  ];
 
   // 鼠标位置跟踪
   useEffect(() => {
@@ -76,47 +116,53 @@ const Hero = ({ setActiveSection }) => {
             </div>
           </motion.div>
 
-          {/* 围绕地球旋转的头像 */}
-          <motion.div
-            className="avatar-orbit"
-            animate={{
-              rotate: [0, 360],
-            }}
-            transition={{
-              duration: 8,
-              repeat: Infinity,
-              ease: "linear"
-            }}
-          >
-            <motion.div
-              className="avatar"
-              animate={{
-                scale: isHovering ? 1.2 : 1,
-                rotate: [0, -360],
-                boxShadow: avatarClicked 
-                  ? "0 0 50px rgba(255, 107, 53, 1), 0 0 100px rgba(255, 107, 53, 0.5)"
-                  : "0 0 20px rgba(255, 107, 53, 0.4)"
-              }}
-              transition={{
-                scale: { duration: 0.3 },
-                rotate: { duration: 8, repeat: Infinity, ease: "linear" },
-                boxShadow: { duration: 0.5 }
-              }}
-              whileHover={{
-                scale: 1.3,
-                boxShadow: "0 0 40px rgba(255, 107, 53, 0.8)"
-              }}
-              whileTap={{
-                scale: 0.9
-              }}
-              onClick={() => {
-                setAvatarClicked(!avatarClicked);
-                setTimeout(() => setAvatarClicked(false), 2000);
-              }}
-            >
-              <User size={32} />
-            </motion.div>
-          </motion.div>
+          {/* 围绕地球旋转的社交媒体图标 */}
+          {socialIcons.map((social, index) => {
+            const Icon = social.icon;
+            return (
+              <motion.div
+                key={social.name}
+                className="avatar-orbit"
+                animate={{
+                  rotate: hoveredIcon === null ? [social.angle, social.angle + 360] : social.angle + (hoveredIcon === index ? 0 : ((Date.now() / 1000) % 1) * 360),
+                }}
+                transition={{
+                  duration: hoveredIcon === null ? 20 : 0,
+                  repeat: hoveredIcon === null ? Infinity : 0,
+                  ease: "linear"
+                }}
+                style={{
+                  rotate: social.angle
+                }}
+              >
+                <motion.a
+                  href={social.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="social-icon-orbit"
+                  style={{
+                    backgroundColor: social.color
+                  }}
+                  animate={{
+                    scale: hoveredIcon === index ? 1.5 : 1,
+                    rotate: hoveredIcon === null ? [0, -360] : 0,
+                  }}
+                  transition={{
+                    scale: { duration: 0.3 },
+                    rotate: { duration: 20, repeat: hoveredIcon === null ? Infinity : 0, ease: "linear" }
+                  }}
+                  whileHover={{
+                    scale: 1.5,
+                    boxShadow: `0 0 30px ${social.color}`
+                  }}
+                  onMouseEnter={() => setHoveredIcon(index)}
+                  onMouseLeave={() => setHoveredIcon(null)}
+                >
+                  {Icon ? <Icon size={20} color="white" /> : <span style={{ color: 'white', fontSize: '20px', fontWeight: 'bold' }}>{social.text}</span>}
+                </motion.a>
+              </motion.div>
+            );
+          })}
 
           {/* 添加一些围绕轨道的小星星 */}
           {[0, 1, 2, 3, 4].map((index) => (
@@ -152,35 +198,14 @@ const Hero = ({ setActiveSection }) => {
           <motion.div
             className="orbit-line"
             animate={{
-              rotate: [0, 360],
+              rotate: hoveredIcon === null ? [0, 360] : 0,
             }}
             transition={{
-              duration: 8,
-              repeat: Infinity,
+              duration: 20,
+              repeat: hoveredIcon === null ? Infinity : 0,
               ease: "linear"
             }}
           />
-
-          {/* 点击波纹效果 */}
-          {avatarClicked && (
-            <motion.div
-              className="ripple-effect"
-              initial={{ scale: 0, opacity: 1 }}
-              animate={{ scale: 3, opacity: 0 }}
-              transition={{ duration: 1, ease: "easeOut" }}
-              style={{
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -50%)',
-                width: '40px',
-                height: '40px',
-                border: '2px solid #ff6b35',
-                borderRadius: '50%',
-                pointerEvents: 'none'
-              }}
-            />
-          )}
         </motion.div>
 
         <motion.div
