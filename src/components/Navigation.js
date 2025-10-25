@@ -6,12 +6,11 @@ const Navigation = ({ activeSection, setActiveSection }) => {
 
   const navItems = useMemo(() => [
     { id: 'home', label: 'Home', href: '#home' },
-    { id: 'experience', label: 'Experience', href: '#experience' },
-    { id: 'portfolio', label: 'Portfolio', href: '#portfolio' },
-    { id: 'skills', label: 'Skills', href: '#skills' },
+    { id: 'interest', label: 'Interest', href: '#interest' },
+    { id: 'gallery', label: 'Gallery', href: '#gallery' },
     { id: 'gaming', label: 'Gaming', href: '#gaming' },
-    { id: 'travel', label: 'Travel', href: '#travel' },
-    { id: 'animations', label: 'Animations', href: '#animations' }
+    { id: 'skills', label: 'Skills', href: '#skills' },
+    { id: 'travel', label: 'Travel', href: '#travel' }
   ], []);
 
   const handleNavClick = (sectionId) => {
