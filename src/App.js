@@ -2,13 +2,11 @@ import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navigation from './components/Navigation';
 import Hero from './components/Hero';
-import PersonalExperience from './components/PersonalExperience';
-import PhotographyPortfolio from './components/PhotographyPortfolio';
-import TechnicalStack from './components/TechnicalStack';
+import Interest from './components/Interest';
+import Gallery from './components/Gallery';
 import GamingShowcase from './components/GamingShowcase';
+import TechnicalStack from './components/TechnicalStack';
 import TravelMap from './components/TravelMap';
-import AnimationDemo from './components/AnimationDemo';
-import AdvancedAnimations from './components/AdvancedAnimations';
 import Footer from './components/Footer';
 import './App.css';
 
@@ -24,13 +22,11 @@ function App() {
           <Route path="/" element={
             <>
               <Hero setActiveSection={setActiveSection} />
-              <PersonalExperience />
-              <PhotographyPortfolio />
-              <TechnicalStack />
+              <Interest />
+              <Gallery />
               <GamingShowcase />
+              <TechnicalStack />
               <TravelMap />
-              <AnimationDemo />
-              <AdvancedAnimations />
             </>
           } />
         </Routes>
