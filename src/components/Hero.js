@@ -94,8 +94,6 @@ const Hero = ({ setActiveSection }) => {
             rotateY,
             transformStyle: "preserve-3d"
           }}
-          onMouseEnter={() => setIsHovering(true)}
-          onMouseLeave={() => setIsHovering(false)}
         >
           {/* 地球 */}
           <motion.div
