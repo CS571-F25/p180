@@ -95,13 +95,14 @@ code {
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  background: linear-gradient(45deg, #10B981, #059669, #047857);
+  background: linear-gradient(135deg, #1e40af 0%, #3b82f6 50%, #60a5fa 100%);
 }
 
 .earth-continent {
   position: absolute;
-  background: #059669;
+  background: #22c55e;
   border-radius: 50%;
+  opacity: 0.8;
 }
 
 .earth-continent:nth-child(1) {
@@ -140,9 +141,9 @@ code {
 
 .avatar {
   position: absolute;
-  top: -20px;
+  top: 50%;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translate(-50%, -50%) translateY(-100px);
   width: 40px;
   height: 40px;
   background: #ff6b35;
@@ -151,7 +152,7 @@ code {
   align-items: center;
   justify-content: center;
   color: white;
-  box-shadow: 
+  box-shadow:
     0 0 20px rgba(255, 107, 53, 0.4),
     0 4px 15px rgba(0, 0, 0, 0.2);
   border: 3px solid #ffffff;
@@ -1883,8 +1884,9 @@ code {
   .avatar {
     width: 30px;
     height: 30px;
+    transform: translate(-50%, -50%) translateY(-75px);
   }
-  
+
   .avatar svg {
     width: 20px;
     height: 20px;
