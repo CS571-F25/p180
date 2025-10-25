@@ -139,30 +139,30 @@ code {
   border-radius: 50%;
 }
 
-.avatar {
+.social-icon-orbit {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%) translateY(-100px);
-  width: 40px;
-  height: 40px;
-  background: #ff6b35;
+  width: 45px;
+  height: 45px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
   box-shadow:
-    0 0 20px rgba(255, 107, 53, 0.4),
+    0 0 20px rgba(0, 0, 0, 0.3),
     0 4px 15px rgba(0, 0, 0, 0.2);
   border: 3px solid #ffffff;
   cursor: pointer;
   transition: all 0.3s ease;
+  text-decoration: none;
 }
 
-.avatar:hover {
-  box-shadow: 
-    0 0 30px rgba(255, 107, 53, 0.6),
+.social-icon-orbit:hover {
+  box-shadow:
+    0 0 30px rgba(0, 0, 0, 0.5),
     0 6px 20px rgba(0, 0, 0, 0.3);
 }
 
@@ -1881,15 +1881,17 @@ code {
     height: 150px;
   }
   
-  .avatar {
-    width: 30px;
-    height: 30px;
+  .social-icon-orbit {
+    width: 35px;
+    height: 35px;
     transform: translate(-50%, -50%) translateY(-75px);
   }
 
-  .avatar svg {
-    width: 20px;
-    height: 20px;
+  .social-icon-orbit svg,
+  .social-icon-orbit span {
+    width: 16px;
+    height: 16px;
+    font-size: 16px;
   }
   
   .timeline::before {
