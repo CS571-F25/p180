@@ -24,9 +24,9 @@ function App() {
               <Hero setActiveSection={setActiveSection} />
               <Interest />
               <Gallery />
+              <TravelMap />
               <GamingShowcase />
               <TechnicalStack />
-              <TravelMap />
             </>
           } />
         </Routes>

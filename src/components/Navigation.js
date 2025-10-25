@@ -8,9 +8,9 @@ const Navigation = ({ activeSection, setActiveSection }) => {
     { id: 'home', label: 'Home', href: '#home' },
     { id: 'interest', label: 'Interest', href: '#interest' },
     { id: 'gallery', label: 'Gallery', href: '#gallery' },
+    { id: 'travel', label: 'Travel', href: '#travel' },
     { id: 'gaming', label: 'Gaming', href: '#gaming' },
-    { id: 'skills', label: 'Skills', href: '#skills' },
-    { id: 'travel', label: 'Travel', href: '#travel' }
+    { id: 'skills', label: 'Skills', href: '#skills' }
   ], []);
 
   const handleNavClick = (sectionId) => {
