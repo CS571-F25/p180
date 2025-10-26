@@ -18,6 +18,7 @@ const PillNav = ({
 }) => {
   const resolvedPillTextColor = pillTextColor ?? baseColor;
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [hasAnimated, setHasAnimated] = useState(false);
   const circleRefs = useRef([]);
   const tlRefs = useRef([]);
   const activeTweenRefs = useRef([]);
@@ -92,7 +93,7 @@ const PillNav = ({
       gsap.set(menu, { visibility: 'hidden', opacity: 0, scaleY: 1 });
     }
 
-    if (initialLoadAnimation) {
+    if (initialLoadAnimation && !hasAnimated) {
       const logo = logoRef.current;
       const navItems = navItemsRef.current;
 
@@ -113,10 +114,12 @@ const PillNav = ({
           ease
         });
       }
+
+      setHasAnimated(true);
     }
 
     return () => window.removeEventListener('resize', onResize);
-  }, [items, ease, initialLoadAnimation]);
+  }, [items, ease, initialLoadAnimation, hasAnimated]);
 
   const handleEnter = i => {
     const tl = tlRefs.current[i];
@@ -151,6 +154,30 @@ const PillNav = ({
       ease,
       overwrite: 'auto'
     });
+  };
+
+  const handleLogoClick = (e) => {
+    // 重新播放展开动画
+    const logo = logoRef.current;
+    const navItems = navItemsRef.current;
+
+    if (logo) {
+      gsap.set(logo, { scale: 0 });
+      gsap.to(logo, {
+        scale: 1,
+        duration: 0.6,
+        ease
+      });
+    }
+
+    if (navItems) {
+      gsap.set(navItems, { width: 0, overflow: 'hidden' });
+      gsap.to(navItems, {
+        width: 'auto',
+        duration: 0.6,
+        ease
+      });
+    }
   };
 
   const toggleMobileMenu = () => {
@@ -219,6 +246,7 @@ const PillNav = ({
           href={items?.[0]?.href || '#home'}
           aria-label="Home"
           onMouseEnter={handleLogoEnter}
+          onClick={handleLogoClick}
           ref={el => {
             logoRef.current = el;
           }}
@@ -237,6 +265,7 @@ const PillNav = ({
                   aria-label={item.ariaLabel || item.label}
                   onMouseEnter={() => handleEnter(i)}
                   onMouseLeave={() => handleLeave(i)}
+                  onClick={item.href === '#home' ? handleLogoClick : undefined}
                 >
                   <span
                     className="hover-circle"
@@ -275,7 +304,12 @@ const PillNav = ({
               <a
                 href={item.href}
                 className={`mobile-menu-link${activeHref === item.href ? ' is-active' : ''}`}
-                onClick={() => setIsMobileMenuOpen(false)}
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  if (item.href === '#home') {
+                    handleLogoClick();
+                  }
+                }}
               >
                 {item.label}
               </a>
