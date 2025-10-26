@@ -463,7 +463,9 @@ const GamingShowcase = () => {
         )}
       </AnimatePresence>
 
-      <NextSectionButton nextSection="skills" label="Explore Skills" />
+      <div className="container">
+        <NextSectionButton nextSection="skills" label="Explore Skills" />
+      </div>
     </section>
   );
 };

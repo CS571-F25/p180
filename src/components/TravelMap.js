@@ -302,7 +302,9 @@ const TravelMap = () => {
           )}
         </AnimatePresence>
 
-      <NextSectionButton nextSection="gaming" label="Explore Gaming" />
+      <div className="container">
+        <NextSectionButton nextSection="gaming" label="Explore Gaming" />
+      </div>
     </section>
   );
 };
