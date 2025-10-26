@@ -12,7 +12,7 @@ const Hero = ({ setActiveSection }) => {
   const [isDeleting, setIsDeleting] = useState(false);
 
   // 要循环显示的文本
-  const texts = ['TaoJR', 'Ruitao WU', 'a Developer', 'a Photographer', 'a Gamer', 'a Traveler'];
+  const texts = ['Tao JR', 'Wu Ruitao', 'a Developer', 'a Photographer', 'a Gamer', 'a Traveler'];
 
   // 社交媒体图标数据
   const socialIcons = [
