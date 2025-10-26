@@ -90,7 +90,7 @@ const Hero = ({ setActiveSection }) => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 1 }}
-          onClick={() => scrollToSection('interest')}
+          onClick={() => scrollToSection('introduction')}
         >
           <ChevronDown size={24} />
           <span>Scroll to explore</span>
