@@ -384,13 +384,15 @@ code {
 .falling-text-box {
   border: 3px solid #ff6b35;
   border-radius: 20px;
-  min-height: 500px;
-  height: 500px;
+  min-height: 280px;
+  height: 280px;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
   background: #ffffff;
   box-shadow: 0 8px 30px rgba(255, 107, 53, 0.15);
   overflow: hidden;
   position: relative;
-  transition: all 0.3s ease;
 }
 
 .falling-text-box:hover {
