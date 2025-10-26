@@ -1507,16 +1507,11 @@ code {
   padding: 80px 0;
 }
 
-.travel-section-new .container {
-  max-width: 100%;
-  padding: 0 40px;
-}
-
 .world-map-container {
-  width: 100%;
+  width: calc(100% - 80px);
   max-width: 1800px;
-  margin: 0 auto;
-  height: 700px;
+  margin: 2rem auto;
+  height: 850px;
   border-radius: 24px;
   overflow: hidden;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);

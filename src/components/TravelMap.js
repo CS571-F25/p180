@@ -195,14 +195,16 @@ const TravelMap = () => {
         >
           探索世界的足迹 - 点击地图上的标记查看照片
         </motion.p>
+      </div>
 
-        <motion.div
-          className="world-map-container"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.3 }}
-        >
+      {/* 地图容器移到container外面，不受宽度限制 */}
+      <motion.div
+        className="world-map-container"
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8, delay: 0.3 }}
+      >
           <MapContainer
             center={[20, 0]}
             zoom={2}
@@ -298,7 +300,6 @@ const TravelMap = () => {
             </motion.div>
           )}
         </AnimatePresence>
-      </div>
     </section>
   );
 };
