@@ -225,6 +225,29 @@ code {
   font-weight: 700;
 }
 
+.typewriter-cursor {
+  color: #ff6b35;
+  font-weight: 400;
+  animation: blink 1s infinite;
+  margin-left: 4px;
+}
+
+@keyframes blink {
+  0%, 50% {
+    opacity: 1;
+  }
+  51%, 100% {
+    opacity: 0;
+  }
+}
+
+.typewriter-title {
+  min-height: 5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .hero-subtitle {
   font-size: 1.25rem;
   margin-bottom: 2.5rem;

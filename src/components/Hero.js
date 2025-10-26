@@ -6,6 +6,14 @@ const Hero = ({ setActiveSection }) => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [hoveredIcon, setHoveredIcon] = useState(null);
 
+  // 打字机效果状态
+  const [currentTextIndex, setCurrentTextIndex] = useState(0);
+  const [displayedText, setDisplayedText] = useState('');
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  // 要循环显示的文本
+  const texts = ['TaoJR', 'Ruitao WU', 'a Developer', 'a Photographer', 'a Gamer', 'a Traveler'];
+
   // 社交媒体图标数据
   const socialIcons = [
     {
@@ -46,6 +54,36 @@ const Hero = ({ setActiveSection }) => {
       text: '小'
     }
   ];
+
+  // 打字机效果
+  useEffect(() => {
+    const currentText = texts[currentTextIndex];
+    const typingSpeed = isDeleting ? 50 : 100;
+    const pauseDuration = 2000; // 完整显示后的暂停时间
+
+    const timer = setTimeout(() => {
+      if (!isDeleting) {
+        // 正在打字
+        if (displayedText.length < currentText.length) {
+          setDisplayedText(currentText.slice(0, displayedText.length + 1));
+        } else {
+          // 打字完成，暂停后开始删除
+          setTimeout(() => setIsDeleting(true), pauseDuration);
+        }
+      } else {
+        // 正在删除
+        if (displayedText.length > 0) {
+          setDisplayedText(currentText.slice(0, displayedText.length - 1));
+        } else {
+          // 删除完成，切换到下一个文本
+          setIsDeleting(false);
+          setCurrentTextIndex((prevIndex) => (prevIndex + 1) % texts.length);
+        }
+      }
+    }, typingSpeed);
+
+    return () => clearTimeout(timer);
+  }, [displayedText, isDeleting, currentTextIndex, texts]);
 
   // 鼠标位置跟踪
   useEffect(() => {
@@ -213,61 +251,14 @@ const Hero = ({ setActiveSection }) => {
           transition={{ duration: 0.8 }}
         >
           <motion.h1
-            className="hero-title"
+            className="hero-title typewriter-title"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            Welcome to My
-            <span className="gradient-text"> Digital Universe</span>
+            Hi! I'm <span className="gradient-text">{displayedText}</span>
+            <span className="typewriter-cursor">|</span>
           </motion.h1>
-          
-          <motion.p
-            className="hero-subtitle"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-          >
-            A comprehensive showcase of my professional expertise, creative endeavors, 
-            and personal passions. Explore my journey through technology, art, and life.
-          </motion.p>
-          
-          <motion.div
-            className="hero-buttons"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
-          >
-            <button
-              className="btn btn-primary"
-              onClick={() => scrollToSection('interest')}
-            >
-              Explore My Interests
-            </button>
-            <button
-              className="btn btn-secondary"
-              onClick={() => scrollToSection('gallery')}
-            >
-              View Gallery
-            </button>
-          </motion.div>
-          
-          <motion.div
-            className="hero-social"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.8 }}
-          >
-            <a href="https://github.com" target="_blank" rel="noopener noreferrer">
-              <Github size={24} />
-            </a>
-            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer">
-              <Linkedin size={24} />
-            </a>
-            <a href="mailto:your.email@example.com">
-              <Mail size={24} />
-            </a>
-          </motion.div>
         </motion.div>
         
         <motion.div
