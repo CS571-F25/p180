@@ -1516,11 +1516,11 @@ code {
   width: 100%;
   max-width: 1800px;
   margin: 0 auto;
-  height: 850px;
+  height: 700px;
   border-radius: 24px;
   overflow: hidden;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
-  border: 2px solid #e5e5e7;
+  border: 2px solid #f5f5f7;
 }
 
 .world-map {
@@ -1638,7 +1638,7 @@ code {
 /* Responsive */
 @media (max-width: 768px) {
   .world-map-container {
-    height: 600px;
+    height: 500px;
     border-radius: 16px;
   }
 
