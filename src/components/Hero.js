@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, useMotionValue, useTransform, useSpring } from 'framer-motion';
 import { ChevronDown, Github, Linkedin, Mail, Instagram } from 'lucide-react';
+import Particles from './Particles';
 
 const Hero = ({ setActiveSection }) => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -123,6 +124,17 @@ const Hero = ({ setActiveSection }) => {
 
   return (
     <section id="home" className="hero">
+      <Particles
+        particleColors={['#ff6b35', '#ff8c42', '#ffa561', '#ffb87a']}
+        particleCount={150}
+        particleSpread={12}
+        speed={0.05}
+        particleBaseSize={80}
+        moveParticlesOnHover={true}
+        particleHoverFactor={0.5}
+        alphaParticles={true}
+        disableRotation={false}
+      />
       <div className="container">
         {/* 头像围绕地球旋转的动画 */}
         <motion.div
