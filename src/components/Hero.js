@@ -256,8 +256,11 @@ const Hero = ({ setActiveSection }) => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            Hi! I'm <span className="gradient-text">{displayedText}</span>
-            <span className="typewriter-cursor">|</span>
+            <div className="typewriter-line-1">Hi! I'm</div>
+            <div className="typewriter-line-2">
+              <span className="gradient-text">{displayedText}</span>
+              <span className="typewriter-cursor">|</span>
+            </div>
           </motion.h1>
         </motion.div>
         

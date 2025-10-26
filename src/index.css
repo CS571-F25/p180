@@ -242,10 +242,29 @@ code {
 }
 
 .typewriter-title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.typewriter-line-1 {
+  font-size: 4rem;
+  font-weight: 600;
+  color: #1d1d1f;
+  white-space: nowrap;
+}
+
+.typewriter-line-2 {
+  font-size: 4rem;
+  font-weight: 600;
+  color: #1d1d1f;
   min-height: 5rem;
   display: flex;
   align-items: center;
   justify-content: center;
+  white-space: nowrap;
 }
 
 .hero-subtitle {
@@ -2329,7 +2348,16 @@ code {
   .hero-title {
     font-size: 2.5rem;
   }
-  
+
+  .typewriter-line-1 {
+    font-size: 2.5rem;
+  }
+
+  .typewriter-line-2 {
+    font-size: 2.5rem;
+    min-height: 3.5rem;
+  }
+
   .hero-subtitle {
     font-size: 1rem;
   }
