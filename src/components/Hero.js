@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { motion, useMotionValue, useTransform, useSpring } from 'framer-motion';
-import { ChevronDown, Github, Linkedin, Mail, Instagram } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { ChevronDown } from 'lucide-react';
 import Particles from './Particles';
 
 const Hero = ({ setActiveSection }) => {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [hoveredIcon, setHoveredIcon] = useState(null);
-
   // 打字机效果状态
   const [currentTextIndex, setCurrentTextIndex] = useState(0);
   const [displayedText, setDisplayedText] = useState('');
@@ -14,47 +11,6 @@ const Hero = ({ setActiveSection }) => {
 
   // 要循环显示的文本
   const texts = ['TaoJR', 'Ruitao WU', 'a Developer', 'a Photographer', 'a Gamer', 'a Traveler'];
-
-  // 社交媒体图标数据
-  const socialIcons = [
-    {
-      name: 'GitHub',
-      icon: Github,
-      color: '#333',
-      url: 'https://github.com',
-      angle: 0
-    },
-    {
-      name: 'LinkedIn',
-      icon: Linkedin,
-      color: '#0077b5',
-      url: 'https://linkedin.com',
-      angle: 72
-    },
-    {
-      name: 'Instagram',
-      icon: Instagram,
-      color: '#E4405F',
-      url: 'https://instagram.com',
-      angle: 144
-    },
-    {
-      name: 'Bilibili',
-      icon: null, // 使用文字
-      color: '#00A1D6',
-      url: 'https://bilibili.com',
-      angle: 216,
-      text: 'B'
-    },
-    {
-      name: 'XiaoHongShu',
-      icon: null, // 使用文字
-      color: '#FF2442',
-      url: 'https://xiaohongshu.com',
-      angle: 288,
-      text: '小'
-    }
-  ];
 
   // 打字机效果
   useEffect(() => {
@@ -86,34 +42,6 @@ const Hero = ({ setActiveSection }) => {
     return () => clearTimeout(timer);
   }, [displayedText, isDeleting, currentTextIndex, texts]);
 
-  // 鼠标位置跟踪
-  useEffect(() => {
-    const handleMouseMove = (e) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
-    };
-
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
-
-  // 创建动画值
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-  
-  // 将鼠标位置转换为动画值
-  useEffect(() => {
-    mouseX.set(mousePosition.x);
-    mouseY.set(mousePosition.y);
-  }, [mousePosition, mouseX, mouseY]);
-
-  // 创建弹性动画值
-  const springX = useSpring(mouseX, { stiffness: 100, damping: 30 });
-  const springY = useSpring(mouseY, { stiffness: 100, damping: 30 });
-
-  // 将鼠标位置转换为旋转角度
-  const rotateX = useTransform(springY, [0, window.innerHeight], [15, -15]);
-  const rotateY = useTransform(springX, [0, window.innerWidth], [-15, 15]);
-
   const scrollToSection = (sectionId) => {
     const element = document.getElementById(sectionId);
     if (element) {
@@ -137,96 +65,6 @@ const Hero = ({ setActiveSection }) => {
         sizeRandomness={1.5}
       />
       <div className="container">
-        {/* 头像围绕地球旋转的动画 */}
-        <motion.div
-          className="hero-animation-container"
-          style={{
-            rotateX,
-            rotateY,
-            transformStyle: "preserve-3d"
-          }}
-        >
-          {/* 地球 */}
-          <motion.div
-            className="earth"
-            animate={{
-              rotate: [0, 360],
-            }}
-            transition={{
-              duration: 20,
-              repeat: Infinity,
-              ease: "linear"
-            }}
-          >
-            <div className="earth-surface">
-              <div className="earth-continent"></div>
-              <div className="earth-continent"></div>
-              <div className="earth-continent"></div>
-            </div>
-          </motion.div>
-
-          {/* 围绕地球旋转的社交媒体图标 */}
-          {socialIcons.map((social, index) => {
-            const Icon = social.icon;
-            return (
-              <motion.div
-                key={social.name}
-                className="avatar-orbit"
-                animate={{
-                  rotate: hoveredIcon === null ? [social.angle, social.angle + 360] : social.angle + (hoveredIcon === index ? 0 : ((Date.now() / 1000) % 1) * 360),
-                }}
-                transition={{
-                  duration: hoveredIcon === null ? 20 : 0,
-                  repeat: hoveredIcon === null ? Infinity : 0,
-                  ease: "linear"
-                }}
-                style={{
-                  rotate: social.angle
-                }}
-              >
-                <motion.a
-                  href={social.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="social-icon-orbit"
-                  style={{
-                    backgroundColor: social.color
-                  }}
-                  animate={{
-                    scale: hoveredIcon === index ? 1.5 : 1,
-                    rotate: hoveredIcon === null ? [0, -360] : 0,
-                  }}
-                  transition={{
-                    scale: { duration: 0.3 },
-                    rotate: { duration: 20, repeat: hoveredIcon === null ? Infinity : 0, ease: "linear" }
-                  }}
-                  whileHover={{
-                    scale: 1.5,
-                    boxShadow: `0 0 30px ${social.color}`
-                  }}
-                  onMouseEnter={() => setHoveredIcon(index)}
-                  onMouseLeave={() => setHoveredIcon(null)}
-                >
-                  {Icon ? <Icon size={20} color="white" /> : <span style={{ color: 'white', fontSize: '20px', fontWeight: 'bold' }}>{social.text}</span>}
-                </motion.a>
-              </motion.div>
-            );
-          })}
-
-          {/* 轨道线 */}
-          <motion.div
-            className="orbit-line"
-            animate={{
-              rotate: hoveredIcon === null ? [0, 360] : 0,
-            }}
-            transition={{
-              duration: 20,
-              repeat: hoveredIcon === null ? Infinity : 0,
-              ease: "linear"
-            }}
-          />
-        </motion.div>
-
         <motion.div
           className="hero-content"
           initial={{ opacity: 0, y: 50 }}
