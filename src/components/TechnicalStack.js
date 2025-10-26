@@ -11,7 +11,6 @@ import {
   Shield,
   Zap
 } from 'lucide-react';
-import NextSectionButton from './NextSectionButton';
 
 const TechnicalStack = () => {
   const [selectedCategory, setSelectedCategory] = useState('frontend');
@@ -252,8 +251,6 @@ const TechnicalStack = () => {
             </div>
           </div>
         </motion.div>
-
-        <NextSectionButton nextSection="home" label="Back to Home" />
       </div>
     </section>
   );

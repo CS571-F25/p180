@@ -302,9 +302,7 @@ const TravelMap = () => {
           )}
         </AnimatePresence>
 
-      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 20px' }}>
-        <NextSectionButton nextSection="gaming" label="Explore Gaming" />
-      </div>
+      <NextSectionButton nextSection="gaming" label="Explore Gaming" />
     </section>
   );
 };
