@@ -44,7 +44,7 @@ const Introduction = () => {
               trigger="click"
               backgroundColor="transparent"
               wireframes={false}
-              gravity={0.8}
+              gravity={0.3}
               fontSize="1.3rem"
               mouseConstraintStiffness={0.9}
             />
