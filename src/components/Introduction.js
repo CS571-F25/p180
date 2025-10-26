@@ -19,23 +19,33 @@ const Introduction = () => {
           Introduction
         </motion.h2>
 
+        <motion.p
+          className="section-subtitle"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+        >
+          Click to interact with the text
+        </motion.p>
+
         <motion.div
           className="introduction-content"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.2 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
         >
-          <div style={{ minHeight: '400px', width: '100%' }}>
+          <div className="falling-text-box">
             <FallingText
               text={introText}
               highlightWords={["developer", "photographer", "gamer", "traveler", "hobbies", "achievements"]}
               highlightClass="highlighted"
-              trigger="scroll"
+              trigger="click"
               backgroundColor="transparent"
               wireframes={false}
-              gravity={0.56}
-              fontSize="1.5rem"
+              gravity={0.8}
+              fontSize="1.3rem"
               mouseConstraintStiffness={0.9}
             />
           </div>
