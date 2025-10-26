@@ -1507,9 +1507,14 @@ code {
   padding: 80px 0;
 }
 
+.travel-section-new .container {
+  max-width: 100%;
+  padding: 0 40px;
+}
+
 .world-map-container {
   width: 100%;
-  max-width: 1400px;
+  max-width: 1800px;
   margin: 0 auto;
   height: 700px;
   border-radius: 24px;
