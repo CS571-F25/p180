@@ -4,6 +4,7 @@
   left: 50%;
   transform: translateX(-50%);
   z-index: 999;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.08));
 }
 
 @media (max-width: 768px) {
@@ -41,20 +42,23 @@
   align-items: center;
   height: var(--nav-h);
   background: var(--base, #000);
+  backdrop-filter: blur(10px);
   border-radius: 9999px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .pill-logo {
   width: var(--nav-h);
   height: var(--nav-h);
   border-radius: 50%;
-  background: var(--base, #000);
+  background: #ff6b35;
   padding: 8px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
   text-decoration: none;
+  border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .pill-logo img {
@@ -72,7 +76,7 @@
   justify-content: center;
   font-size: 18px;
   font-weight: bold;
-  color: var(--pill-bg, #fff);
+  color: #ffffff;
 }
 
 .pill-list {
@@ -117,7 +121,7 @@
   left: 50%;
   bottom: 0;
   border-radius: 50%;
-  background: var(--base, #000);
+  background: #ff6b35;
   z-index: 1;
   display: block;
   pointer-events: none;
@@ -157,7 +161,7 @@
   transform: translateX(-50%);
   width: 12px;
   height: 12px;
-  background: var(--base, #000);
+  background: #ff6b35;
   border-radius: 50px;
   z-index: 4;
 }
@@ -184,8 +188,9 @@
   width: var(--nav-h);
   height: var(--nav-h);
   border-radius: 50%;
-  background: var(--base, #000);
-  border: none;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  backdrop-filter: blur(10px);
   display: none;
   flex-direction: column;
   align-items: center;
@@ -205,7 +210,7 @@
 .hamburger-line {
   width: 16px;
   height: 2px;
-  background: var(--pill-bg, #fff);
+  background: #1d1d1f;
   border-radius: 1px;
   transition: all 0.01s ease;
   transform-origin: center;
@@ -248,11 +253,11 @@
 
 .mobile-menu-popover .mobile-menu-link:hover {
   cursor: pointer;
-  background-color: var(--base);
-  color: var(--hover-text, #fff);
+  background-color: #ff6b35;
+  color: #ffffff;
 }
 
 .mobile-menu-link.is-active {
-  background-color: var(--base);
-  color: var(--hover-text, #fff);
+  background-color: #ff6b35;
+  color: #ffffff;
 }

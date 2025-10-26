@@ -51,10 +51,10 @@ function App() {
         <PillNav
           items={navItems}
           activeHref={`#${activeSection}`}
-          baseColor="#000000"
+          baseColor="rgba(255, 255, 255, 0.95)"
           pillColor="#ffffff"
-          hoveredPillTextColor="#000000"
-          pillTextColor="#000000"
+          hoveredPillTextColor="#ffffff"
+          pillTextColor="#1d1d1f"
         />
         
         <Routes>
