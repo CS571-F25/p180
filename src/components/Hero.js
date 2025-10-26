@@ -238,17 +238,17 @@ const Hero = ({ setActiveSection }) => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.6 }}
           >
-            <button 
+            <button
               className="btn btn-primary"
-              onClick={() => scrollToSection('experience')}
+              onClick={() => scrollToSection('interest')}
             >
-              Explore My Journey
+              Explore My Interests
             </button>
-            <button 
+            <button
               className="btn btn-secondary"
-              onClick={() => scrollToSection('portfolio')}
+              onClick={() => scrollToSection('gallery')}
             >
-              View Portfolio
+              View Gallery
             </button>
           </motion.div>
           
@@ -275,7 +275,7 @@ const Hero = ({ setActiveSection }) => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 1 }}
-          onClick={() => scrollToSection('experience')}
+          onClick={() => scrollToSection('interest')}
         >
           <ChevronDown size={24} />
           <span>Scroll to explore</span>

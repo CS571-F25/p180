@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Camera, Gamepad2, MapPin } from 'lucide-react';
+import NextSectionButton from './NextSectionButton';
 
 const Interest = () => {
   const interests = [
@@ -101,6 +102,8 @@ const Interest = () => {
             );
           })}
         </div>
+
+        <NextSectionButton nextSection="gallery" label="Explore Gallery" />
       </div>
     </section>
   );
