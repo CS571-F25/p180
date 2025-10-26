@@ -5,17 +5,26 @@
   height: 100%;
   cursor: pointer;
   text-align: center;
-  padding-top: 2em;
+  padding: 2em 1.5em;
 }
 
 .falling-text-target {
   display: inline-block;
+  max-width: 90%;
+  line-height: 1.6;
 }
 
 .word {
   display: inline-block;
-  margin: 0 2px;
+  margin: 0 4px;
   user-select: none;
+  font-weight: 500;
+  color: #1d1d1f;
+  transition: color 0.2s ease;
+}
+
+.word:hover {
+  color: #ff6b35;
 }
 
 .highlighted {
@@ -27,5 +36,6 @@
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 0;
+  z-index: 2;
+  pointer-events: none;
 }
