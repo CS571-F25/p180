@@ -126,14 +126,15 @@ const Hero = ({ setActiveSection }) => {
     <section id="home" className="hero">
       <Particles
         particleColors={['#ff6b35', '#ff8c42', '#ffa561', '#ffb87a']}
-        particleCount={150}
-        particleSpread={12}
-        speed={0.05}
-        particleBaseSize={80}
+        particleCount={300}
+        particleSpread={15}
+        speed={0.08}
+        particleBaseSize={100}
         moveParticlesOnHover={true}
-        particleHoverFactor={0.5}
+        particleHoverFactor={1.2}
         alphaParticles={true}
         disableRotation={false}
+        sizeRandomness={1.5}
       />
       <div className="container">
         {/* 头像围绕地球旋转的动画 */}
@@ -211,36 +212,6 @@ const Hero = ({ setActiveSection }) => {
               </motion.div>
             );
           })}
-
-          {/* 添加一些围绕轨道的小星星 */}
-          {[0, 1, 2, 3, 4].map((index) => (
-            <motion.div
-              key={index}
-              className="star"
-              style={{
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -50%)',
-                width: '4px',
-                height: '4px',
-                background: '#ff6b35',
-                borderRadius: '50%',
-                boxShadow: '0 0 10px rgba(255, 107, 53, 0.6)'
-              }}
-              animate={{
-                rotate: [0, 360],
-                x: [0, Math.cos(index * 72 * Math.PI / 180) * 100],
-                y: [0, Math.sin(index * 72 * Math.PI / 180) * 100],
-              }}
-              transition={{
-                duration: 12,
-                repeat: Infinity,
-                ease: "linear",
-                delay: index * 0.5
-              }}
-            />
-          ))}
 
           {/* 轨道线 */}
           <motion.div
