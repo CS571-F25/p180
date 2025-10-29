@@ -31,7 +31,7 @@ const Introduction = () => {
               text={introText}
               animateOn="view"
               speed={30}
-              maxIterations={15}
+              sequential={true}
               revealDirection="start"
               parentClassName="decrypted-text-wrapper"
               className="decrypted-char"
