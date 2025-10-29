@@ -30,7 +30,7 @@ const Introduction = () => {
             <DecryptedText
               text={introText}
               animateOn="view"
-              speed={30}
+              speed={20}
               sequential={true}
               revealDirection="start"
               parentClassName="decrypted-text-wrapper"
