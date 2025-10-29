@@ -33,16 +33,14 @@ export default function DecryptedText({
   ...props
 }) {
   const [displayText, setDisplayText] = useState(text);
-  const [isHovering, setIsHovering] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
   const [isScrambling, setIsScrambling] = useState(false);
   const [revealedIndices, setRevealedIndices] = useState(new Set());
   const [hasAnimated, setHasAnimated] = useState(false);
   const containerRef = useRef(null);
+  const intervalRef = useRef(null);
 
   useEffect(() => {
-    let interval;
-    let currentIteration = 0;
-
     const getNextIndex = revealedSet => {
       const textLength = text.length;
       switch (revealDirection) {
@@ -109,9 +107,11 @@ export default function DecryptedText({
       }
     };
 
-    if (isHovering) {
+    if (isAnimating) {
       setIsScrambling(true);
-      interval = setInterval(() => {
+      let currentIteration = 0;
+
+      intervalRef.current = setInterval(() => {
         setRevealedIndices(prevRevealed => {
           if (sequential) {
             if (prevRevealed.size < text.length) {
@@ -121,15 +121,17 @@ export default function DecryptedText({
               setDisplayText(shuffleText(text, newRevealed));
               return newRevealed;
             } else {
-              clearInterval(interval);
+              clearInterval(intervalRef.current);
               setIsScrambling(false);
+              setDisplayText(text);
+              // Keep animation complete state, don't reset
               return prevRevealed;
             }
           } else {
             setDisplayText(shuffleText(text, prevRevealed));
             currentIteration++;
             if (currentIteration >= maxIterations) {
-              clearInterval(interval);
+              clearInterval(intervalRef.current);
               setIsScrambling(false);
               setDisplayText(text);
             }
@@ -137,16 +139,12 @@ export default function DecryptedText({
           }
         });
       }, speed);
-    } else {
-      setDisplayText(text);
-      setRevealedIndices(new Set());
-      setIsScrambling(false);
     }
 
     return () => {
-      if (interval) clearInterval(interval);
+      if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  }, [isHovering, text, speed, maxIterations, sequential, revealDirection, characters, useOriginalCharsOnly]);
+  }, [isAnimating, text, speed, maxIterations, sequential, revealDirection, characters, useOriginalCharsOnly]);
 
   useEffect(() => {
     if (animateOn !== 'view' && animateOn !== 'both') return;
@@ -154,7 +152,7 @@ export default function DecryptedText({
     const observerCallback = entries => {
       entries.forEach(entry => {
         if (entry.isIntersecting && !hasAnimated) {
-          setIsHovering(true);
+          setIsAnimating(true);
           setHasAnimated(true);
         }
       });
@@ -182,21 +180,27 @@ export default function DecryptedText({
   const hoverProps =
     animateOn === 'hover' || animateOn === 'both'
       ? {
-          onMouseEnter: () => setIsHovering(true),
-          onMouseLeave: () => setIsHovering(false)
+          onMouseEnter: () => setIsAnimating(true),
+          onMouseLeave: () => {
+            setIsAnimating(false);
+            setDisplayText(text);
+            setRevealedIndices(new Set());
+            setIsScrambling(false);
+          }
         }
       : {};
 
   return (
     <motion.span className={parentClassName} ref={containerRef} style={styles.wrapper} {...hoverProps} {...props}>
-      <span style={styles.srOnly}>{displayText}</span>
+      <span style={styles.srOnly}>{text}</span>
 
       <span aria-hidden="true">
         {displayText.split('').map((char, index) => {
-          const isRevealedOrDone = revealedIndices.has(index) || !isScrambling || !isHovering;
+          const isRevealed = revealedIndices.has(index) || (!isScrambling && !isAnimating);
+          const charClass = isRevealed ? className : encryptedClassName;
 
           return (
-            <span key={index} className={isRevealedOrDone ? className : encryptedClassName}>
+            <span key={`${index}-${char}`} className={charClass}>
               {char}
             </span>
           );
