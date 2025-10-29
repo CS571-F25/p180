@@ -4,7 +4,7 @@ import DecryptedText from './DecryptedText';
 import NextSectionButton from './NextSectionButton';
 
 const Introduction = () => {
-  const introText = `Welcome to my personal website! As you can see, I am a developer, photographer, gamer, and traveler. This website showcases some of my hobbies and achievements. Feel free to explore and discover more about my journey and passions.`;
+  const introText = `Welcome to my personal website! As you can see, I am a developer, photographer, gamer, and traveler. This website showcases some of my hobbies and works. Feel free to explore and discover more about my journey and passions.`;
 
   return (
     <section id="introduction" className="section introduction-section">

@@ -8,6 +8,7 @@ import GamingShowcase from './components/GamingShowcase';
 import TechnicalStack from './components/TechnicalStack';
 import TravelMap from './components/TravelMap';
 import Footer from './components/Footer';
+import logo from './assets/logo.svg';
 import './App.css';
 
 function App() {
@@ -49,6 +50,7 @@ function App() {
     <Router>
       <div className="App">
         <PillNav
+          logo={logo}
           items={navItems}
           activeHref={`#${activeSection}`}
           baseColor="rgba(255, 255, 255, 0.95)"

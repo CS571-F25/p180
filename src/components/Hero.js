@@ -10,7 +10,7 @@ const Hero = ({ setActiveSection }) => {
   const [isDeleting, setIsDeleting] = useState(false);
 
   // 要循环显示的文本
-  const texts = ['TaoJR', 'Ruitao WU', 'a Developer', 'a Photographer', 'a Gamer', 'a Traveler'];
+  const texts = ['Tao JR', 'Wu Ruitao', 'a Developer', 'a Photographer', 'a Gamer', 'a Traveler'];
 
   // 打字机效果
   useEffect(() => {
@@ -54,16 +54,15 @@ const Hero = ({ setActiveSection }) => {
     <section id="home" className="hero">
       <Particles
         particleColors={['#ff6b35', '#ff8c42', '#ffa561', '#ffb87a']}
-        particleCount={300}
-        particleSpread={15}
-        speed={0.08}
+        particleCount={400}
+        particleSpread={10}
+        speed={0.1}
         particleBaseSize={100}
         moveParticlesOnHover={true}
-        particleHoverFactor={1.2}
-        alphaParticles={true}
+        alphaParticles={false}
         disableRotation={false}
-        sizeRandomness={1.5}
       />
+
       <div className="container">
         <motion.div
           className="hero-content"
