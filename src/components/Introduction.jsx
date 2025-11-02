@@ -10,18 +10,16 @@ const Introduction = () => {
   const education = [
     {
       school: 'City University of Hong Kong',
-      schoolCN: '香港城市大学',
       degree: 'Bachelor of Engineering',
       major: 'Electrical and Electronic Engineering',
-      period: '2021 - 2023',
+      period: '2022 - 2024',
       icon: '🇭🇰'
     },
     {
       school: 'University of Wisconsin-Madison',
-      schoolCN: '威斯康星大学麦迪逊分校',
       degree: 'Bachelor of Science',
       major: 'Computer Science',
-      period: '2023 - Present',
+      period: '2024 - Present',
       icon: '🇺🇸'
     }
   ];
@@ -89,7 +87,6 @@ const Introduction = () => {
                   <div className="education-icon">{edu.icon}</div>
                   <div className="education-content">
                     <h4 className="education-school">{edu.school}</h4>
-                    <p className="education-school-cn">{edu.schoolCN}</p>
                     <p className="education-degree">{edu.degree}</p>
                     <p className="education-major">{edu.major}</p>
                     <p className="education-period">{edu.period}</p>
