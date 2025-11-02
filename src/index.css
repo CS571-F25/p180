@@ -481,6 +481,12 @@ code {
   overflow: hidden;
 }
 
+.uw-madison-icon {
+  width: 180px;
+  height: 180px;
+  padding: 12px;
+}
+
 .education-icon img {
   max-width: 100%;
   max-height: 100%;

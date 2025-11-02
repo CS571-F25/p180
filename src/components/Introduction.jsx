@@ -86,7 +86,7 @@ const Introduction = () => {
                   transition={{ duration: 0.5, delay: 0.6 + index * 0.2 }}
                   whileHover={{ y: -5 }}
                 >
-                  <div className="education-icon">
+                  <div className={`education-icon ${index === 1 ? 'uw-madison-icon' : ''}`}>
                     {typeof edu.icon === 'string' && (edu.icon.includes('/') || edu.icon.includes('.')) ? (
                       <img src={edu.icon} alt={`${edu.school} Logo`} />
                     ) : (
