@@ -156,7 +156,25 @@ const PillNav = ({
     });
   };
 
+  const handleNavClick = (e, href, index) => {
+    e.preventDefault();
+
+    // 如果是 Home，触发动画
+    if (href === '#home') {
+      handleLogoClick(e);
+    }
+
+    // 滚动到对应区域
+    const sectionId = href.replace('#', '');
+    const section = document.getElementById(sectionId);
+    if (section) {
+      section.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   const handleLogoClick = (e) => {
+    e.preventDefault();
+
     // 重新播放展开动画
     const logo = logoRef.current;
     const navItems = navItemsRef.current;
@@ -177,6 +195,12 @@ const PillNav = ({
         duration: 0.6,
         ease
       });
+    }
+
+    // 滚动到 Home
+    const homeSection = document.getElementById('home');
+    if (homeSection) {
+      homeSection.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
@@ -265,7 +289,7 @@ const PillNav = ({
                   aria-label={item.ariaLabel || item.label}
                   onMouseEnter={() => handleEnter(i)}
                   onMouseLeave={() => handleLeave(i)}
-                  onClick={item.href === '#home' ? handleLogoClick : undefined}
+                  onClick={(e) => handleNavClick(e, item.href, i)}
                 >
                   <span
                     className="hover-circle"
@@ -304,10 +328,19 @@ const PillNav = ({
               <a
                 href={item.href}
                 className={`mobile-menu-link${activeHref === item.href ? ' is-active' : ''}`}
-                onClick={() => {
+                onClick={(e) => {
+                  e.preventDefault();
                   setIsMobileMenuOpen(false);
+
+                  // 滚动到对应区域
+                  const sectionId = item.href.replace('#', '');
+                  const section = document.getElementById(sectionId);
+                  if (section) {
+                    section.scrollIntoView({ behavior: 'smooth' });
+                  }
+
                   if (item.href === '#home') {
-                    handleLogoClick();
+                    handleLogoClick(e);
                   }
                 }}
               >
