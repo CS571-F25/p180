@@ -3,7 +3,8 @@ import { motion } from 'framer-motion';
 import { GraduationCap, ArrowRight } from 'lucide-react';
 import DecryptedText from './DecryptedText';
 import NextSectionButton from './NextSectionButton';
-import CityULogo from '../assets/CityU_logo.png'
+import CityULogo from '../assets/CityULogo.png'
+import UWMadisonLogo from '../assets/UWMadisonLogo.png'
 
 const Introduction = () => {
   const introText = `Welcome to my personal website! As you can see, I am a developer, photographer, gamer, and traveler. This website showcases some of my hobbies and works. Feel free to explore and discover more about my journey and passions.`;
@@ -21,7 +22,7 @@ const Introduction = () => {
       degree: 'Bachelor of Science',
       major: 'Computer Science',
       period: '2024 - Present',
-      icon: '🇺🇸'
+      icon: UWMadisonLogo
     }
   ];
 
