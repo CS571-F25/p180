@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { GraduationCap, ArrowRight } from 'lucide-react';
 import DecryptedText from './DecryptedText';
 import NextSectionButton from './NextSectionButton';
+import CityULogo from '../assets/CityU_logo.png'
 
 const Introduction = () => {
   const introText = `Welcome to my personal website! As you can see, I am a developer, photographer, gamer, and traveler. This website showcases some of my hobbies and works. Feel free to explore and discover more about my journey and passions.`;
@@ -13,7 +14,7 @@ const Introduction = () => {
       degree: 'Bachelor of Engineering',
       major: 'Electrical and Electronic Engineering',
       period: '2022 - 2024',
-      icon: '🇭🇰'
+      icon: CityULogo
     },
     {
       school: 'University of Wisconsin-Madison',
@@ -84,7 +85,11 @@ const Introduction = () => {
                   transition={{ duration: 0.5, delay: 0.6 + index * 0.2 }}
                   whileHover={{ y: -5 }}
                 >
-                  <div className="education-icon">{edu.icon}</div>
+                  <img
+                    src={edu.icon}
+                    alt={`${edu.school} Logo`}
+                    className="school-logo" 
+                  />
                   <div className="education-content">
                     <h4 className="education-school">{edu.school}</h4>
                     <p className="education-degree">{edu.degree}</p>
@@ -110,3 +115,4 @@ const Introduction = () => {
 };
 
 export default Introduction;
+
