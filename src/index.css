@@ -463,6 +463,7 @@ code {
   gap: 1.25rem;
   position: relative;
   transition: all 0.3s ease;
+  min-height: 180px;
 }
 
 .education-card:hover {
@@ -478,13 +479,11 @@ code {
   align-items: center;
   justify-content: center;
   padding: 10px;
-  overflow: hidden;
+  overflow: visible;
 }
 
-.uw-madison-icon {
-  width: 180px;
-  height: 180px;
-  padding: 12px;
+.uw-madison-icon img {
+  transform: scale(1.4);
 }
 
 .education-icon img {
