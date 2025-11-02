@@ -371,11 +371,24 @@ code {
 /* Introduction Section */
 .introduction-section {
   background: #ffffff;
-  padding: 80px 0;
+  padding: 0;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+}
+
+.introduction-section .container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
   justify-content: center;
+  padding-top: 80px;
+  padding-bottom: 0;
+}
+
+.introduction-section .next-section-button {
+  margin-top: auto;
+  padding: 2rem 0;
 }
 
 .introduction-grid {
@@ -2715,7 +2728,7 @@ code {
   color: #1d1d1f;
 }
 
-.3d-demo {
+.demo-3d {
   background: linear-gradient(135deg, #ff6b35, #ff8c42);
   color: white;
   box-shadow: 0 8px 30px rgba(255, 107, 53, 0.3);
