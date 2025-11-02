@@ -7,5 +7,10 @@ export default defineConfig({
   base: '/p180/',
   build: {
     outDir: 'docs'
+  },
+  server: {
+    port: 3000,
+    strictPort: false, // If port is taken, automatically try the next available port
+    host: true // Listen on all addresses including LAN
   }
 })
