@@ -85,11 +85,13 @@ const Introduction = () => {
                   transition={{ duration: 0.5, delay: 0.6 + index * 0.2 }}
                   whileHover={{ y: -5 }}
                 >
-                  <img
-                    src={edu.icon}
-                    alt={`${edu.school} Logo`}
-                    className="school-logo" 
-                  />
+                  <div className="education-icon">
+                    {typeof edu.icon === 'string' && (edu.icon.includes('/') || edu.icon.includes('.')) ? (
+                      <img src={edu.icon} alt={`${edu.school} Logo`} />
+                    ) : (
+                      <div style={{ fontSize: '3rem' }}>{edu.icon}</div>
+                    )}
+                  </div>
                   <div className="education-content">
                     <h4 className="education-school">{edu.school}</h4>
                     <p className="education-degree">{edu.degree}</p>
