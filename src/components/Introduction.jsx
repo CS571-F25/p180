@@ -94,6 +94,7 @@ const Introduction = () => {
                   {index < education.length - 1 && (
                     <div className="education-arrow">
                       <ArrowRight size={20} />
+                      <span className="transfer-label">Transfer</span>
                     </div>
                   )}
                 </motion.div>

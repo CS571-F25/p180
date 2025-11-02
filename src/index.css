@@ -520,11 +520,27 @@ code {
 
 .education-arrow {
   position: absolute;
-  bottom: -2.25rem;
+  bottom: -2.75rem;
   left: 50%;
-  transform: translateX(-50%) rotate(90deg);
+  transform: translateX(-50%);
   color: #ff6b35;
-  opacity: 0.6;
+  opacity: 0.8;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.education-arrow svg {
+  transform: rotate(90deg);
+}
+
+.transfer-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #ff6b35;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
 
 /* Responsive */
