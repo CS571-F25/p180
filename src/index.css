@@ -472,12 +472,12 @@ code {
 
 .education-icon {
   flex-shrink: 0;
-  width: 100px;
-  height: 100px;
+  width: 130px;
+  height: 130px;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 8px;
+  padding: 10px;
   overflow: hidden;
 }
 
