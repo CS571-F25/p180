@@ -1,151 +1,239 @@
 # Personal Website
 
-一个功能丰富的个人网站，展示专业经验、创意作品和个人爱好。使用React构建，具有现代化的设计和交互功能。
+A feature-rich personal website showcasing professional experience, creative work, and personal interests. Built with React and Vite, featuring modern design and interactive functionality.
 
-## 功能特性
+## Features
 
-### 🎯 核心模块
+### 🎯 Core Modules
 
-1. **个人经历时间线** - 展示教育和职业发展历程
-2. **摄影作品集** - 高分辨率照片和视频展示，支持点赞和评论
-3. **技术栈展示** - 详细的技能展示和项目经验
-4. **游戏展示** - 个人游戏收藏和当前游戏状态
-5. **交互式旅行地图** - 全球旅行足迹，支持照片展示和互动
+1. **Hero Section** - Dynamic typewriter animation with particle background
+2. **Introduction** - About me with education timeline and DecryptedText animation
+3. **Gallery** - Photography portfolio with photo and video showcase
+4. **Travel Map** - Interactive global travel footprint with Leaflet integration
+5. **Gaming Showcase** - Personal game collection and current gaming status
+6. **Technical Stack** - Detailed skill showcase and project experience
 
-### ✨ 技术特性
+### ✨ Technical Features
 
-- **响应式设计** - 完美适配桌面和移动设备
-- **现代化UI** - 渐变背景、毛玻璃效果、流畅动画
-- **交互式地图** - 使用Leaflet地图库
-- **动画效果** - Framer Motion动画库
-- **模块化组件** - 可复用的React组件
+- **Responsive Design** - Perfect adaptation for desktop and mobile devices
+- **Modern UI** - Gradient backgrounds, glassmorphism effects, smooth animations
+- **Interactive Map** - Using React Leaflet library
+- **Advanced Animations** - Framer Motion, GSAP, and custom physics-based effects
+- **Modular Components** - Reusable React components
+- **Hash Routing** - GitHub Pages compatible navigation
 
-## 技术栈
+## Tech Stack
 
-- **前端框架**: React 18
-- **路由**: React Router DOM
-- **地图**: React Leaflet + Leaflet
-- **动画**: Framer Motion
-- **图标**: Lucide React
-- **样式**: CSS3 (渐变、毛玻璃效果、响应式)
+- **Frontend Framework**: React 18
+- **Build Tool**: Vite 5
+- **Router**: React Router DOM (HashRouter)
+- **Maps**: React Leaflet + Leaflet
+- **Animations**:
+  - Framer Motion
+  - GSAP
+  - Matter.js (Physics engine)
+  - OGL (WebGL particle system)
+- **Icons**: Lucide React
+- **Styling**: CSS3 (gradients, glassmorphism, responsive design)
 
-## 快速开始
+## Quick Start
 
-### 安装依赖
+### Install Dependencies
 
 ```bash
 npm install
 ```
 
-### 启动开发服务器
+### Start Development Server
 
 ```bash
-npm start
+npm run dev
 ```
 
-项目将在 `http://localhost:3000` 启动
+The project will start at `http://localhost:3000/p180/`
 
-### 构建生产版本
+### Build for Production
 
 ```bash
 npm run build
 ```
 
-## 项目结构
+Build output will be in the `docs/` folder.
+
+### Preview Production Build
+
+```bash
+npm run preview
+```
+
+## Project Structure
 
 ```
 src/
-├── components/          # React组件
-│   ├── Navigation.js    # 导航栏
-│   ├── Hero.js         # 首页英雄区
-│   ├── PersonalExperience.js  # 个人经历时间线
-│   ├── PhotographyPortfolio.js # 摄影作品集
-│   ├── TechnicalStack.js      # 技术栈展示
-│   ├── GamingShowcase.js      # 游戏展示
-│   ├── TravelMap.js           # 旅行地图
-│   └── Footer.js              # 页脚
-├── App.js              # 主应用组件
-├── App.css             # 应用样式
-├── index.js            # 入口文件
-└── index.css           # 全局样式
+├── components/           # React components
+│   ├── PillNav.jsx      # Animated navigation bar
+│   ├── Hero.jsx         # Hero section with particles
+│   ├── Introduction.jsx # Introduction with education
+│   ├── DecryptedText.jsx # Text decryption animation
+│   ├── Particles.jsx    # WebGL particle background
+│   ├── Gallery.jsx      # Photography portfolio
+│   ├── TravelMap.jsx    # Interactive travel map
+│   ├── GamingShowcase.jsx # Gaming showcase
+│   ├── TechnicalStack.jsx # Technical skills
+│   ├── FallingText.jsx  # Physics-based text animation
+│   └── Footer.jsx       # Footer component
+├── App.jsx              # Main application component
+├── main.jsx             # Entry point
+├── App.css              # Application styles
+└── index.css            # Global styles
 ```
 
-## 功能说明
+## Component Features
 
-### 1. 个人经历时间线
-- 展示教育背景和工作经验
-- 时间线可视化设计
-- 成就和里程碑展示
+### 1. Hero Section
+- Dynamic typewriter animation
+- WebGL particle background with mouse interaction
+- Smooth scroll indicator
 
-### 2. 摄影作品集
-- 分类筛选功能
-- 高分辨率图片展示
-- 点赞和评论系统
-- 图片详情模态框
+### 2. Introduction
+- DecryptedText animation on scroll
+- Education timeline with transfer history
+- Bilingual school names (English/Chinese)
+- Responsive two-column layout
 
-### 3. 技术栈展示
-- 技能分类展示
-- 熟练度进度条
-- 项目经验统计
-- 技术亮点展示
+### 3. Gallery
+- Category filtering
+- High-resolution image display
+- Like and comment system
+- Image detail modal
 
-### 4. 游戏展示
-- 当前游戏状态
-- 历史游戏收藏
-- 游戏评分和评论
-- 游戏统计信息
+### 4. Technical Stack
+- Skill categorization
+- Proficiency progress bars
+- Project experience statistics
+- Technical highlights
 
-### 5. 交互式旅行地图
-- 全球旅行足迹
-- 点击查看详细信息
-- 照片画廊展示
-- 旅行统计
+### 5. Gaming Showcase
+- Current game status
+- Historical game collection
+- Game ratings and reviews
+- Gaming statistics
 
-## 自定义配置
+### 6. Interactive Travel Map
+- Global travel footprint
+- Click to view details
+- Photo gallery display
+- Travel statistics
 
-### 更新个人信息
-编辑各个组件中的数据对象来更新您的个人信息：
+## Customization
 
-- `PersonalExperience.js` - 更新教育和工作经历
-- `PhotographyPortfolio.js` - 更新摄影作品
-- `TechnicalStack.js` - 更新技术技能
-- `GamingShowcase.js` - 更新游戏信息
-- `TravelMap.js` - 更新旅行地点
+### Update Personal Information
 
-### 样式定制
-- 修改 `src/index.css` 中的颜色变量
-- 调整渐变背景色
-- 自定义动画效果
+Edit the data objects in each component to update your information:
 
-## 浏览器支持
+- `Introduction.jsx` - Update education and about me text
+- `Gallery.jsx` - Update photography works
+- `TechnicalStack.jsx` - Update technical skills
+- `GamingShowcase.jsx` - Update gaming information
+- `TravelMap.jsx` - Update travel locations
 
-- Chrome (推荐)
+### Style Customization
+
+- Modify color variables in `src/index.css`
+- Adjust gradient backgrounds
+- Customize animation effects
+
+## Browser Support
+
+- Chrome (Recommended)
 - Firefox
 - Safari
 - Edge
 
-## 部署
+## Deployment to GitHub Pages
 
-### Netlify
-1. 运行 `npm run build`
-2. 将 `build` 文件夹上传到Netlify
+This project is configured to deploy to GitHub Pages following CS571 course requirements.
 
-### Vercel
-1. 连接GitHub仓库
-2. 自动部署
+### First-Time Deployment
 
-### GitHub Pages
-1. 运行 `npm run build`
-2. 将 `build` 文件夹内容推送到 `gh-pages` 分支
+1. **Configure GitHub Pages**
+   - Go to your repository Settings > Pages
+   - Source: "Deploy from a branch"
+   - Branch: `main`
+   - Folder: `/docs`
 
-## 许可证
+2. **Merge to Main Branch**
+
+```bash
+# Switch to main branch
+git checkout main
+
+# Merge your changes
+git merge claude/read-project-readme-011CUUMm7DB5cmqYhk9dZknX
+
+# Install dependencies
+npm install
+
+# Build for production
+npm run build
+
+# Commit build files
+git add docs/
+git commit -m "Build for deployment"
+
+# Push to GitHub
+git push origin main
+```
+
+3. **Access Your Site**
+
+Your website will be available at: `https://cs571-f25.github.io/p180/`
+
+### Updating the Site
+
+For future updates:
+
+```bash
+# Make your changes...
+
+# Build
+npm run build
+
+# Commit and push
+git add -A
+git commit -m "Your update message"
+git push origin main
+```
+
+**Important**: Always run `npm run build` before pushing to main!
+
+See `DEPLOYMENT.md` for detailed deployment instructions.
+
+## Development
+
+### Available Commands
+
+```bash
+npm run dev      # Start development server
+npm run build    # Build for production
+npm run preview  # Preview production build
+```
+
+### Vite Configuration
+
+The project uses Vite with the following configuration:
+- Base path: `/p180/`
+- Output directory: `docs/`
+- Dev server port: 3000 (auto-increments if taken)
+
+## License
 
 MIT License
 
-## 贡献
+## Contributing
 
-欢迎提交Issue和Pull Request来改进这个项目！
+Issues and Pull Requests are welcome to improve this project!
 
 ---
 
-**注意**: 这是一个演示项目，请根据您的实际需求修改内容和样式。
+**Note**: This is a personal portfolio project. Please modify the content and styles according to your needs.
