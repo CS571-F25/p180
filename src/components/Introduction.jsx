@@ -6,6 +6,11 @@ import NextSectionButton from './NextSectionButton';
 import LogoLoop from './LogoLoop';
 import CityULogo from '../assets/CityULogo.png'
 import UWMadisonLogo from '../assets/UWMadisonLogo.png'
+import XiaohongshuLogo from '../assets/XiaohongshuLogo.png'
+import BilibiliLogo from '../assets/BilibiliLogo.png'
+import LinkedinLogo from '../assets/LinkedinLogo.png'
+import InsLogo from '../assets/InsLogo.png'
+import GitHubLogo from '../assets/GitHubLogo.png'
 
 const Introduction = () => {
   const introText = `Welcome to my personal website! As you can see, I am a developer, photographer, gamer, and traveler. This website showcases some of my hobbies and works. Feel free to explore and discover more about my journey and passions.`;
@@ -29,11 +34,11 @@ const Introduction = () => {
 
   // Social media logos - Please add logo PNG files to src/assets/ folder
   const socialLogos = [
-    { src: '/p180/assets/XiaohongshuLogo.png', alt: 'Xiaohongshu', title: 'Xiaohongshu', href: '#' },
-    { src: '/p180/assets/GithubLogo.png', alt: 'GitHub', title: 'GitHub', href: 'https://github.com' },
-    { src: '/p180/assets/LinkedInLogo.png', alt: 'LinkedIn', title: 'LinkedIn', href: 'https://linkedin.com' },
-    { src: '/p180/assets/BilibiliLogo.png', alt: 'Bilibili', title: 'Bilibili', href: 'https://bilibili.com' },
-    { src: '/p180/assets/InstagramLogo.png', alt: 'Instagram', title: 'Instagram', href: 'https://instagram.com' },
+    { src: XiaohongshuLogo, alt: 'Xiaohongshu', title: 'Xiaohongshu', href: '#' },
+    { src: GitHubLogo, alt: 'GitHub', title: 'GitHub', href: 'https://github.com' },
+    { src: LinkedinLogo, alt: 'LinkedIn', title: 'LinkedIn', href: 'https://linkedin.com' },
+    { src: BilibiliLogo, alt: 'Bilibili', title: 'Bilibili', href: 'https://bilibili.com' },
+    { src: InsLogo, alt: 'Instagram', title: 'Instagram', href: 'https://instagram.com' },
   ];
 
   return (
