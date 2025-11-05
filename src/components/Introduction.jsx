@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { GraduationCap, ArrowRight } from 'lucide-react';
 import DecryptedText from './DecryptedText';
 import NextSectionButton from './NextSectionButton';
+import LogoLoop from './LogoLoop';
 import CityULogo from '../assets/CityULogo.png'
 import UWMadisonLogo from '../assets/UWMadisonLogo.png'
 
@@ -24,6 +25,16 @@ const Introduction = () => {
       period: '2024 - Present',
       icon: UWMadisonLogo
     }
+  ];
+
+  // Social media logos - Please add logo PNG files to src/assets/ folder
+  const socialLogos = [
+    { src: '/p180/assets/WechatLogo.png', alt: 'WeChat', title: 'WeChat', href: '#' },
+    { src: '/p180/assets/XiaohongshuLogo.png', alt: 'Xiaohongshu', title: 'Xiaohongshu', href: '#' },
+    { src: '/p180/assets/GithubLogo.png', alt: 'GitHub', title: 'GitHub', href: 'https://github.com' },
+    { src: '/p180/assets/LinkedInLogo.png', alt: 'LinkedIn', title: 'LinkedIn', href: 'https://linkedin.com' },
+    { src: '/p180/assets/BilibiliLogo.png', alt: 'Bilibili', title: 'Bilibili', href: 'https://bilibili.com' },
+    { src: '/p180/assets/InstagramLogo.png', alt: 'Instagram', title: 'Instagram', href: 'https://instagram.com' },
   ];
 
   return (
@@ -110,6 +121,30 @@ const Introduction = () => {
             </div>
           </motion.div>
         </div>
+
+        {/* Social Media Logos */}
+        <motion.div
+          className="introduction-social"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.8 }}
+        >
+          <div style={{ height: '100px', position: 'relative', overflow: 'hidden', marginTop: '3rem' }}>
+            <LogoLoop
+              logos={socialLogos}
+              speed={40}
+              direction="left"
+              logoHeight={48}
+              gap={60}
+              pauseOnHover
+              scaleOnHover
+              fadeOut
+              fadeOutColor="#f8f9fa"
+              ariaLabel="Social media platforms"
+            />
+          </div>
+        </motion.div>
 
         <NextSectionButton nextSection="gallery" label="Explore Gallery" />
       </div>
