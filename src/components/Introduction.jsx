@@ -29,7 +29,6 @@ const Introduction = () => {
 
   // Social media logos - Please add logo PNG files to src/assets/ folder
   const socialLogos = [
-    { src: '/p180/assets/WechatLogo.png', alt: 'WeChat', title: 'WeChat', href: '#' },
     { src: '/p180/assets/XiaohongshuLogo.png', alt: 'Xiaohongshu', title: 'Xiaohongshu', href: '#' },
     { src: '/p180/assets/GithubLogo.png', alt: 'GitHub', title: 'GitHub', href: 'https://github.com' },
     { src: '/p180/assets/LinkedInLogo.png', alt: 'LinkedIn', title: 'LinkedIn', href: 'https://linkedin.com' },
