@@ -6,11 +6,6 @@ import NextSectionButton from './NextSectionButton';
 import LogoLoop from './LogoLoop';
 import CityULogo from '../assets/CityULogo.png'
 import UWMadisonLogo from '../assets/UWMadisonLogo.png'
-import XiaohongshuLogo from '../assets/XiaohongshuLogo.png'
-import BilibiliLogo from '../assets/BilibiliLogo.png'
-import LinkedinLogo from '../assets/LinkedinLogo.png'
-import InsLogo from '../assets/InsLogo.png'
-import GitHubLogo from '../assets/GitHubLogo.png'
 
 const Introduction = () => {
   const introText = `Welcome to my personal website! As you can see, I am a developer, photographer, gamer, and traveler. This website showcases some of my hobbies and works. Feel free to explore and discover more about my journey and passions.`;
