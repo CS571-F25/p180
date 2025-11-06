@@ -141,18 +141,6 @@ function App() {
           </button>
         )}
 
-        {/* Page Indicators */}
-        <div className="page-indicators">
-          {pages.map((page, index) => (
-            <button
-              key={page.id}
-              className={`page-indicator ${index === currentPage ? 'active' : ''}`}
-              onClick={() => goToPage(index)}
-              aria-label={`Go to ${page.label}`}
-            />
-          ))}
-        </div>
-
         {/* Footer only on last page */}
         {currentPage === pages.length - 1 && <Footer />}
       </div>

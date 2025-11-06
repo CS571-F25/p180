@@ -2,7 +2,6 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { GraduationCap, ArrowRight } from 'lucide-react';
 import DecryptedText from './DecryptedText';
-import NextSectionButton from './NextSectionButton';
 
 const Introduction = () => {
   const introText = `Welcome to my personal website! As you can see, I am a developer, photographer, gamer, and traveler. This website showcases some of my hobbies and works. Feel free to explore and discover more about my journey and passions.`;
@@ -101,8 +100,6 @@ const Introduction = () => {
             </div>
           </motion.div>
         </div>
-
-        <NextSectionButton nextSection="gallery" label="Explore Gallery" />
       </div>
     </section>
   );
