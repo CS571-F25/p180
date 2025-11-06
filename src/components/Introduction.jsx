@@ -14,7 +14,7 @@ import GitHubLogo from '../assets/GitHubLogo.png'
 
 
 const Introduction = () => {
-  const introText = `Welcome to my personal website! As you can see, I am a developer, photographer, gamer, and traveler. This website showcases some of my hobbies and works. Feel free to explore and discover more about my journey and passions.`;
+  const introText = `Hi there! I’m TaoJR — a developer who builds, a photographer who captures, a gamer who competes, and a traveler who explores. This website is a collection of everything I create and experience — welcome to my world.`;
 
   const education = [
     {
@@ -45,7 +45,7 @@ const Introduction = () => {
   return (
     <section id="introduction" className="section introduction-section">
       <div className="container">
-        <motion.h2
+        {/* <motion.h2
           className="section-title"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -53,8 +53,7 @@ const Introduction = () => {
           transition={{ duration: 0.6 }}
         >
           Introduction
-        </motion.h2>
-
+        </motion.h2> */}
         <div className="introduction-grid">
           {/* Left side - About me */}
           <motion.div
@@ -64,12 +63,12 @@ const Introduction = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            <h3 className="introduction-subtitle">About Me</h3>
+            <h3 className="introduction-subtitle">WHOAMI</h3>
             <p className="introduction-text">
               <DecryptedText
                 text={introText}
                 animateOn="view"
-                speed={30}
+                speed={20}
                 sequential={true}
                 revealDirection="start"
                 parentClassName="decrypted-text-wrapper"
