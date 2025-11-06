@@ -179,42 +179,6 @@ html, body {
   right: 30px;
 }
 
-/* Page Indicators */
-.page-indicators {
-  position: fixed;
-  right: 30px;
-  top: 50%;
-  transform: translateY(-50%);
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  z-index: 900;
-}
-
-.page-indicator {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  border: 2px solid rgba(255, 255, 255, 0.8);
-  background: transparent;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  padding: 0;
-}
-
-.page-indicator:hover {
-  background: rgba(255, 255, 255, 0.5);
-  transform: scale(1.2);
-  border-color: rgba(255, 107, 53, 0.8);
-}
-
-.page-indicator.active {
-  background: rgba(255, 107, 53, 0.9);
-  border-color: rgba(255, 107, 53, 0.9);
-  width: 14px;
-  height: 14px;
-}
-
 /* Mobile adjustments for navigation */
 @media (max-width: 768px) {
   .nav-arrow {
@@ -228,20 +192,5 @@ html, body {
 
   .nav-arrow-right {
     right: 15px;
-  }
-
-  .page-indicators {
-    right: 15px;
-    gap: 10px;
-  }
-
-  .page-indicator {
-    width: 10px;
-    height: 10px;
-  }
-
-  .page-indicator.active {
-    width: 12px;
-    height: 12px;
   }
 }

@@ -5,11 +5,10 @@ import {
   Clock, 
   Users, 
   Star, 
-  MessageCircle, 
+  MessageCircle,
   Heart,
   Play
 } from 'lucide-react';
-import NextSectionButton from './NextSectionButton';
 
 const GamingShowcase = () => {
   const [selectedGame, setSelectedGame] = useState(null);
@@ -462,10 +461,6 @@ const GamingShowcase = () => {
           </motion.div>
         )}
       </AnimatePresence>
-
-      <div className="container">
-        <NextSectionButton nextSection="skills" label="Explore Skills" />
-      </div>
     </section>
   );
 };

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Heart, MessageCircle, Eye, Download, Share2, Play } from 'lucide-react';
-import NextSectionButton from './NextSectionButton';
 
 const Gallery = () => {
   const [selectedTab, setSelectedTab] = useState('photos'); // 'photos' or 'videos'
@@ -310,8 +309,6 @@ const Gallery = () => {
             </motion.div>
           )}
         </AnimatePresence>
-
-        <NextSectionButton nextSection="travel" label="Explore Travel Map" />
       </div>
     </section>
   );

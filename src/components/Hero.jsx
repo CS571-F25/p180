@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { ChevronDown } from 'lucide-react';
 import Particles from './Particles';
 
 const Hero = ({ setActiveSection }) => {
@@ -42,14 +41,6 @@ const Hero = ({ setActiveSection }) => {
     return () => clearTimeout(timer);
   }, [displayedText, isDeleting, currentTextIndex, texts]);
 
-  const scrollToSection = (sectionId) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-      setActiveSection(sectionId);
-    }
-  };
-
   return (
     <section id="home" className="hero">
       <Particles
@@ -82,17 +73,6 @@ const Hero = ({ setActiveSection }) => {
               <span className="typewriter-cursor">|</span>
             </div>
           </motion.h1>
-        </motion.div>
-        
-        <motion.div
-          className="scroll-indicator"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8, delay: 1 }}
-          onClick={() => scrollToSection('introduction')}
-        >
-          <ChevronDown size={24} />
-          <span>Scroll to explore</span>
         </motion.div>
       </div>
     </section>
