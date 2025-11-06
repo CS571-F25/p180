@@ -34,11 +34,11 @@ const Introduction = () => {
 
   // Social media logos - Please add logo PNG files to src/assets/ folder
   const socialLogos = [
-    { src: XiaohongshuLogo, alt: 'Xiaohongshu', title: 'Xiaohongshu', href: '#' },
-    { src: GitHubLogo, alt: 'GitHub', title: 'GitHub', href: 'https://github.com' },
-    { src: LinkedinLogo, alt: 'LinkedIn', title: 'LinkedIn', href: 'https://linkedin.com' },
-    { src: BilibiliLogo, alt: 'Bilibili', title: 'Bilibili', href: 'https://bilibili.com' },
-    { src: InsLogo, alt: 'Instagram', title: 'Instagram', href: 'https://instagram.com' },
+    { src: XiaohongshuLogo, alt: 'Xiaohongshu', title: 'Xiaohongshu', href: 'https://www.xiaohongshu.com/user/profile/5fdcbf2d000000000101fed0' },
+    { src: GitHubLogo, alt: 'GitHub', title: 'GitHub', href: 'https://github.com/TaoJR' },
+    { src: LinkedinLogo, alt: 'LinkedIn', title: 'LinkedIn', href: 'https://www.linkedin.com/in/ruitao-wu-69a8a2330/' },
+    { src: BilibiliLogo, alt: 'Bilibili', title: 'Bilibili', href: 'https://space.bilibili.com/272019307?spm_id_from=333.1007.0.0' },
+    { src: InsLogo, alt: 'Instagram', title: 'Instagram', href: 'https://www.instagram.com/taojr233/'},
   ];
 
   return (
@@ -134,13 +134,13 @@ const Introduction = () => {
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.8 }}
         >
-          <div style={{ height: '100px', position: 'relative', overflow: 'hidden', marginTop: '3rem' }}>
+          <div style={{ height: '200px', position: 'relative', overflow: 'hidden'}}>
             <LogoLoop
               logos={socialLogos}
-              speed={40}
+              speed={50}
               direction="left"
               logoHeight={48}
-              gap={60}
+              gap={40}
               pauseOnHover
               scaleOnHover
               fadeOut

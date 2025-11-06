@@ -28,6 +28,9 @@
 .logoloop__list {
   display: flex;
   align-items: center;
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
 .logoloop__item {
@@ -35,6 +38,7 @@
   margin-right: var(--logoloop-gap);
   font-size: var(--logoloop-logoHeight);
   line-height: 1;
+  list-style: none;
 }
 
 .logoloop__item:last-child {
@@ -48,14 +52,20 @@
 
 .logoloop__item img {
   height: var(--logoloop-logoHeight);
-  width: auto;
+  width: var(--logoloop-logoHeight);
+  min-width: var(--logoloop-logoHeight);
+  min-height: var(--logoloop-logoHeight);
+  max-width: var(--logoloop-logoHeight);
+  max-height: var(--logoloop-logoHeight);
   display: block;
-  object-fit: contain;
+  object-fit: cover;
+  object-position: center;
   image-rendering: -webkit-optimize-contrast;
   -webkit-user-drag: none;
   pointer-events: none;
   /* Links handle interaction */
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 4px;
 }
 
 .logoloop--scale-hover .logoloop__item {
