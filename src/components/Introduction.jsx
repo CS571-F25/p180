@@ -14,7 +14,7 @@ import GitHubLogo from '../assets/GitHubLogo.png'
 
 
 const Introduction = () => {
-  const introText = `Hi there! I’m TaoJR — a developer who builds, a photographer who captures, a gamer who competes, and a traveler who explores. This website is a collection of everything I create and experience — welcome to my world.`;
+  const introText = `Hi there! I’m TaoJR — a developer who builds, a photographer who captures, a gamer who competes, and a traveler who explores. This website is a collection of everything I create and experience — welcome to my world`;
 
   const education = [
     {
