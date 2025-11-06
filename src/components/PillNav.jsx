@@ -14,6 +14,7 @@ const PillNav = ({
   hoveredPillTextColor = '#060010',
   pillTextColor,
   onMobileMenuClick,
+  onNavClick,
   initialLoadAnimation = true
 }) => {
   const resolvedPillTextColor = pillTextColor ?? baseColor;
@@ -164,11 +165,16 @@ const PillNav = ({
       handleLogoClick(e);
     }
 
-    // 滚动到对应区域
-    const sectionId = href.replace('#', '');
-    const section = document.getElementById(sectionId);
-    if (section) {
-      section.scrollIntoView({ behavior: 'smooth' });
+    // 如果有外部的 onNavClick 回调，使用它（分页模式）
+    if (onNavClick) {
+      onNavClick(href);
+    } else {
+      // 否则使用传统的滚动方式
+      const sectionId = href.replace('#', '');
+      const section = document.getElementById(sectionId);
+      if (section) {
+        section.scrollIntoView({ behavior: 'smooth' });
+      }
     }
   };
 
@@ -197,10 +203,15 @@ const PillNav = ({
       });
     }
 
-    // 滚动到 Home
-    const homeSection = document.getElementById('home');
-    if (homeSection) {
-      homeSection.scrollIntoView({ behavior: 'smooth' });
+    // 如果有外部的 onNavClick 回调，使用它（分页模式）
+    if (onNavClick) {
+      onNavClick('#home');
+    } else {
+      // 否则滚动到 Home
+      const homeSection = document.getElementById('home');
+      if (homeSection) {
+        homeSection.scrollIntoView({ behavior: 'smooth' });
+      }
     }
   };
 
@@ -332,15 +343,20 @@ const PillNav = ({
                   e.preventDefault();
                   setIsMobileMenuOpen(false);
 
-                  // 滚动到对应区域
-                  const sectionId = item.href.replace('#', '');
-                  const section = document.getElementById(sectionId);
-                  if (section) {
-                    section.scrollIntoView({ behavior: 'smooth' });
-                  }
-
                   if (item.href === '#home') {
                     handleLogoClick(e);
+                  } else {
+                    // 如果有外部的 onNavClick 回调，使用它（分页模式）
+                    if (onNavClick) {
+                      onNavClick(item.href);
+                    } else {
+                      // 否则使用传统的滚动方式
+                      const sectionId = item.href.replace('#', '');
+                      const section = document.getElementById(sectionId);
+                      if (section) {
+                        section.scrollIntoView({ behavior: 'smooth' });
+                      }
+                    }
                   }
                 }}
               >
