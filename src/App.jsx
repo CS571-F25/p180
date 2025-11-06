@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import PillNav from './components/PillNav';
 import Hero from './components/Hero';
-import Introduction from './components/Introduction';
 import Gallery from './components/Gallery';
 import GamingShowcase from './components/GamingShowcase';
 import TechnicalStack from './components/TechnicalStack';
@@ -19,7 +18,6 @@ function App() {
 
   const pages = [
     { id: 'home', label: 'Home', component: Hero },
-    { id: 'introduction', label: 'Introduction', component: Introduction },
     { id: 'gallery', label: 'Gallery', component: Gallery },
     { id: 'travel', label: 'Travel', component: TravelMap },
     { id: 'gaming', label: 'Gaming', component: GamingShowcase },
