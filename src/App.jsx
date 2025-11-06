@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { HashRouter as Router, Routes, Route } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import PillNav from './components/PillNav';
 import Hero from './components/Hero';
 import Introduction from './components/Introduction';
@@ -12,39 +14,85 @@ import logo from './assets/logo.svg';
 import './App.css';
 
 function App() {
-  const [activeSection, setActiveSection] = useState('home');
+  const [currentPage, setCurrentPage] = useState(0);
+  const [direction, setDirection] = useState(0); // 1 for forward, -1 for backward
 
-  const navItems = [
-    { label: 'Home', href: '#home' },
-    { label: 'Introduction', href: '#introduction' },
-    { label: 'Gallery', href: '#gallery' },
-    { label: 'Travel', href: '#travel' },
-    { label: 'Gaming', href: '#gaming' },
-    { label: 'Skills', href: '#skills' }
+  const pages = [
+    { id: 'home', label: 'Home', component: Hero },
+    { id: 'introduction', label: 'Introduction', component: Introduction },
+    { id: 'gallery', label: 'Gallery', component: Gallery },
+    { id: 'travel', label: 'Travel', component: TravelMap },
+    { id: 'gaming', label: 'Gaming', component: GamingShowcase },
+    { id: 'skills', label: 'Skills', component: TechnicalStack }
   ];
 
-  // Track scroll position to update active section
+  const navItems = pages.map(page => ({
+    label: page.label,
+    href: `#${page.id}`
+  }));
+
+  // Navigation functions
+  const goToPage = (pageIndex) => {
+    if (pageIndex >= 0 && pageIndex < pages.length && pageIndex !== currentPage) {
+      setDirection(pageIndex > currentPage ? 1 : -1);
+      setCurrentPage(pageIndex);
+    }
+  };
+
+  const nextPage = () => {
+    if (currentPage < pages.length - 1) {
+      setDirection(1);
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const prevPage = () => {
+    if (currentPage > 0) {
+      setDirection(-1);
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  // Keyboard navigation
   useEffect(() => {
-    const handleScroll = () => {
-      const sections = ['home', 'introduction', 'gallery', 'travel', 'gaming', 'skills'];
-      const scrollPos = window.scrollY + 100;
-
-      sections.forEach(sectionId => {
-        const section = document.getElementById(sectionId);
-        if (section) {
-          const sectionTop = section.offsetTop;
-          const sectionHeight = section.offsetHeight;
-
-          if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
-            setActiveSection(sectionId);
-          }
-        }
-      });
+    const handleKeyDown = (e) => {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+        nextPage();
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+        prevPage();
+      }
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [currentPage]);
+
+  // Handle navigation clicks
+  const handleNavClick = (href) => {
+    const pageId = href.replace('#', '');
+    const pageIndex = pages.findIndex(page => page.id === pageId);
+    if (pageIndex !== -1) {
+      goToPage(pageIndex);
+    }
+  };
+
+  // Animation variants
+  const variants = {
+    enter: (direction) => ({
+      x: direction > 0 ? '100%' : '-100%',
+      opacity: 0
+    }),
+    center: {
+      x: 0,
+      opacity: 1
+    },
+    exit: (direction) => ({
+      x: direction > 0 ? '-100%' : '100%',
+      opacity: 0
+    })
+  };
+
+  const CurrentPageComponent = pages[currentPage].component;
 
   return (
     <Router>
@@ -52,27 +100,49 @@ function App() {
         <PillNav
           logo={logo}
           items={navItems}
-          activeHref={`#${activeSection}`}
+          activeHref={`#${pages[currentPage].id}`}
           baseColor="rgba(255, 255, 255, 0.95)"
           pillColor="#ffffff"
           hoveredPillTextColor="#ffffff"
           pillTextColor="#1d1d1f"
+          onNavClick={handleNavClick}
         />
-        
-        <Routes>
-          <Route path="/" element={
-            <>
-              <Hero setActiveSection={setActiveSection} />
-              <Introduction />
-              <Gallery />
-              <TravelMap />
-              <GamingShowcase />
-              <TechnicalStack />
-            </>
-          } />
-        </Routes>
-        
-        <Footer />
+
+        <div className="page-container">
+          <AnimatePresence initial={false} custom={direction} mode="wait">
+            <motion.div
+              key={currentPage}
+              custom={direction}
+              variants={variants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={{
+                x: { type: "spring", stiffness: 300, damping: 30 },
+                opacity: { duration: 0.2 }
+              }}
+              className="page-wrapper"
+            >
+              <CurrentPageComponent setActiveSection={() => {}} />
+            </motion.div>
+          </AnimatePresence>
+        </div>
+
+        {/* Navigation Controls */}
+        {currentPage > 0 && (
+          <button className="nav-arrow nav-arrow-left" onClick={prevPage}>
+            <ChevronLeft size={32} />
+          </button>
+        )}
+
+        {currentPage < pages.length - 1 && (
+          <button className="nav-arrow nav-arrow-right" onClick={nextPage}>
+            <ChevronRight size={32} />
+          </button>
+        )}
+
+        {/* Footer only on last page */}
+        {currentPage === pages.length - 1 && <Footer />}
       </div>
     </Router>
   );

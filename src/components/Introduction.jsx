@@ -7,6 +7,7 @@ import LogoLoop from './LogoLoop';
 import CityULogo from '../assets/CityULogo.png'
 import UWMadisonLogo from '../assets/UWMadisonLogo.png'
 
+
 const Introduction = () => {
   const introText = `Welcome to my personal website! As you can see, I am a developer, photographer, gamer, and traveler. This website showcases some of my hobbies and works. Feel free to explore and discover more about my journey and passions.`;
 
@@ -120,7 +121,6 @@ const Introduction = () => {
             </div>
           </motion.div>
         </div>
-
         {/* Social Media Logos */}
         <motion.div
           className="introduction-social"

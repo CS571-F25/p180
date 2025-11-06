@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { MapContainer, TileLayer, Marker, Tooltip } from 'react-leaflet';
 import { X, Calendar, MapPin as MapPinIcon } from 'lucide-react';
 import L from 'leaflet';
-import NextSectionButton from './NextSectionButton';
 
 // 自定义红色Pin图标
 const customIcon = new L.Icon({
@@ -301,10 +300,6 @@ const TravelMap = () => {
             </motion.div>
           )}
         </AnimatePresence>
-
-      <div className="container">
-        <NextSectionButton nextSection="gaming" label="Explore Gaming" />
-      </div>
     </section>
   );
 };

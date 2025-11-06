@@ -1,10 +1,35 @@
 .App {
   text-align: center;
+  overflow: hidden;
+  height: 100vh;
+  position: relative;
 }
 
-/* Smooth scrolling */
-html {
-  scroll-behavior: smooth;
+/* Disable scrolling for paginated mode */
+html, body {
+  overflow: hidden;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* Page container */
+.page-container {
+  width: 100%;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Page wrapper */
+.page-wrapper {
+  width: 100%;
+  height: 100vh;
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 /* Navigation styles */
@@ -113,5 +138,59 @@ html {
 
   .nav-toggle {
     display: flex;
+  }
+}
+
+/* Navigation Arrows */
+.nav-arrow {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 900;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.nav-arrow:hover {
+  background: rgba(255, 107, 53, 0.95);
+  color: white;
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 0 6px 20px rgba(255, 107, 53, 0.3);
+}
+
+.nav-arrow:active {
+  transform: translateY(-50%) scale(0.95);
+}
+
+.nav-arrow-left {
+  left: 30px;
+}
+
+.nav-arrow-right {
+  right: 30px;
+}
+
+/* Mobile adjustments for navigation */
+@media (max-width: 768px) {
+  .nav-arrow {
+    width: 50px;
+    height: 50px;
+  }
+
+  .nav-arrow-left {
+    left: 15px;
+  }
+
+  .nav-arrow-right {
+    right: 15px;
   }
 }
