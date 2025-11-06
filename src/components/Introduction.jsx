@@ -6,6 +6,8 @@ import NextSectionButton from './NextSectionButton';
 import LogoLoop from './LogoLoop';
 import CityULogo from '../assets/CityULogo.png'
 import UWMadisonLogo from '../assets/UWMadisonLogo.png'
+import XiaohongshuLogo from '../assets/XiaohongshuLogo.png'
+import BilibiliLogo from '../assets/BilibiliLogo.png'
 
 
 const Introduction = () => {
@@ -31,10 +33,13 @@ const Introduction = () => {
   // Social media logos - Please add logo PNG files to src/assets/ folder
   const socialLogos = [
     { src: XiaohongshuLogo, alt: 'Xiaohongshu', title: 'Xiaohongshu', href: 'https://www.xiaohongshu.com/user/profile/5fdcbf2d000000000101fed0' },
-    { src: GitHubLogo, alt: 'GitHub', title: 'GitHub', href: 'https://github.com/TaoJR' },
-    { src: LinkedinLogo, alt: 'LinkedIn', title: 'LinkedIn', href: 'https://www.linkedin.com/in/ruitao-wu-69a8a2330/' },
+    // TODO: Add GitHubLogo.png to assets folder
+    // { src: GitHubLogo, alt: 'GitHub', title: 'GitHub', href: 'https://github.com/TaoJR' },
+    // TODO: Add LinkedinLogo.png to assets folder
+    // { src: LinkedinLogo, alt: 'LinkedIn', title: 'LinkedIn', href: 'https://www.linkedin.com/in/ruitao-wu-69a8a2330/' },
     { src: BilibiliLogo, alt: 'Bilibili', title: 'Bilibili', href: 'https://space.bilibili.com/272019307?spm_id_from=333.1007.0.0' },
-    { src: InsLogo, alt: 'Instagram', title: 'Instagram', href: 'https://www.instagram.com/taojr233/'},
+    // TODO: Add InsLogo.png to assets folder
+    // { src: InsLogo, alt: 'Instagram', title: 'Instagram', href: 'https://www.instagram.com/taojr233/'},
   ];
 
   return (
