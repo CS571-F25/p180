@@ -148,8 +148,6 @@ const Introduction = () => {
             />
           </div>
         </motion.div>
-
-        <NextSectionButton nextSection="gallery" label="Explore Gallery" />
       </div>
     </section>
   );
