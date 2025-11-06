@@ -11,7 +11,19 @@ import BilibiliLogo from '../assets/BilibiliLogo.png'
 
 
 const Introduction = () => {
-  const introText = `Welcome to my personal website! As you can see, I am a developer, photographer, gamer, and traveler. This website showcases some of my hobbies and works. Feel free to explore and discover more about my journey and passions.`;
+  const introText = `Welcome to my personal website! As you can see, I am a <highlight>developer</highlight>, <highlight>photographer</highlight>, <highlight>gamer</highlight>, and <highlight>traveler</highlight>. This website showcases some of my hobbies and works. Feel free to explore and discover more about my journey and passions.`;
+
+  // Helper function to render text with highlighted words
+  const renderHighlightedText = (text) => {
+    const parts = text.split(/(<highlight>.*?<\/highlight>)/g);
+    return parts.map((part, index) => {
+      if (part.startsWith('<highlight>') && part.endsWith('</highlight>')) {
+        const word = part.replace(/<\/?highlight>/g, '');
+        return <span key={index} style={{ color: '#ff6b35', fontWeight: '600' }}>{word}</span>;
+      }
+      return part;
+    });
+  };
 
   const education = [
     {
@@ -66,16 +78,7 @@ const Introduction = () => {
           >
             <h3 className="introduction-subtitle">About Me</h3>
             <p className="introduction-text">
-              <DecryptedText
-                text={introText}
-                animateOn="view"
-                speed={30}
-                sequential={true}
-                revealDirection="start"
-                parentClassName="decrypted-text-wrapper"
-                className="decrypted-char"
-                encryptedClassName="encrypted-char"
-              />
+              {renderHighlightedText(introText)}
             </p>
           </motion.div>
 
