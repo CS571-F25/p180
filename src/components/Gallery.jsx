@@ -144,57 +144,66 @@ const Gallery = () => {
     }
   ];
 
-  // Justified Gallery 布局算法 - 重写为更可靠的版本
+  // Justified Gallery 布局算法 - 完全重写
   const calculateJustifiedLayout = (photos, containerWidth, targetRowHeight = 250, spacing = 8) => {
-    if (!containerWidth || containerWidth <= 0) return [];
+    if (!containerWidth || containerWidth <= 0) {
+      return [];
+    }
 
     const rows = [];
-    let currentRow = [];
-    let currentRowAspectRatioSum = 0;
+    let i = 0;
 
     // 在小屏幕上调整目标高度
     const isMobile = containerWidth < 768;
-    const adjustedTargetHeight = isMobile ? 180 : targetRowHeight;
+    const adjustedTargetHeight = isMobile ? 200 : targetRowHeight;
 
-    photos.forEach((photo, index) => {
-      const aspectRatio = photo.width / photo.height;
-      currentRow.push(photo);
-      currentRowAspectRatioSum += aspectRatio;
+    while (i < photos.length) {
+      let currentRow = [];
+      let aspectRatioSum = 0;
 
-      // 计算如果现在结束这一行，每张图片的宽度
+      // 先添加至少一张图片
+      currentRow.push(photos[i]);
+      aspectRatioSum += photos[i].width / photos[i].height;
+      i++;
+
+      // 继续添加图片直到宽度超过容器
+      while (i < photos.length) {
+        const nextAspectRatio = photos[i].width / photos[i].height;
+        const tempAspectRatioSum = aspectRatioSum + nextAspectRatio;
+
+        const totalSpacing = currentRow.length * spacing;
+        const estimatedHeight = (containerWidth - totalSpacing) / tempAspectRatioSum;
+
+        // 如果添加这张图片后行高会太小，或者移动端已经有2张，就不再添加
+        if (estimatedHeight < adjustedTargetHeight * 0.8 || (isMobile && currentRow.length >= 2)) {
+          break;
+        }
+
+        currentRow.push(photos[i]);
+        aspectRatioSum = tempAspectRatioSum;
+        i++;
+      }
+
+      // 计算最终的行高
       const totalSpacing = (currentRow.length - 1) * spacing;
       const availableWidth = containerWidth - totalSpacing;
-      const rowHeight = availableWidth / currentRowAspectRatioSum;
+      const rowHeight = availableWidth / aspectRatioSum;
 
-      // 当行高小于目标高度时，或者达到最后一张图片，结束当前行
-      const isLastPhoto = index === photos.length - 1;
-      const shouldEndRow = rowHeight <= adjustedTargetHeight || isLastPhoto;
+      // 为行中的每张照片计算显示尺寸
+      const photosWithSizes = currentRow.map(p => {
+        const ratio = p.width / p.height;
+        return {
+          ...p,
+          displayWidth: ratio * rowHeight,
+          displayHeight: rowHeight
+        };
+      });
 
-      // 移动端：每行最多2张
-      const maxPhotosReached = isMobile && currentRow.length >= 2;
-
-      if (shouldEndRow || maxPhotosReached) {
-        // 计算最终的行高和每张图片的宽度
-        const finalRowHeight = Math.min(rowHeight, adjustedTargetHeight);
-        const photosWithSizes = currentRow.map(p => {
-          const ratio = p.width / p.height;
-          return {
-            ...p,
-            displayWidth: ratio * finalRowHeight,
-            displayHeight: finalRowHeight
-          };
-        });
-
-        rows.push({
-          photos: photosWithSizes,
-          height: finalRowHeight
-        });
-
-        // 重置当前行
-        currentRow = [];
-        currentRowAspectRatioSum = 0;
-      }
-    });
+      rows.push({
+        photos: photosWithSizes,
+        height: rowHeight
+      });
+    }
 
     return rows;
   };
