@@ -124,8 +124,10 @@ const Hero = ({ setActiveSection }) => {
           className="hero-content"
           initial={false}
           animate={{
-            position: 'relative',
-            top: hasExpanded ? '0' : '50%',
+            position: hasExpanded ? 'relative' : 'absolute',
+            left: hasExpanded ? 'auto' : '50%',
+            top: hasExpanded ? 'auto' : '50%',
+            x: hasExpanded ? '0' : '-50%',
             y: hasExpanded ? '0' : '-50%',
           }}
           transition={{
@@ -134,6 +136,7 @@ const Hero = ({ setActiveSection }) => {
           }}
           style={{
             textAlign: 'center',
+            width: hasExpanded ? '100%' : 'auto',
           }}
         >
           <motion.h1
