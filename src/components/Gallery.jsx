@@ -4,15 +4,14 @@ import { Heart, Eye, X, MapPin, Calendar } from 'lucide-react';
 
 const Gallery = () => {
   const [selectedPhoto, setSelectedPhoto] = useState(null);
-  const [justifiedRows, setJustifiedRows] = useState([]);
   const [likes, setLikes] = useState({});
   const containerRef = useRef(null);
+  const [containerWidth, setContainerWidth] = useState(0);
 
-  // 示例图片数据
   const photos = [
     {
       id: 1,
-      src: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1600&h=1067',
+      src: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800',
       width: 1600,
       height: 1067,
       title: 'Mountain Sunrise',
@@ -23,7 +22,7 @@ const Gallery = () => {
     },
     {
       id: 2,
-      src: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=1600&h=900',
+      src: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800',
       width: 1600,
       height: 900,
       title: 'Forest Path',
@@ -34,7 +33,7 @@ const Gallery = () => {
     },
     {
       id: 3,
-      src: 'https://images.unsplash.com/photo-1505142468610-359e7d316be0?w=1200&h=1800',
+      src: 'https://images.unsplash.com/photo-1505142468610-359e7d316be0?w=800',
       width: 1200,
       height: 1800,
       title: 'Ocean Waves',
@@ -45,7 +44,7 @@ const Gallery = () => {
     },
     {
       id: 4,
-      src: 'https://images.unsplash.com/photo-1514565131-fce0801e5785?w=1600&h=1200',
+      src: 'https://images.unsplash.com/photo-1514565131-fce0801e5785?w=800',
       width: 1600,
       height: 1200,
       title: 'City Lights',
@@ -56,7 +55,7 @@ const Gallery = () => {
     },
     {
       id: 5,
-      src: 'https://images.unsplash.com/photo-1518173946687-a4c8892bbd9f?w=1400&h=933',
+      src: 'https://images.unsplash.com/photo-1518173946687-a4c8892bbd9f?w=800',
       width: 1400,
       height: 933,
       title: 'Desert Dunes',
@@ -67,7 +66,7 @@ const Gallery = () => {
     },
     {
       id: 6,
-      src: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1600&h=1067',
+      src: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800',
       width: 1600,
       height: 1067,
       title: 'Mountain Peak',
@@ -78,7 +77,7 @@ const Gallery = () => {
     },
     {
       id: 7,
-      src: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=1200&h=800',
+      src: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=800',
       width: 1200,
       height: 800,
       title: 'Northern Lights',
@@ -89,7 +88,7 @@ const Gallery = () => {
     },
     {
       id: 8,
-      src: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1600&h=1200',
+      src: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800',
       width: 1600,
       height: 1200,
       title: 'Autumn Forest',
@@ -100,7 +99,7 @@ const Gallery = () => {
     },
     {
       id: 9,
-      src: 'https://images.unsplash.com/photo-1426604966848-d7adac402bff?w=1600&h=900',
+      src: 'https://images.unsplash.com/photo-1426604966848-d7adac402bff?w=800',
       width: 1600,
       height: 900,
       title: 'Lake Reflection',
@@ -111,7 +110,7 @@ const Gallery = () => {
     },
     {
       id: 10,
-      src: 'https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=1400&h=1050',
+      src: 'https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=800',
       width: 1400,
       height: 1050,
       title: 'Tropical Beach',
@@ -122,7 +121,7 @@ const Gallery = () => {
     },
     {
       id: 11,
-      src: 'https://images.unsplash.com/photo-1475924156734-496f6cac6ec1?w=1600&h=1067',
+      src: 'https://images.unsplash.com/photo-1475924156734-496f6cac6ec1?w=800',
       width: 1600,
       height: 1067,
       title: 'Sunset Silhouette',
@@ -133,7 +132,7 @@ const Gallery = () => {
     },
     {
       id: 12,
-      src: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1200&h=1600',
+      src: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800',
       width: 1200,
       height: 1600,
       title: 'Modern Architecture',
@@ -144,72 +143,89 @@ const Gallery = () => {
     }
   ];
 
-  // ===== Justified Gallery 布局算法 =====
-  const calculateJustifiedLayout = (photos, containerWidth, targetRowHeight = 250, spacing = 8) => {
-    if (!containerWidth || containerWidth <= 0) return [];
 
+  // 简化的Justified Gallery布局算法
+  const buildJustifiedLayout = (photos, containerWidth) => {
+    const targetHeight = containerWidth < 768 ? 200 : 250;
+    const spacing = 8;
     const rows = [];
-    let i = 0;
-    const isMobile = containerWidth < 768;
-    const adjustedTargetHeight = isMobile ? 200 : targetRowHeight;
 
-    while (i < photos.length) {
-      let currentRow = [];
-      let aspectRatioSum = 0;
+    let index = 0;
+    while (index < photos.length) {
+      const row = [];
+      let rowAspectRatio = 0;
 
-      // 至少放一张
-      currentRow.push(photos[i]);
-      aspectRatioSum += photos[i].width / photos[i].height;
-      i++;
 
-      // 添加图片直到宽度填满
-      while (i < photos.length) {
-        const nextAspect = photos[i].width / photos[i].height;
-        const tempSum = aspectRatioSum + nextAspect;
-        const totalSpacing = currentRow.length * spacing;
-        const estimatedHeight = (containerWidth - totalSpacing) / tempSum;
+      // 至少添加一张照片
+      row.push(photos[index]);
+      rowAspectRatio += photos[index].width / photos[index].height;
+      index++;
 
-        if (estimatedHeight < adjustedTargetHeight * 0.8 || (isMobile && currentRow.length >= 2)) break;
+      // 尝试添加更多照片
+      while (index < photos.length && row.length < 5) {
+        const nextAspectRatio = photos[index].width / photos[index].height;
+        const newRowAspectRatio = rowAspectRatio + nextAspectRatio;
 
-        currentRow.push(photos[i]);
-        aspectRatioSum = tempSum;
-        i++;
+        // 计算添加这张照片后的行高
+        const newHeight = (containerWidth - (row.length) * spacing) / newRowAspectRatio;
+
+        // 如果新高度太小，停止添加
+        if (newHeight < targetHeight * 0.75) {
+          break;
+        }
+
+        // 移动端限制每行2张
+        if (containerWidth < 768 && row.length >= 2) {
+          break;
+        }
+
+        row.push(photos[index]);
+        rowAspectRatio = newRowAspectRatio;
+        index++;
       }
 
-      const totalSpacing = (currentRow.length - 1) * spacing;
-      const availableWidth = containerWidth - totalSpacing;
-      const rowHeight = availableWidth / aspectRatioSum;
+      // 计算这一行的实际高度
+      const rowHeight = (containerWidth - (row.length - 1) * spacing) / rowAspectRatio;
 
-      const photosWithSizes = currentRow.map(p => {
-        const ratio = p.width / p.height;
-        return {
-          ...p,
-          displayWidth: ratio * rowHeight,
-          displayHeight: rowHeight
-        };
+      rows.push({
+        photos: row.map(photo => ({
+          ...photo,
+          height: rowHeight,
+          width: (photo.width / photo.height) * rowHeight
+        })),
+        height: rowHeight
       });
-
-      rows.push({ photos: photosWithSizes });
     }
 
     return rows;
   };
 
-  // ===== 响应式布局更新 =====
+
+  const [rows, setRows] = useState([]);
+
+  // 监听容器宽度变化
   useEffect(() => {
     const updateLayout = () => {
       if (containerRef.current) {
         const width = containerRef.current.offsetWidth;
+
+        setContainerWidth(width);
         if (width > 0) {
-          const rows = calculateJustifiedLayout(photos, width);
-          setJustifiedRows(rows);
+          const newRows = buildJustifiedLayout(photos, width);
+          setRows(newRows);
         }
       }
     };
+    // 初始化布局
+    const timer = setTimeout(updateLayout, 100);
 
-    updateLayout();
+    // 监听窗口大小变化
     window.addEventListener('resize', updateLayout);
-    return () => window.removeEventListener('resize', updateLayout);
+
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('resize', updateLayout);
+    };
   }, []);
 
   const handleLike = (id, e) => {
@@ -238,38 +254,42 @@ const Gallery = () => {
 
         {/* Justified Gallery */}
         <div ref={containerRef} className="w-full">
-          {justifiedRows.map((row, rowIndex) => (
-            <motion.div
+          {rows.map((row, rowIndex) => (
+            <div
               key={rowIndex}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: rowIndex * 0.1 }}
-              className="flex gap-2 mb-2 flex-wrap"
+
+              className="flex mb-2"
+              style={{
+                gap: '8px',
+                height: `${row.height}px`
+              }}
             >
               {row.photos.map(photo => (
                 <motion.div
                   key={photo.id}
-                  whileHover={{ scale: 1.02, zIndex: 10 }}
-                  transition={{ duration: 0.3 }}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.4, delay: rowIndex * 0.05 }}
+                  whileHover={{ scale: 1.02 }}
                   onClick={() => setSelectedPhoto(photo)}
-                  className="relative cursor-pointer overflow-hidden rounded-xl shadow-md group flex-shrink-0"
+
+                  className="relative cursor-pointer overflow-hidden rounded-xl shadow-md"
                   style={{
-                    width: `${photo.displayWidth}px`,
-                    height: `${photo.displayHeight}px`
+                    width: `${photo.width}px`,
+                    height: `${photo.height}px`,
+                    flexShrink: 0
                   }}
                 >
+                  {/* Image */}
                   <img
                     src={photo.src}
                     alt={photo.title}
-                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    className="w-full h-full object-cover"
                     loading="lazy"
                   />
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    whileHover={{ opacity: 1 }}
-                    transition={{ duration: 0.3 }}
-                    className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex flex-col justify-end p-4"
-                  >
+
+                  {/* Hover Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
                     <h3 className="text-white font-semibold text-lg mb-2">
                       {photo.title}
                     </h3>
@@ -296,10 +316,11 @@ const Gallery = () => {
                         <span className="text-xs">{photo.location}</span>
                       </div>
                     </div>
-                  </motion.div>
+
+                  </div>
                 </motion.div>
               ))}
-            </motion.div>
+            </div>
           ))}
         </div>
 
