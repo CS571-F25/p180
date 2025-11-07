@@ -14,7 +14,9 @@ import GitHubLogo from '../assets/GitHubLogo.png'
 
 
 const Introduction = () => {
-  const introText = `Hi there! I’m TaoJR — a developer who builds, a photographer who captures, a gamer who competes, and a traveler who explores. This website is a collection of everything I create and experience — welcome to my world!`;
+  const introText = `Hi there! I’m TaoJR — a developer who builds, a photographer who captures, 
+  a gamer who competes, and a traveler who explores. This website is a collection of everything I create and experience — 
+  welcome to my world!`;
 
   const education = [
     {
@@ -67,7 +69,7 @@ const Introduction = () => {
             <h3 className="introduction-subtitle"><UserCircle size={28} />WHOAMI</h3>
             <p className="introduction-text">
               <DecryptedText
-                text={introText}
+                text='1'
                 animateOn="view"
                 speed={20}
                 sequential={true}

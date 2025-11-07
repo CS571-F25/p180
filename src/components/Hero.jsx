@@ -69,7 +69,8 @@ const Hero = ({ setActiveSection }) => {
   };
 
   // Introduction content
-  const introText = `Hi there! I'm TaoJR — a developer who builds, a photographer who captures, a gamer who competes, and a traveler who explores. This website is a collection of everything I create and experience — welcome to my world`;
+  const introText = `Hi there! I'm TaoJR — a developer who builds, a photographer who captures, a gamer who competes, 
+  and a traveler who explores. This website is a collection of everything I create and experience — welcome to my world!`;
 
   const education = [
     {
@@ -231,7 +232,7 @@ const Hero = ({ setActiveSection }) => {
                 >
                   <h3 className="introduction-subtitle">
                     <GraduationCap size={28} />
-                    Education
+                    EDUCATION
                   </h3>
                   <div className="education-timeline">
                     {education.map((edu, index) => (

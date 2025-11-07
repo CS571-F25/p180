@@ -8,7 +8,7 @@ const Gallery = () => {
   const [likes, setLikes] = useState({});
   const containerRef = useRef(null);
 
-  // 照片数据 - 使用占位图片，模拟不同尺寸的照片
+  // 示例图片数据
   const photos = [
     {
       id: 1,
@@ -144,16 +144,12 @@ const Gallery = () => {
     }
   ];
 
-  // Justified Gallery 布局算法 - 完全重写
+  // ===== Justified Gallery 布局算法 =====
   const calculateJustifiedLayout = (photos, containerWidth, targetRowHeight = 250, spacing = 8) => {
-    if (!containerWidth || containerWidth <= 0) {
-      return [];
-    }
+    if (!containerWidth || containerWidth <= 0) return [];
 
     const rows = [];
     let i = 0;
-
-    // 在小屏幕上调整目标高度
     const isMobile = containerWidth < 768;
     const adjustedTargetHeight = isMobile ? 200 : targetRowHeight;
 
@@ -161,35 +157,29 @@ const Gallery = () => {
       let currentRow = [];
       let aspectRatioSum = 0;
 
-      // 先添加至少一张图片
+      // 至少放一张
       currentRow.push(photos[i]);
       aspectRatioSum += photos[i].width / photos[i].height;
       i++;
 
-      // 继续添加图片直到宽度超过容器
+      // 添加图片直到宽度填满
       while (i < photos.length) {
-        const nextAspectRatio = photos[i].width / photos[i].height;
-        const tempAspectRatioSum = aspectRatioSum + nextAspectRatio;
-
+        const nextAspect = photos[i].width / photos[i].height;
+        const tempSum = aspectRatioSum + nextAspect;
         const totalSpacing = currentRow.length * spacing;
-        const estimatedHeight = (containerWidth - totalSpacing) / tempAspectRatioSum;
+        const estimatedHeight = (containerWidth - totalSpacing) / tempSum;
 
-        // 如果添加这张图片后行高会太小，或者移动端已经有2张，就不再添加
-        if (estimatedHeight < adjustedTargetHeight * 0.8 || (isMobile && currentRow.length >= 2)) {
-          break;
-        }
+        if (estimatedHeight < adjustedTargetHeight * 0.8 || (isMobile && currentRow.length >= 2)) break;
 
         currentRow.push(photos[i]);
-        aspectRatioSum = tempAspectRatioSum;
+        aspectRatioSum = tempSum;
         i++;
       }
 
-      // 计算最终的行高
       const totalSpacing = (currentRow.length - 1) * spacing;
       const availableWidth = containerWidth - totalSpacing;
       const rowHeight = availableWidth / aspectRatioSum;
 
-      // 为行中的每张照片计算显示尺寸
       const photosWithSizes = currentRow.map(p => {
         const ratio = p.width / p.height;
         return {
@@ -199,45 +189,37 @@ const Gallery = () => {
         };
       });
 
-      rows.push({
-        photos: photosWithSizes,
-        height: rowHeight
-      });
+      rows.push({ photos: photosWithSizes });
     }
 
     return rows;
   };
 
-  // 响应式布局更新
+  // ===== 响应式布局更新 =====
   useEffect(() => {
     const updateLayout = () => {
       if (containerRef.current) {
-        const containerWidth = containerRef.current.clientWidth;
-        const rows = calculateJustifiedLayout(photos, containerWidth);
-        setJustifiedRows(rows);
+        const width = containerRef.current.offsetWidth;
+        if (width > 0) {
+          const rows = calculateJustifiedLayout(photos, width);
+          setJustifiedRows(rows);
+        }
       }
     };
 
-    // 使用 setTimeout 确保 DOM 已完全渲染
-    const timer = setTimeout(updateLayout, 100);
-
+    updateLayout();
     window.addEventListener('resize', updateLayout);
-    return () => {
-      clearTimeout(timer);
-      window.removeEventListener('resize', updateLayout);
-    };
+    return () => window.removeEventListener('resize', updateLayout);
   }, []);
 
   const handleLike = (id, e) => {
     e.stopPropagation();
-    setLikes(prev => ({
-      ...prev,
-      [id]: !prev[id]
-    }));
+    setLikes(prev => ({ ...prev, [id]: !prev[id] }));
   };
 
+  // ===== 页面渲染 =====
   return (
-    <section className="w-full h-full bg-[#f8f8f8] overflow-y-auto">
+    <section className="w-full min-h-screen bg-[#f8f8f8] overflow-y-auto">
       <div className="max-w-7xl mx-auto px-4 py-16">
         {/* Header */}
         <motion.div
@@ -262,64 +244,59 @@ const Gallery = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: rowIndex * 0.1 }}
-              className="flex gap-2 mb-2"
-              style={{ height: `${row.height}px` }}
+              className="flex gap-2 mb-2 flex-wrap"
             >
-              {row.photos.map((photo) => (
+              {row.photos.map(photo => (
                 <motion.div
                   key={photo.id}
                   whileHover={{ scale: 1.02, zIndex: 10 }}
                   transition={{ duration: 0.3 }}
                   onClick={() => setSelectedPhoto(photo)}
-                  className="relative cursor-pointer overflow-hidden rounded-xl shadow-md group"
+                  className="relative cursor-pointer overflow-hidden rounded-xl shadow-md group flex-shrink-0"
                   style={{
                     width: `${photo.displayWidth}px`,
-                    height: `${photo.displayHeight}px`,
-                    flexShrink: 0
+                    height: `${photo.displayHeight}px`
                   }}
                 >
-                    {/* Image */}
-                    <img
-                      src={photo.src}
-                      alt={photo.title}
-                      className="w-full h-full object-cover"
-                      loading="lazy"
-                    />
-
-                    {/* Hover Overlay */}
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      whileHover={{ opacity: 1 }}
-                      transition={{ duration: 0.3 }}
-                      className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex flex-col justify-end p-4"
-                    >
-                      <h3 className="text-white font-semibold text-lg mb-2">
-                        {photo.title}
-                      </h3>
-                      <div className="flex items-center justify-between text-white/90 text-sm">
-                        <div className="flex items-center gap-3">
-                          <button
-                            onClick={(e) => handleLike(photo.id, e)}
-                            className="flex items-center gap-1 hover:text-red-400 transition-colors"
-                          >
-                            <Heart
-                              size={16}
-                              fill={likes[photo.id] ? '#ff6b6b' : 'none'}
-                              className={likes[photo.id] ? 'text-red-400' : ''}
-                            />
-                            <span>{photo.likes + (likes[photo.id] ? 1 : 0)}</span>
-                          </button>
-                          <div className="flex items-center gap-1">
-                            <Eye size={16} />
-                            <span>{photo.views}</span>
-                          </div>
-                        </div>
+                  <img
+                    src={photo.src}
+                    alt={photo.title}
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    loading="lazy"
+                  />
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    whileHover={{ opacity: 1 }}
+                    transition={{ duration: 0.3 }}
+                    className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex flex-col justify-end p-4"
+                  >
+                    <h3 className="text-white font-semibold text-lg mb-2">
+                      {photo.title}
+                    </h3>
+                    <div className="flex items-center justify-between text-white/90 text-sm">
+                      <div className="flex items-center gap-3">
+                        <button
+                          onClick={(e) => handleLike(photo.id, e)}
+                          className="flex items-center gap-1 hover:text-red-400 transition-colors"
+                        >
+                          <Heart
+                            size={16}
+                            fill={likes[photo.id] ? '#ff6b6b' : 'none'}
+                            className={likes[photo.id] ? 'text-red-400' : ''}
+                          />
+                          <span>{photo.likes + (likes[photo.id] ? 1 : 0)}</span>
+                        </button>
                         <div className="flex items-center gap-1">
-                          <MapPin size={14} />
-                          <span className="text-xs">{photo.location}</span>
+                          <Eye size={16} />
+                          <span>{photo.views}</span>
                         </div>
                       </div>
-                    </motion.div>
+                      <div className="flex items-center gap-1">
+                        <MapPin size={14} />
+                        <span className="text-xs">{photo.location}</span>
+                      </div>
+                    </div>
+                  </motion.div>
                 </motion.div>
               ))}
             </motion.div>
@@ -345,7 +322,6 @@ const Gallery = () => {
                 onClick={(e) => e.stopPropagation()}
                 className="relative max-w-6xl w-full bg-white rounded-2xl overflow-hidden shadow-2xl"
               >
-                {/* Close Button */}
                 <button
                   onClick={() => setSelectedPhoto(null)}
                   className="absolute top-4 right-4 z-10 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition-colors"
@@ -354,7 +330,6 @@ const Gallery = () => {
                 </button>
 
                 <div className="flex flex-col md:flex-row">
-                  {/* Image */}
                   <div className="md:w-2/3 bg-gray-900 flex items-center justify-center p-8">
                     <img
                       src={selectedPhoto.src}
@@ -363,7 +338,6 @@ const Gallery = () => {
                     />
                   </div>
 
-                  {/* Details */}
                   <div className="md:w-1/3 p-8 flex flex-col">
                     <h2 className="text-3xl font-bold text-gray-900 mb-4">
                       {selectedPhoto.title}
