@@ -125,11 +125,10 @@ const Hero = ({ setActiveSection }) => {
           initial={false}
           animate={{
             position: 'absolute',
-            left: hasExpanded ? '0' : '50%',
+            left: '50%',
             top: hasExpanded ? '0' : '50%',
-            x: hasExpanded ? '0' : '-50%',
+            x: '-50%',
             y: hasExpanded ? '0' : '-50%',
-            width: hasExpanded ? '100%' : 'auto',
           }}
           transition={{
             duration: 1,
