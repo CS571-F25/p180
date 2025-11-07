@@ -1,19 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Heart, MessageCircle, Eye, Download, Share2, Play } from 'lucide-react';
+import { Heart, Eye, X, MapPin, Calendar } from 'lucide-react';
 
 const Gallery = () => {
-  const [selectedTab, setSelectedTab] = useState('photos'); // 'photos' or 'videos'
-  const [selectedMedia, setSelectedMedia] = useState(null);
+  const [selectedPhoto, setSelectedPhoto] = useState(null);
+  const [justifiedRows, setJustifiedRows] = useState([]);
   const [likes, setLikes] = useState({});
+  const containerRef = useRef(null);
 
-  // 照片数据
-  const photosData = [
+  // 照片数据 - 使用占位图片，模拟不同尺寸的照片
+  const photos = [
     {
       id: 1,
+      src: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1600&h=1067',
+      width: 1600,
+      height: 1067,
       title: 'Mountain Sunrise',
-      image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop',
-      description: 'Captured during a hiking trip in the Swiss Alps.',
       location: 'Swiss Alps',
       date: '2024-03-15',
       likes: 1247,
@@ -21,288 +23,377 @@ const Gallery = () => {
     },
     {
       id: 2,
-      title: 'Urban Portrait',
-      image: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=800&h=600&fit=crop',
-      description: 'Street photography session in downtown Chicago.',
-      location: 'Chicago, USA',
-      date: '2024-02-20',
+      src: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=1600&h=900',
+      width: 1600,
+      height: 900,
+      title: 'Forest Path',
+      location: 'Pacific Northwest',
+      date: '2024-03-10',
       likes: 892,
       views: 2341
     },
     {
       id: 3,
+      src: 'https://images.unsplash.com/photo-1505142468610-359e7d316be0?w=1200&h=1800',
+      width: 1200,
+      height: 1800,
       title: 'Ocean Waves',
-      image: 'https://images.unsplash.com/photo-1505142468610-359e7d316be0?w=800&h=600&fit=crop',
-      description: 'Long exposure of waves crashing against the rocky shore.',
       location: 'Big Sur, California',
-      date: '2024-01-10',
+      date: '2024-03-05',
       likes: 1563,
       views: 4123
     },
     {
       id: 4,
+      src: 'https://images.unsplash.com/photo-1514565131-fce0801e5785?w=1600&h=1200',
+      width: 1600,
+      height: 1200,
       title: 'City Lights',
-      image: 'https://images.unsplash.com/photo-1514565131-fce0801e5785?w=800&h=600&fit=crop',
-      description: 'Night photography from rooftop in Manhattan.',
       location: 'New York, USA',
-      date: '2023-12-05',
+      date: '2024-02-28',
       likes: 2103,
       views: 5234
     },
     {
       id: 5,
-      title: 'Wildlife Close-up',
-      image: 'https://images.unsplash.com/photo-1564349683136-77e08dba1ef7?w=800&h=600&fit=crop',
-      description: 'Macro photography of a butterfly in botanical garden.',
-      location: 'Local Botanical Garden',
-      date: '2023-11-18',
-      likes: 743,
-      views: 1876
-    },
-    {
-      id: 6,
-      title: 'Architectural Detail',
-      image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&h=600&fit=crop',
-      description: 'Modern architecture photography focusing on patterns.',
-      location: 'Dubai, UAE',
-      date: '2023-10-22',
-      likes: 945,
-      views: 2654
-    }
-  ];
-
-  // 视频数据
-  const videosData = [
-    {
-      id: 1,
-      title: 'Travel Vlog: Japan 2024',
-      thumbnail: 'https://images.unsplash.com/photo-1492571350019-22de08371fd3?w=800&h=600&fit=crop',
-      duration: '15:32',
-      description: '探索日本的美食和文化，从东京到京都的旅程记录。',
-      location: 'Japan',
-      date: '2024-04-10',
-      likes: 3456,
-      views: 12543
-    },
-    {
-      id: 2,
-      title: 'Gaming Highlights: Epic Moments',
-      thumbnail: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800&h=600&fit=crop',
-      duration: '8:45',
-      description: '本月最精彩的游戏时刻合集，包括多个惊险击杀。',
-      location: 'Online',
-      date: '2024-03-28',
-      likes: 2134,
-      views: 8765
-    },
-    {
-      id: 3,
-      title: 'Photography Tutorial: Golden Hour',
-      thumbnail: 'https://images.unsplash.com/photo-1452587925148-ce544e77e70d?w=800&h=600&fit=crop',
-      duration: '12:18',
-      description: '如何在黄金时段拍摄出令人惊艳的照片。',
-      location: 'Various',
-      date: '2024-03-15',
-      likes: 1876,
-      views: 6543
-    },
-    {
-      id: 4,
-      title: 'City Life: New York Timelapse',
-      thumbnail: 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=800&h=600&fit=crop',
-      duration: '3:24',
-      description: '纽约城市生活的延时摄影，展现都市的活力。',
-      location: 'New York, USA',
+      src: 'https://images.unsplash.com/photo-1518173946687-a4c8892bbd9f?w=1400&h=933',
+      width: 1400,
+      height: 933,
+      title: 'Desert Dunes',
+      location: 'Sahara Desert',
       date: '2024-02-20',
-      likes: 4321,
-      views: 15234
-    },
-    {
-      id: 5,
-      title: 'Drone Footage: Mountain Adventure',
-      thumbnail: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800&h=600&fit=crop',
-      duration: '6:55',
-      description: '航拍视角下的山间探险，壮丽的自然风光。',
-      location: 'Rocky Mountains',
-      date: '2024-01-30',
-      likes: 2987,
-      views: 9876
+      likes: 1876,
+      views: 4567
     },
     {
       id: 6,
-      title: 'Behind the Scenes: Photo Shoot',
-      thumbnail: 'https://images.unsplash.com/photo-1542038784456-1ea8e935640e?w=800&h=600&fit=crop',
-      duration: '10:12',
-      description: '专业摄影拍摄的幕后花絮，分享拍摄技巧。',
-      location: 'Studio',
+      src: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1600&h=1067',
+      width: 1600,
+      height: 1067,
+      title: 'Mountain Peak',
+      location: 'Rocky Mountains',
+      date: '2024-02-15',
+      likes: 2345,
+      views: 6789
+    },
+    {
+      id: 7,
+      src: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=1200&h=800',
+      width: 1200,
+      height: 800,
+      title: 'Northern Lights',
+      location: 'Iceland',
+      date: '2024-02-10',
+      likes: 3456,
+      views: 8901
+    },
+    {
+      id: 8,
+      src: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1600&h=1200',
+      width: 1600,
+      height: 1200,
+      title: 'Autumn Forest',
+      location: 'Vermont, USA',
+      date: '2024-02-05',
+      likes: 1234,
+      views: 3456
+    },
+    {
+      id: 9,
+      src: 'https://images.unsplash.com/photo-1426604966848-d7adac402bff?w=1600&h=900',
+      width: 1600,
+      height: 900,
+      title: 'Lake Reflection',
+      location: 'Canadian Rockies',
+      date: '2024-01-30',
+      likes: 2567,
+      views: 5678
+    },
+    {
+      id: 10,
+      src: 'https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=1400&h=1050',
+      width: 1400,
+      height: 1050,
+      title: 'Tropical Beach',
+      location: 'Maldives',
+      date: '2024-01-25',
+      likes: 3890,
+      views: 7890
+    },
+    {
+      id: 11,
+      src: 'https://images.unsplash.com/photo-1475924156734-496f6cac6ec1?w=1600&h=1067',
+      width: 1600,
+      height: 1067,
+      title: 'Sunset Silhouette',
+      location: 'California Coast',
+      date: '2024-01-20',
+      likes: 2123,
+      views: 4567
+    },
+    {
+      id: 12,
+      src: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1200&h=1600',
+      width: 1200,
+      height: 1600,
+      title: 'Modern Architecture',
+      location: 'Dubai, UAE',
       date: '2024-01-15',
-      likes: 1654,
-      views: 5432
+      likes: 1678,
+      views: 3890
     }
   ];
 
-  const handleLike = (id) => {
+  // Justified Gallery 布局算法
+  const calculateJustifiedLayout = (photos, containerWidth, targetRowHeight = 250, spacing = 8) => {
+    const rows = [];
+    let currentRow = [];
+    let currentRowWidth = 0;
+
+    // 在小屏幕上调整目标高度和每行最大图片数
+    const isMobile = containerWidth < 768;
+    const adjustedTargetHeight = isMobile ? 200 : targetRowHeight;
+    const maxPhotosPerRow = isMobile ? 2 : 5;
+
+    photos.forEach((photo, index) => {
+      // 计算图片在目标高度下的宽度
+      const aspectRatio = photo.width / photo.height;
+      const scaledWidth = adjustedTargetHeight * aspectRatio;
+
+      // 检查是否应该开始新行
+      if (
+        currentRow.length >= maxPhotosPerRow ||
+        (currentRow.length > 0 && currentRowWidth + scaledWidth + spacing > containerWidth)
+      ) {
+        // 调整当前行的高度以填满宽度
+        const totalSpacing = (currentRow.length - 1) * spacing;
+        const availableWidth = containerWidth - totalSpacing;
+        const ratio = availableWidth / currentRowWidth;
+        const adjustedHeight = adjustedTargetHeight * ratio;
+
+        rows.push({
+          photos: currentRow,
+          height: adjustedHeight
+        });
+
+        currentRow = [photo];
+        currentRowWidth = scaledWidth;
+      } else {
+        currentRow.push(photo);
+        currentRowWidth += scaledWidth + (currentRow.length > 1 ? spacing : 0);
+      }
+
+      // 处理最后一行
+      if (index === photos.length - 1 && currentRow.length > 0) {
+        rows.push({
+          photos: currentRow,
+          height: adjustedTargetHeight
+        });
+      }
+    });
+
+    return rows;
+  };
+
+  // 响应式布局更新
+  useEffect(() => {
+    const updateLayout = () => {
+      if (containerRef.current) {
+        const containerWidth = containerRef.current.offsetWidth;
+        const rows = calculateJustifiedLayout(photos, containerWidth);
+        setJustifiedRows(rows);
+      }
+    };
+
+    updateLayout();
+    window.addEventListener('resize', updateLayout);
+    return () => window.removeEventListener('resize', updateLayout);
+  }, []);
+
+  const handleLike = (id, e) => {
+    e.stopPropagation();
     setLikes(prev => ({
       ...prev,
       [id]: !prev[id]
     }));
   };
 
-  const currentData = selectedTab === 'photos' ? photosData : videosData;
-
   return (
-    <section id="gallery" className="section gallery-section">
-      <div className="container">
-        <motion.h2
-          className="section-title"
+    <div className="min-h-screen bg-[#f8f8f8] py-16 px-4">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <motion.div
           initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
+          className="text-center mb-12"
         >
-          Gallery · 展览馆
-        </motion.h2>
-
-        <motion.p
-          className="section-subtitle"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-        >
-          用镜头记录世界，用作品讲述故事
-        </motion.p>
-
-        {/* 标签切换 */}
-        <motion.div
-          className="gallery-tabs"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-        >
-          <button
-            className={`gallery-tab ${selectedTab === 'photos' ? 'active' : ''}`}
-            onClick={() => setSelectedTab('photos')}
-          >
-            <Eye size={20} />
-            <span>照片 Photos</span>
-          </button>
-          <button
-            className={`gallery-tab ${selectedTab === 'videos' ? 'active' : ''}`}
-            onClick={() => setSelectedTab('videos')}
-          >
-            <Play size={20} />
-            <span>视频 Videos</span>
-          </button>
+          <h1 className="text-5xl font-bold text-gray-900 mb-4">
+            Photography Gallery
+          </h1>
+          <p className="text-xl text-gray-600">
+            用镜头捕捉世界的美好瞬间 · Capturing moments that matter
+          </p>
         </motion.div>
 
-        {/* 内容网格 */}
-        <motion.div
-          className="gallery-grid"
-          layout
-        >
-          <AnimatePresence mode="wait">
-            {currentData.map((item, index) => (
-              <motion.div
-                key={`${selectedTab}-${item.id}`}
-                className="gallery-item"
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.3, delay: index * 0.05 }}
-                whileHover={{ y: -8 }}
-                onClick={() => setSelectedMedia(item)}
-              >
-                <div className="gallery-item-image">
-                  <img src={selectedTab === 'photos' ? item.image : item.thumbnail} alt={item.title} />
-                  {selectedTab === 'videos' && (
-                    <div className="video-overlay">
-                      <Play size={48} color="white" />
-                      <span className="video-duration">{item.duration}</span>
-                    </div>
-                  )}
-                </div>
-
-                <div className="gallery-item-content">
-                  <h3>{item.title}</h3>
-                  <p className="gallery-item-location">{item.location}</p>
-
-                  <div className="gallery-item-stats">
-                    <button
-                      className={`stat-btn ${likes[item.id] ? 'liked' : ''}`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleLike(item.id);
-                      }}
-                    >
-                      <Heart size={16} fill={likes[item.id] ? '#ff6b35' : 'none'} />
-                      <span>{item.likes + (likes[item.id] ? 1 : 0)}</span>
-                    </button>
-                    <div className="stat-btn">
-                      <Eye size={16} />
-                      <span>{item.views}</span>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </AnimatePresence>
-        </motion.div>
-
-        {/* 详情模态框 */}
-        <AnimatePresence>
-          {selectedMedia && (
+        {/* Justified Gallery */}
+        <div ref={containerRef} className="w-full">
+          {justifiedRows.map((row, rowIndex) => (
             <motion.div
-              className="gallery-modal"
+              key={rowIndex}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: rowIndex * 0.1 }}
+              className="flex gap-2 mb-2"
+            >
+              {row.photos.map((photo) => {
+                const aspectRatio = photo.width / photo.height;
+                const width = row.height * aspectRatio;
+
+                return (
+                  <motion.div
+                    key={photo.id}
+                    whileHover={{ scale: 1.02, zIndex: 10 }}
+                    transition={{ duration: 0.3 }}
+                    onClick={() => setSelectedPhoto(photo)}
+                    className="relative cursor-pointer overflow-hidden rounded-xl shadow-md group"
+                    style={{
+                      width: `${width}px`,
+                      height: `${row.height}px`,
+                      flexShrink: 0
+                    }}
+                  >
+                    {/* Image */}
+                    <img
+                      src={photo.src}
+                      alt={photo.title}
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                    />
+
+                    {/* Hover Overlay */}
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      whileHover={{ opacity: 1 }}
+                      transition={{ duration: 0.3 }}
+                      className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex flex-col justify-end p-4"
+                    >
+                      <h3 className="text-white font-semibold text-lg mb-2">
+                        {photo.title}
+                      </h3>
+                      <div className="flex items-center justify-between text-white/90 text-sm">
+                        <div className="flex items-center gap-3">
+                          <button
+                            onClick={(e) => handleLike(photo.id, e)}
+                            className="flex items-center gap-1 hover:text-red-400 transition-colors"
+                          >
+                            <Heart
+                              size={16}
+                              fill={likes[photo.id] ? '#ff6b6b' : 'none'}
+                              className={likes[photo.id] ? 'text-red-400' : ''}
+                            />
+                            <span>{photo.likes + (likes[photo.id] ? 1 : 0)}</span>
+                          </button>
+                          <div className="flex items-center gap-1">
+                            <Eye size={16} />
+                            <span>{photo.views}</span>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <MapPin size={14} />
+                          <span className="text-xs">{photo.location}</span>
+                        </div>
+                      </div>
+                    </motion.div>
+                  </motion.div>
+                );
+              })}
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Lightbox Modal */}
+        <AnimatePresence>
+          {selectedPhoto && (
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              onClick={() => setSelectedMedia(null)}
+              transition={{ duration: 0.3 }}
+              onClick={() => setSelectedPhoto(null)}
+              className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center p-4"
             >
               <motion.div
-                className="modal-content"
-                initial={{ scale: 0.9, y: 50 }}
-                animate={{ scale: 1, y: 0 }}
-                exit={{ scale: 0.9, y: 50 }}
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.9, opacity: 0 }}
+                transition={{ duration: 0.3 }}
                 onClick={(e) => e.stopPropagation()}
+                className="relative max-w-6xl w-full bg-white rounded-2xl overflow-hidden shadow-2xl"
               >
-                <button className="modal-close" onClick={() => setSelectedMedia(null)}>×</button>
+                {/* Close Button */}
+                <button
+                  onClick={() => setSelectedPhoto(null)}
+                  className="absolute top-4 right-4 z-10 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition-colors"
+                >
+                  <X size={24} />
+                </button>
 
-                <div className="modal-image">
-                  <img src={selectedTab === 'photos' ? selectedMedia.image : selectedMedia.thumbnail} alt={selectedMedia.title} />
-                  {selectedTab === 'videos' && (
-                    <div className="video-play-button">
-                      <Play size={64} color="white" />
-                    </div>
-                  )}
-                </div>
-
-                <div className="modal-info">
-                  <h2>{selectedMedia.title}</h2>
-                  <div className="modal-meta">
-                    <span>{selectedMedia.location}</span>
-                    <span>{selectedMedia.date}</span>
-                    {selectedTab === 'videos' && <span>{selectedMedia.duration}</span>}
+                <div className="flex flex-col md:flex-row">
+                  {/* Image */}
+                  <div className="md:w-2/3 bg-gray-900 flex items-center justify-center p-8">
+                    <img
+                      src={selectedPhoto.src}
+                      alt={selectedPhoto.title}
+                      className="max-w-full max-h-[70vh] object-contain rounded-lg"
+                    />
                   </div>
-                  <p>{selectedMedia.description}</p>
 
-                  <div className="modal-actions">
-                    <button
-                      className={`action-btn ${likes[selectedMedia.id] ? 'liked' : ''}`}
-                      onClick={() => handleLike(selectedMedia.id)}
-                    >
-                      <Heart size={20} fill={likes[selectedMedia.id] ? '#ff6b35' : 'none'} />
-                      <span>Like ({selectedMedia.likes + (likes[selectedMedia.id] ? 1 : 0)})</span>
-                    </button>
-                    <button className="action-btn">
-                      <Download size={20} />
-                      <span>Download</span>
-                    </button>
-                    <button className="action-btn">
-                      <Share2 size={20} />
-                      <span>Share</span>
-                    </button>
+                  {/* Details */}
+                  <div className="md:w-1/3 p-8 flex flex-col">
+                    <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                      {selectedPhoto.title}
+                    </h2>
+
+                    <div className="space-y-3 mb-6">
+                      <div className="flex items-center gap-2 text-gray-600">
+                        <MapPin size={18} />
+                        <span>{selectedPhoto.location}</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-gray-600">
+                        <Calendar size={18} />
+                        <span>{selectedPhoto.date}</span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-6 mb-6 pb-6 border-b border-gray-200">
+                      <button
+                        onClick={(e) => handleLike(selectedPhoto.id, e)}
+                        className="flex items-center gap-2 text-gray-700 hover:text-red-500 transition-colors"
+                      >
+                        <Heart
+                          size={24}
+                          fill={likes[selectedPhoto.id] ? '#ef4444' : 'none'}
+                          className={likes[selectedPhoto.id] ? 'text-red-500' : ''}
+                        />
+                        <span className="font-semibold">
+                          {selectedPhoto.likes + (likes[selectedPhoto.id] ? 1 : 0)}
+                        </span>
+                      </button>
+                      <div className="flex items-center gap-2 text-gray-700">
+                        <Eye size={24} />
+                        <span className="font-semibold">{selectedPhoto.views}</span>
+                      </div>
+                    </div>
+
+                    <div className="text-gray-600 leading-relaxed">
+                      <p>
+                        This stunning photograph captures the essence of{' '}
+                        {selectedPhoto.location}. The composition and lighting
+                        create a mesmerizing visual experience that tells a
+                        unique story.
+                      </p>
+                    </div>
                   </div>
                 </div>
               </motion.div>
@@ -310,7 +401,7 @@ const Gallery = () => {
           )}
         </AnimatePresence>
       </div>
-    </section>
+    </div>
   );
 };
 
