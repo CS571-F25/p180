@@ -199,15 +199,20 @@ const Gallery = () => {
   useEffect(() => {
     const updateLayout = () => {
       if (containerRef.current) {
-        const containerWidth = containerRef.current.offsetWidth;
+        const containerWidth = containerRef.current.clientWidth;
         const rows = calculateJustifiedLayout(photos, containerWidth);
         setJustifiedRows(rows);
       }
     };
 
-    updateLayout();
+    // 使用 setTimeout 确保 DOM 已完全渲染
+    const timer = setTimeout(updateLayout, 100);
+
     window.addEventListener('resize', updateLayout);
-    return () => window.removeEventListener('resize', updateLayout);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('resize', updateLayout);
+    };
   }, []);
 
   const handleLike = (id, e) => {
@@ -219,8 +224,8 @@ const Gallery = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#f8f8f8] py-16 px-4">
-      <div className="max-w-7xl mx-auto">
+    <section className="w-full h-full bg-[#f8f8f8] overflow-y-auto">
+      <div className="max-w-7xl mx-auto px-4 py-16">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -238,31 +243,37 @@ const Gallery = () => {
 
         {/* Justified Gallery */}
         <div ref={containerRef} className="w-full">
-          {justifiedRows.map((row, rowIndex) => (
-            <motion.div
-              key={rowIndex}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: rowIndex * 0.1 }}
-              className="flex gap-2 mb-2"
-            >
-              {row.photos.map((photo) => {
-                const aspectRatio = photo.width / photo.height;
-                const width = row.height * aspectRatio;
+          {justifiedRows.map((row, rowIndex) => {
+            // 计算每张照片的flex比例
+            const totalAspectRatio = row.photos.reduce((sum, photo) =>
+              sum + (photo.width / photo.height), 0
+            );
 
-                return (
-                  <motion.div
-                    key={photo.id}
-                    whileHover={{ scale: 1.02, zIndex: 10 }}
-                    transition={{ duration: 0.3 }}
-                    onClick={() => setSelectedPhoto(photo)}
-                    className="relative cursor-pointer overflow-hidden rounded-xl shadow-md group"
-                    style={{
-                      width: `${width}px`,
-                      height: `${row.height}px`,
-                      flexShrink: 0
-                    }}
-                  >
+            return (
+              <motion.div
+                key={rowIndex}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: rowIndex * 0.1 }}
+                className="flex gap-2 mb-2"
+                style={{ height: `${row.height}px` }}
+              >
+                {row.photos.map((photo) => {
+                  const aspectRatio = photo.width / photo.height;
+                  const flexGrow = aspectRatio / totalAspectRatio;
+
+                  return (
+                    <motion.div
+                      key={photo.id}
+                      whileHover={{ scale: 1.02, zIndex: 10 }}
+                      transition={{ duration: 0.3 }}
+                      onClick={() => setSelectedPhoto(photo)}
+                      className="relative cursor-pointer overflow-hidden rounded-xl shadow-md group"
+                      style={{
+                        flex: `${flexGrow} 1 0`,
+                        height: '100%'
+                      }}
+                    >
                     {/* Image */}
                     <img
                       src={photo.src}
@@ -309,7 +320,8 @@ const Gallery = () => {
                 );
               })}
             </motion.div>
-          ))}
+          );
+          })}
         </div>
 
         {/* Lightbox Modal */}
@@ -401,7 +413,7 @@ const Gallery = () => {
           )}
         </AnimatePresence>
       </div>
-    </div>
+    </section>
   );
 };
 
