@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GraduationCap, ArrowRight, ChevronDown } from 'lucide-react';
 import Particles from './Particles';
-import TextParticles from './TextParticles';
 import DecryptedText from './DecryptedText';
 import LogoLoop from './LogoLoop';
 import CityULogo from '../assets/CityULogo.png';
@@ -21,10 +20,6 @@ const Hero = ({ setActiveSection }) => {
     return sessionStorage.getItem(SESSION_KEY) === 'true';
   });
 
-  const [isExpanding, setIsExpanding] = useState(false);
-  const [showButton, setShowButton] = useState(true);
-  const [triggerExplosion, setTriggerExplosion] = useState(false);
-  const [showIntroduction, setShowIntroduction] = useState(hasExpanded);
   const [particleColors, setParticleColors] = useState(['#ff6b35', '#ff8c42', '#ffa561', '#ffb87a']);
 
   // Typewriter effect state
@@ -34,10 +29,8 @@ const Hero = ({ setActiveSection }) => {
 
   const texts = ['Tao JR', 'Wu Ruitao', 'a Developer', 'a Photographer', 'a Gamer', 'a Traveler'];
 
-  // Typewriter effect (only when not expanded)
+  // Typewriter effect - always running
   useEffect(() => {
-    if (hasExpanded) return;
-
     const currentText = texts[currentTextIndex];
     const typingSpeed = isDeleting ? 50 : 100;
     const pauseDuration = 2000;
@@ -60,32 +53,19 @@ const Hero = ({ setActiveSection }) => {
     }, typingSpeed);
 
     return () => clearTimeout(timer);
-  }, [displayedText, isDeleting, currentTextIndex, hasExpanded, texts]);
+  }, [displayedText, isDeleting, currentTextIndex, texts]);
 
   // Handle expand button click
   const handleExpand = () => {
-    if (isExpanding || hasExpanded) return;
+    if (hasExpanded) return;
 
-    setIsExpanding(true);
-    setShowButton(false);
-    setTriggerExplosion(true);
+    setHasExpanded(true);
+    sessionStorage.setItem(SESSION_KEY, 'true');
 
     // Change particle colors
     setTimeout(() => {
       setParticleColors(['#4facfe', '#00f2fe', '#a8edea', '#fed6e3']);
-    }, 500);
-
-    // Show introduction after explosion
-    setTimeout(() => {
-      setShowIntroduction(true);
-      setHasExpanded(true);
-      sessionStorage.setItem(SESSION_KEY, 'true');
-      setIsExpanding(false);
-    }, 2000);
-  };
-
-  const handleExplosionComplete = () => {
-    setTriggerExplosion(false);
+    }, 300);
   };
 
   // Introduction content
@@ -117,7 +97,7 @@ const Hero = ({ setActiveSection }) => {
   ];
 
   return (
-    <section id="home" className="hero">
+    <section id="home" className="hero" style={{ overflow: 'hidden' }}>
       <Particles
         particleColors={particleColors}
         particleCount={400}
@@ -129,75 +109,81 @@ const Hero = ({ setActiveSection }) => {
         disableRotation={false}
       />
 
-      <div className="container" style={{ position: 'relative', zIndex: 10 }}>
-        <AnimatePresence mode="wait">
-          {!hasExpanded && !isExpanding && (
-            <motion.div
-              key="typewriter"
-              className="hero-content"
-              initial={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-            >
-              {/* Typewriter section */}
-              <motion.h1
-                className="hero-title typewriter-title"
-                initial={{ opacity: 0, y: 30 }}
+      <motion.div
+        className="container"
+        style={{
+          position: 'relative',
+          zIndex: 10,
+          display: 'flex',
+          flexDirection: 'column',
+          minHeight: '100vh',
+          paddingTop: hasExpanded ? '100px' : '0',
+          justifyContent: hasExpanded ? 'flex-start' : 'center',
+          transition: 'all 0.8s ease-out'
+        }}
+      >
+        {/* Typewriter section - always visible */}
+        <motion.div
+          className="hero-content"
+          layout
+          initial={{ opacity: 1, y: 0 }}
+          animate={{
+            y: hasExpanded ? 0 : 0,
+            scale: hasExpanded ? 0.7 : 1
+          }}
+          transition={{
+            layout: { duration: 0.8, ease: 'easeInOut' },
+            scale: { duration: 0.8, ease: 'easeInOut' }
+          }}
+          style={{
+            marginBottom: hasExpanded ? '3rem' : '0'
+          }}
+        >
+          <motion.h1
+            className="hero-title typewriter-title"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
+            <div className="typewriter-line-1">Hi! I'm</div>
+            <div className="typewriter-line-2">
+              <span className="gradient-text">{displayedText}</span>
+              <span className="typewriter-cursor">|</span>
+            </div>
+          </motion.h1>
+
+          {/* Expand Button - only show if not expanded */}
+          <AnimatePresence>
+            {!hasExpanded && (
+              <motion.button
+                className="btn btn-primary"
+                onClick={handleExpand}
+                initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.2 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.5, delay: 0.5 }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                style={{
+                  marginTop: '2rem',
+                  boxShadow: '0 8px 30px rgba(255, 107, 53, 0.4)',
+                }}
               >
-                <div className="typewriter-line-1">Hi! I'm</div>
-                <div className="typewriter-line-2">
-                  <span className="gradient-text">{displayedText}</span>
-                  <span className="typewriter-cursor">|</span>
-                </div>
-              </motion.h1>
+                Explore More <ChevronDown size={20} />
+              </motion.button>
+            )}
+          </AnimatePresence>
+        </motion.div>
 
-              {/* Expand Button */}
-              <AnimatePresence>
-                {showButton && (
-                  <motion.button
-                    className="btn btn-primary"
-                    onClick={handleExpand}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.8 }}
-                    transition={{ duration: 0.5, delay: 0.5 }}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    style={{
-                      marginTop: '2rem',
-                      boxShadow: '0 8px 30px rgba(255, 107, 53, 0.4)',
-                      animation: 'pulse 2s infinite',
-                    }}
-                  >
-                    Explore More <ChevronDown size={20} />
-                  </motion.button>
-                )}
-              </AnimatePresence>
-
-              {/* Text Particles Overlay */}
-              {triggerExplosion && (
-                <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}>
-                  <TextParticles
-                    text={`Hi! I'm\n${texts[currentTextIndex]}`}
-                    fontSize={64}
-                    trigger={triggerExplosion}
-                    onComplete={handleExplosionComplete}
-                  />
-                </div>
-              )}
-            </motion.div>
-          )}
-
-          {/* Introduction Content */}
-          {showIntroduction && (
+        {/* Introduction Content - slides in from below */}
+        <AnimatePresence>
+          {hasExpanded && (
             <motion.div
-              key="introduction"
               className="introduction-section-content"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8, ease: 'easeOut' }}
+              initial={{ opacity: 0, y: 100 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 100 }}
+              transition={{ duration: 0.8, ease: 'easeOut', delay: 0.2 }}
               style={{ width: '100%' }}
             >
               <div className="introduction-grid">
@@ -206,7 +192,7 @@ const Hero = ({ setActiveSection }) => {
                   className="introduction-about"
                   initial={{ opacity: 0, x: -50 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.6, delay: 0.3 }}
+                  transition={{ duration: 0.6, delay: 0.5 }}
                 >
                   <h3 className="introduction-subtitle">WHOAMI</h3>
                   <p className="introduction-text">
@@ -228,7 +214,7 @@ const Hero = ({ setActiveSection }) => {
                   className="introduction-education"
                   initial={{ opacity: 0, x: 50 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.6, delay: 0.5 }}
+                  transition={{ duration: 0.6, delay: 0.7 }}
                 >
                   <h3 className="introduction-subtitle">
                     <GraduationCap size={28} />
@@ -241,7 +227,7 @@ const Hero = ({ setActiveSection }) => {
                         className="education-card"
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5, delay: 0.7 + index * 0.2 }}
+                        transition={{ duration: 0.5, delay: 0.9 + index * 0.2 }}
                         whileHover={{ y: -5 }}
                       >
                         <div className={`education-icon ${index === 1 ? 'uw-madison-icon' : ''}`}>
@@ -274,7 +260,7 @@ const Hero = ({ setActiveSection }) => {
                 className="introduction-social"
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 1.1 }}
+                transition={{ duration: 0.6, delay: 1.3 }}
               >
                 <div style={{ height: '200px', position: 'relative', overflow: 'hidden' }}>
                   <LogoLoop
@@ -294,20 +280,11 @@ const Hero = ({ setActiveSection }) => {
             </motion.div>
           )}
         </AnimatePresence>
-      </div>
+      </motion.div>
 
       <style jsx="true">{`
-        @keyframes pulse {
-          0%, 100% {
-            box-shadow: 0 8px 30px rgba(255, 107, 53, 0.4);
-          }
-          50% {
-            box-shadow: 0 8px 40px rgba(255, 107, 53, 0.6);
-          }
-        }
-
         .introduction-section-content {
-          padding-top: 80px;
+          padding-bottom: 2rem;
         }
 
         .introduction-social {
