@@ -97,7 +97,7 @@ const Hero = ({ setActiveSection }) => {
   ];
 
   return (
-    <section id="home" className="hero" style={{ position: 'relative', overflow: 'hidden' }}>
+    <section id="home" className="hero" style={{ position: 'relative', overflow: hasExpanded ? 'auto' : 'hidden' }}>
       <Particles
         particleColors={particleColors}
         particleCount={400}
@@ -115,22 +115,25 @@ const Hero = ({ setActiveSection }) => {
           position: 'relative',
           zIndex: 10,
           minHeight: '100vh',
-          display: 'flex',
-          flexDirection: 'column',
-          paddingTop: hasExpanded ? '80px' : '0',
-          paddingBottom: hasExpanded ? '60px' : '0',
+          paddingTop: hasExpanded ? '100px' : '0',
+          paddingBottom: hasExpanded ? '80px' : '0',
         }}
       >
-        {/* Typewriter Section - Always visible */}
+        {/* Typewriter Section - Always visible, moves from center to top */}
         <motion.div
           className="hero-content"
+          initial={false}
+          animate={{
+            position: 'relative',
+            top: hasExpanded ? '0' : '50%',
+            y: hasExpanded ? '0' : '-50%',
+          }}
+          transition={{
+            duration: 1,
+            ease: [0.4, 0, 0.2, 1],
+          }}
           style={{
-            flex: hasExpanded ? '0 0 auto' : '1 0 auto',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: hasExpanded ? 'flex-start' : 'center',
-            alignItems: 'center',
-            transition: 'all 0.8s cubic-bezier(0.4, 0, 0.2, 1)',
+            textAlign: 'center',
           }}
         >
           <motion.h1
@@ -139,12 +142,12 @@ const Hero = ({ setActiveSection }) => {
             animate={{
               opacity: 1,
               y: 0,
-              scale: hasExpanded ? 0.8 : 1
+              scale: hasExpanded ? 0.75 : 1
             }}
             transition={{
               opacity: { duration: 0.8, delay: 0.2 },
               y: { duration: 0.8, delay: 0.2 },
-              scale: { duration: 0.8, ease: 'easeInOut' }
+              scale: { duration: 1, ease: [0.4, 0, 0.2, 1] }
             }}
           >
             <div className="typewriter-line-1">Hi! I'm</div>
@@ -162,7 +165,7 @@ const Hero = ({ setActiveSection }) => {
                 onClick={handleExpand}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
+                exit={{ opacity: 0, scale: 0.8 }}
                 transition={{ duration: 0.5, delay: 0.5 }}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -181,18 +184,17 @@ const Hero = ({ setActiveSection }) => {
         <AnimatePresence>
           {hasExpanded && (
             <motion.div
-              initial={{ opacity: 0, y: 50 }}
+              initial={{ opacity: 0, y: 100 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 50 }}
+              exit={{ opacity: 0, y: 100 }}
               transition={{
-                duration: 0.8,
-                ease: 'easeOut',
-                delay: 0.3
+                duration: 1,
+                ease: [0.4, 0, 0.2, 1],
+                delay: 0.5
               }}
               style={{
-                flex: '1 1 auto',
                 width: '100%',
-                marginTop: '3rem'
+                marginTop: '4rem'
               }}
             >
               <div className="introduction-grid">
@@ -201,7 +203,7 @@ const Hero = ({ setActiveSection }) => {
                   className="introduction-about"
                   initial={{ opacity: 0, x: -50 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.6, delay: 0.6 }}
+                  transition={{ duration: 0.8, delay: 0.8 }}
                 >
                   <h3 className="introduction-subtitle">WHOAMI</h3>
                   <p className="introduction-text">
@@ -223,7 +225,7 @@ const Hero = ({ setActiveSection }) => {
                   className="introduction-education"
                   initial={{ opacity: 0, x: 50 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.6, delay: 0.8 }}
+                  transition={{ duration: 0.8, delay: 1.0 }}
                 >
                   <h3 className="introduction-subtitle">
                     <GraduationCap size={28} />
@@ -236,7 +238,7 @@ const Hero = ({ setActiveSection }) => {
                         className="education-card"
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5, delay: 1.0 + index * 0.2 }}
+                        transition={{ duration: 0.6, delay: 1.2 + index * 0.2 }}
                         whileHover={{ y: -5 }}
                       >
                         <div className={`education-icon ${index === 1 ? 'uw-madison-icon' : ''}`}>
@@ -269,7 +271,7 @@ const Hero = ({ setActiveSection }) => {
                 className="introduction-social"
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 1.4 }}
+                transition={{ duration: 0.8, delay: 1.6 }}
                 style={{ marginTop: '3rem' }}
               >
                 <div style={{ height: '200px', position: 'relative', overflow: 'hidden' }}>
