@@ -126,7 +126,7 @@ const Hero = ({ setActiveSection }) => {
           animate={{
             position: 'absolute',
             left: '50%',
-            top: hasExpanded ? '0' : '50%',
+            top: hasExpanded ? '10%' : '50%',
             x: '-50%',
             y: hasExpanded ? '0' : '-50%',
           }}
@@ -269,6 +269,7 @@ const Hero = ({ setActiveSection }) => {
               </div>
 
               {/* Social Media Logos */}
+              <h3 className='introduction-subtitle'><Mail size={28}/> CONTACT ME</h3>
               <motion.div
                 className="introduction-social"
                 initial={{ opacity: 0, y: 30 }}
