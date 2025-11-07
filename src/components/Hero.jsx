@@ -124,11 +124,12 @@ const Hero = ({ setActiveSection }) => {
           className="hero-content"
           initial={false}
           animate={{
-            position: hasExpanded ? 'relative' : 'absolute',
-            left: hasExpanded ? 'auto' : '50%',
-            top: hasExpanded ? 'auto' : '50%',
+            position: 'absolute',
+            left: hasExpanded ? '0' : '50%',
+            top: hasExpanded ? '0' : '50%',
             x: hasExpanded ? '0' : '-50%',
             y: hasExpanded ? '0' : '-50%',
+            width: hasExpanded ? '100%' : 'auto',
           }}
           transition={{
             duration: 1,
@@ -136,7 +137,6 @@ const Hero = ({ setActiveSection }) => {
           }}
           style={{
             textAlign: 'center',
-            width: hasExpanded ? '100%' : 'auto',
           }}
         >
           <motion.h1
@@ -197,7 +197,7 @@ const Hero = ({ setActiveSection }) => {
               }}
               style={{
                 width: '100%',
-                marginTop: '4rem'
+                paddingTop: '200px',
               }}
             >
               <div className="introduction-grid">
