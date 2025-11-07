@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { GraduationCap, ArrowRight, ChevronDown } from 'lucide-react';
+import { GraduationCap, ArrowRight, ChevronDown, UserCircle, Mail } from 'lucide-react';
 import Particles from './Particles';
 import DecryptedText from './DecryptedText';
 import LogoLoop from './LogoLoop';
@@ -208,7 +208,7 @@ const Hero = ({ setActiveSection }) => {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.8, delay: 0.8 }}
                 >
-                  <h3 className="introduction-subtitle">WHOAMI</h3>
+                  <h3 className="introduction-subtitle"><UserCircle size={28}/>WHOAMI</h3>
                   <p className="introduction-text">
                     <DecryptedText
                       text={introText}

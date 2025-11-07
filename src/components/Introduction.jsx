@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { GraduationCap, ArrowRight } from 'lucide-react';
+import { GraduationCap, ArrowRight, UserCircle, MessageCircle } from 'lucide-react';
 import DecryptedText from './DecryptedText';
 import NextSectionButton from './NextSectionButton';
 import LogoLoop from './LogoLoop';
@@ -14,7 +14,7 @@ import GitHubLogo from '../assets/GitHubLogo.png'
 
 
 const Introduction = () => {
-  const introText = `Hi there! I’m TaoJR — a developer who builds, a photographer who captures, a gamer who competes, and a traveler who explores. This website is a collection of everything I create and experience — welcome to my world`;
+  const introText = `Hi there! I’m TaoJR — a developer who builds, a photographer who captures, a gamer who competes, and a traveler who explores. This website is a collection of everything I create and experience — welcome to my world!`;
 
   const education = [
     {
@@ -63,7 +63,8 @@ const Introduction = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            <h3 className="introduction-subtitle">WHOAMI</h3>
+            
+            <h3 className="introduction-subtitle"><UserCircle size={28} />WHOAMI</h3>
             <p className="introduction-text">
               <DecryptedText
                 text={introText}
@@ -88,7 +89,7 @@ const Introduction = () => {
           >
             <h3 className="introduction-subtitle">
               <GraduationCap size={28} />
-              Education
+              EDUCATION
             </h3>
             <div className="education-timeline">
               {education.map((edu, index) => (
@@ -133,6 +134,10 @@ const Introduction = () => {
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.8 }}
         >
+            <h3 className="introduction-subtitle">
+              <MessageCircle size={28} />
+              Contact Me
+            </h3>
           <div style={{ height: '200px', position: 'relative', overflow: 'hidden'}}>
             <LogoLoop
               logos={socialLogos}
