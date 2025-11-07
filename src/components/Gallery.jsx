@@ -144,51 +144,55 @@ const Gallery = () => {
     }
   ];
 
-  // Justified Gallery 布局算法
+  // Justified Gallery 布局算法 - 重写为更可靠的版本
   const calculateJustifiedLayout = (photos, containerWidth, targetRowHeight = 250, spacing = 8) => {
+    if (!containerWidth || containerWidth <= 0) return [];
+
     const rows = [];
     let currentRow = [];
-    let currentRowWidth = 0;
+    let currentRowAspectRatioSum = 0;
 
-    // 在小屏幕上调整目标高度和每行最大图片数
+    // 在小屏幕上调整目标高度
     const isMobile = containerWidth < 768;
-    const adjustedTargetHeight = isMobile ? 200 : targetRowHeight;
-    const maxPhotosPerRow = isMobile ? 2 : 5;
+    const adjustedTargetHeight = isMobile ? 180 : targetRowHeight;
 
     photos.forEach((photo, index) => {
-      // 计算图片在目标高度下的宽度
       const aspectRatio = photo.width / photo.height;
-      const scaledWidth = adjustedTargetHeight * aspectRatio;
+      currentRow.push(photo);
+      currentRowAspectRatioSum += aspectRatio;
 
-      // 检查是否应该开始新行
-      if (
-        currentRow.length >= maxPhotosPerRow ||
-        (currentRow.length > 0 && currentRowWidth + scaledWidth + spacing > containerWidth)
-      ) {
-        // 调整当前行的高度以填满宽度
-        const totalSpacing = (currentRow.length - 1) * spacing;
-        const availableWidth = containerWidth - totalSpacing;
-        const ratio = availableWidth / currentRowWidth;
-        const adjustedHeight = adjustedTargetHeight * ratio;
+      // 计算如果现在结束这一行，每张图片的宽度
+      const totalSpacing = (currentRow.length - 1) * spacing;
+      const availableWidth = containerWidth - totalSpacing;
+      const rowHeight = availableWidth / currentRowAspectRatioSum;
 
-        rows.push({
-          photos: currentRow,
-          height: adjustedHeight
+      // 当行高小于目标高度时，或者达到最后一张图片，结束当前行
+      const isLastPhoto = index === photos.length - 1;
+      const shouldEndRow = rowHeight <= adjustedTargetHeight || isLastPhoto;
+
+      // 移动端：每行最多2张
+      const maxPhotosReached = isMobile && currentRow.length >= 2;
+
+      if (shouldEndRow || maxPhotosReached) {
+        // 计算最终的行高和每张图片的宽度
+        const finalRowHeight = Math.min(rowHeight, adjustedTargetHeight);
+        const photosWithSizes = currentRow.map(p => {
+          const ratio = p.width / p.height;
+          return {
+            ...p,
+            displayWidth: ratio * finalRowHeight,
+            displayHeight: finalRowHeight
+          };
         });
 
-        currentRow = [photo];
-        currentRowWidth = scaledWidth;
-      } else {
-        currentRow.push(photo);
-        currentRowWidth += scaledWidth + (currentRow.length > 1 ? spacing : 0);
-      }
-
-      // 处理最后一行
-      if (index === photos.length - 1 && currentRow.length > 0) {
         rows.push({
-          photos: currentRow,
-          height: adjustedTargetHeight
+          photos: photosWithSizes,
+          height: finalRowHeight
         });
+
+        // 重置当前行
+        currentRow = [];
+        currentRowAspectRatioSum = 0;
       }
     });
 
@@ -243,37 +247,28 @@ const Gallery = () => {
 
         {/* Justified Gallery */}
         <div ref={containerRef} className="w-full">
-          {justifiedRows.map((row, rowIndex) => {
-            // 计算每张照片的flex比例
-            const totalAspectRatio = row.photos.reduce((sum, photo) =>
-              sum + (photo.width / photo.height), 0
-            );
-
-            return (
-              <motion.div
-                key={rowIndex}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: rowIndex * 0.1 }}
-                className="flex gap-2 mb-2"
-                style={{ height: `${row.height}px` }}
-              >
-                {row.photos.map((photo) => {
-                  const aspectRatio = photo.width / photo.height;
-                  const flexGrow = aspectRatio / totalAspectRatio;
-
-                  return (
-                    <motion.div
-                      key={photo.id}
-                      whileHover={{ scale: 1.02, zIndex: 10 }}
-                      transition={{ duration: 0.3 }}
-                      onClick={() => setSelectedPhoto(photo)}
-                      className="relative cursor-pointer overflow-hidden rounded-xl shadow-md group"
-                      style={{
-                        flex: `${flexGrow} 1 0`,
-                        height: '100%'
-                      }}
-                    >
+          {justifiedRows.map((row, rowIndex) => (
+            <motion.div
+              key={rowIndex}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: rowIndex * 0.1 }}
+              className="flex gap-2 mb-2"
+              style={{ height: `${row.height}px` }}
+            >
+              {row.photos.map((photo) => (
+                <motion.div
+                  key={photo.id}
+                  whileHover={{ scale: 1.02, zIndex: 10 }}
+                  transition={{ duration: 0.3 }}
+                  onClick={() => setSelectedPhoto(photo)}
+                  className="relative cursor-pointer overflow-hidden rounded-xl shadow-md group"
+                  style={{
+                    width: `${photo.displayWidth}px`,
+                    height: `${photo.displayHeight}px`,
+                    flexShrink: 0
+                  }}
+                >
                     {/* Image */}
                     <img
                       src={photo.src}
@@ -316,12 +311,10 @@ const Gallery = () => {
                         </div>
                       </div>
                     </motion.div>
-                  </motion.div>
-                );
-              })}
+                </motion.div>
+              ))}
             </motion.div>
-          );
-          })}
+          ))}
         </div>
 
         {/* Lightbox Modal */}
