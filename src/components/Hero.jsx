@@ -176,7 +176,7 @@ const Hero = ({ setActiveSection }) => {
                   boxShadow: '0 8px 30px rgba(255, 107, 53, 0.4)',
                 }}
               >
-                Explore More <ChevronDown size={20} />
+                Show More
               </motion.button>
             )}
           </AnimatePresence>
