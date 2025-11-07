@@ -1,10 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GraduationCap, ArrowRight, ChevronDown } from 'lucide-react';
 import Particles from './Particles';
 import DecryptedText from './DecryptedText';
 import LogoLoop from './LogoLoop';
-import ButtonParticleExplosion from './ButtonParticleExplosion';
 import CityULogo from '../assets/CityULogo.png';
 import UWMadisonLogo from '../assets/UWMadisonLogo.png';
 import XiaohongshuLogo from '../assets/XiaohongshuLogo.png';
@@ -22,11 +21,6 @@ const Hero = ({ setActiveSection }) => {
   });
 
   const [particleColors, setParticleColors] = useState(['#ff6b35', '#ff8c42', '#ffa561', '#ffb87a']);
-
-  // Button particle explosion state
-  const [showExplosion, setShowExplosion] = useState(false);
-  const [explosionPos, setExplosionPos] = useState({ x: 0, y: 0 });
-  const buttonRef = useRef(null);
 
   // Typewriter effect state
   const [currentTextIndex, setCurrentTextIndex] = useState(0);
@@ -62,16 +56,8 @@ const Hero = ({ setActiveSection }) => {
   }, [displayedText, isDeleting, currentTextIndex, texts]);
 
   // Handle expand button click
-  const handleExpand = (e) => {
+  const handleExpand = () => {
     if (hasExpanded) return;
-
-    // Get button position for particle explosion
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = rect.left + rect.width / 2;
-    const y = rect.top + rect.height / 2;
-
-    setExplosionPos({ x, y });
-    setShowExplosion(true);
 
     setHasExpanded(true);
     sessionStorage.setItem(SESSION_KEY, 'true');
@@ -80,10 +66,6 @@ const Hero = ({ setActiveSection }) => {
     setTimeout(() => {
       setParticleColors(['#4facfe', '#00f2fe', '#a8edea', '#fed6e3']);
     }, 300);
-  };
-
-  const handleExplosionComplete = () => {
-    setShowExplosion(false);
   };
 
   // Introduction content
@@ -115,7 +97,7 @@ const Hero = ({ setActiveSection }) => {
   ];
 
   return (
-    <section id="home" className="hero" style={{ position: 'relative', overflow: hasExpanded ? 'auto' : 'hidden' }}>
+    <section id="home" className="hero" style={{ position: 'relative', overflow: 'hidden' }}>
       <Particles
         particleColors={particleColors}
         particleCount={400}
@@ -181,7 +163,6 @@ const Hero = ({ setActiveSection }) => {
           <AnimatePresence>
             {!hasExpanded && (
               <motion.button
-                ref={buttonRef}
                 className="btn btn-primary"
                 onClick={handleExpand}
                 initial={{ opacity: 0, y: 20 }}
@@ -314,17 +295,6 @@ const Hero = ({ setActiveSection }) => {
           )}
         </AnimatePresence>
       </div>
-
-      {/* Button Particle Explosion */}
-      <AnimatePresence>
-        {showExplosion && (
-          <ButtonParticleExplosion
-            x={explosionPos.x}
-            y={explosionPos.y}
-            onComplete={handleExplosionComplete}
-          />
-        )}
-      </AnimatePresence>
     </section>
   );
 };
