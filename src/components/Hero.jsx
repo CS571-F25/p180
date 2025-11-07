@@ -231,7 +231,7 @@ const Hero = ({ setActiveSection }) => {
                 >
                   <h3 className="introduction-subtitle">
                     <GraduationCap size={28} />
-                    Education
+                    EDUCATION
                   </h3>
                   <div className="education-timeline">
                     {education.map((edu, index) => (
