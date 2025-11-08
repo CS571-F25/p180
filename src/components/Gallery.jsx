@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Heart, MessageCircle, Eye, Download, Share2, Play } from 'lucide-react';
 
@@ -6,8 +6,10 @@ const Gallery = () => {
   const [selectedTab, setSelectedTab] = useState('photos'); // 'photos' or 'videos'
   const [selectedMedia, setSelectedMedia] = useState(null);
   const [likes, setLikes] = useState({});
+  const [justifiedRows, setJustifiedRows] = useState([]);
+  const containerRef = useRef(null);
 
-  // 照片数据
+  // 照片数据（添加宽高比信息）
   const photosData = [
     {
       id: 1,
@@ -17,7 +19,8 @@ const Gallery = () => {
       location: 'Swiss Alps',
       date: '2024-03-15',
       likes: 1247,
-      views: 3542
+      views: 3542,
+      aspectRatio: 1.6 // 宽/高
     },
     {
       id: 2,
@@ -27,7 +30,8 @@ const Gallery = () => {
       location: 'Chicago, USA',
       date: '2024-02-20',
       likes: 892,
-      views: 2341
+      views: 2341,
+      aspectRatio: 0.75 // 竖图
     },
     {
       id: 3,
@@ -37,7 +41,8 @@ const Gallery = () => {
       location: 'Big Sur, California',
       date: '2024-01-10',
       likes: 1563,
-      views: 4123
+      views: 4123,
+      aspectRatio: 1.5
     },
     {
       id: 4,
@@ -47,7 +52,8 @@ const Gallery = () => {
       location: 'New York, USA',
       date: '2023-12-05',
       likes: 2103,
-      views: 5234
+      views: 5234,
+      aspectRatio: 1.33
     },
     {
       id: 5,
@@ -57,7 +63,8 @@ const Gallery = () => {
       location: 'Local Botanical Garden',
       date: '2023-11-18',
       likes: 743,
-      views: 1876
+      views: 1876,
+      aspectRatio: 1.0 // 方图
     },
     {
       id: 6,
@@ -67,11 +74,12 @@ const Gallery = () => {
       location: 'Dubai, UAE',
       date: '2023-10-22',
       likes: 945,
-      views: 2654
+      views: 2654,
+      aspectRatio: 1.4
     }
   ];
 
-  // 视频数据
+  // 视频数据（添加宽高比信息）
   const videosData = [
     {
       id: 1,
@@ -82,7 +90,8 @@ const Gallery = () => {
       location: 'Japan',
       date: '2024-04-10',
       likes: 3456,
-      views: 12543
+      views: 12543,
+      aspectRatio: 1.77 // 16:9
     },
     {
       id: 2,
@@ -93,7 +102,8 @@ const Gallery = () => {
       location: 'Online',
       date: '2024-03-28',
       likes: 2134,
-      views: 8765
+      views: 8765,
+      aspectRatio: 1.77
     },
     {
       id: 3,
@@ -104,7 +114,8 @@ const Gallery = () => {
       location: 'Various',
       date: '2024-03-15',
       likes: 1876,
-      views: 6543
+      views: 6543,
+      aspectRatio: 1.77
     },
     {
       id: 4,
@@ -115,7 +126,8 @@ const Gallery = () => {
       location: 'New York, USA',
       date: '2024-02-20',
       likes: 4321,
-      views: 15234
+      views: 15234,
+      aspectRatio: 1.77
     },
     {
       id: 5,
@@ -126,7 +138,8 @@ const Gallery = () => {
       location: 'Rocky Mountains',
       date: '2024-01-30',
       likes: 2987,
-      views: 9876
+      views: 9876,
+      aspectRatio: 1.77
     },
     {
       id: 6,
@@ -137,9 +150,73 @@ const Gallery = () => {
       location: 'Studio',
       date: '2024-01-15',
       likes: 1654,
-      views: 5432
+      views: 5432,
+      aspectRatio: 1.77
     }
   ];
+
+  // Justified Layout 算法
+  const calculateJustifiedLayout = (items, containerWidth, targetHeight = 280, spacing = 16) => {
+    if (!containerWidth || items.length === 0) return [];
+
+    const rows = [];
+    let currentRow = [];
+    let currentRowWidth = 0;
+
+    items.forEach((item, index) => {
+      const aspectRatio = item.aspectRatio || 1.5;
+      const imageWidth = targetHeight * aspectRatio;
+
+      // 如果当前行为空，直接添加
+      if (currentRow.length === 0) {
+        currentRow.push(item);
+        currentRowWidth = imageWidth;
+      }
+      // 检查添加后是否会超出容器宽度
+      else {
+        const potentialWidth = currentRowWidth + spacing + imageWidth;
+
+        // 如果添加后宽度合理（不超过容器宽度太多），继续添加到当前行
+        if (potentialWidth <= containerWidth * 1.1) {
+          currentRow.push(item);
+          currentRowWidth = potentialWidth;
+        }
+        // 否则，当前行已满，计算缩放并开始新行
+        else {
+          // 计算当前行的缩放比例，使其恰好填满容器
+          const availableWidth = containerWidth - (currentRow.length - 1) * spacing;
+          const scaleFactor = availableWidth / currentRowWidth;
+          const adjustedHeight = targetHeight * scaleFactor;
+
+          rows.push({
+            items: [...currentRow],
+            height: adjustedHeight,
+            scaleFactor
+          });
+
+          // 开始新行
+          currentRow = [item];
+          currentRowWidth = imageWidth;
+        }
+      }
+
+      // 如果是最后一张图片，将当前行添加到结果中
+      if (index === items.length - 1 && currentRow.length > 0) {
+        // 最后一行可能不需要完全填满，但也要适当调整
+        const availableWidth = containerWidth - (currentRow.length - 1) * spacing;
+        const scaleFactor = Math.min(1, availableWidth / currentRowWidth);
+        const adjustedHeight = targetHeight * scaleFactor;
+
+        rows.push({
+          items: [...currentRow],
+          height: adjustedHeight,
+          scaleFactor
+        });
+      }
+    });
+
+    return rows;
+  };
 
   const handleLike = (id) => {
     setLikes(prev => ({
@@ -149,6 +226,21 @@ const Gallery = () => {
   };
 
   const currentData = selectedTab === 'photos' ? photosData : videosData;
+
+  // 计算 justified layout
+  useEffect(() => {
+    const updateLayout = () => {
+      if (containerRef.current) {
+        const containerWidth = containerRef.current.offsetWidth;
+        const rows = calculateJustifiedLayout(currentData, containerWidth);
+        setJustifiedRows(rows);
+      }
+    };
+
+    updateLayout();
+    window.addEventListener('resize', updateLayout);
+    return () => window.removeEventListener('resize', updateLayout);
+  }, [currentData, selectedTab]);
 
   return (
     <section id="gallery" className="section gallery-section">
@@ -197,58 +289,101 @@ const Gallery = () => {
           </button>
         </motion.div>
 
-        {/* 内容网格 */}
-        <motion.div
-          className="gallery-grid"
-          layout
-        >
+        {/* Justified Gallery 布局 */}
+        <div className="justified-gallery" ref={containerRef}>
           <AnimatePresence mode="wait">
-            {currentData.map((item, index) => (
+            {justifiedRows.map((row, rowIndex) => (
               <motion.div
-                key={`${selectedTab}-${item.id}`}
-                className="gallery-item"
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.3, delay: index * 0.05 }}
-                whileHover={{ y: -8 }}
-                onClick={() => setSelectedMedia(item)}
+                key={`${selectedTab}-row-${rowIndex}`}
+                className="justified-row"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.4, delay: rowIndex * 0.1 }}
+                style={{
+                  marginBottom: '16px',
+                  display: 'flex',
+                  gap: '16px',
+                  height: `${row.height}px`
+                }}
               >
-                <div className="gallery-item-image">
-                  <img src={selectedTab === 'photos' ? item.image : item.thumbnail} alt={item.title} />
-                  {selectedTab === 'videos' && (
-                    <div className="video-overlay">
-                      <Play size={48} color="white" />
-                      <span className="video-duration">{item.duration}</span>
-                    </div>
-                  )}
-                </div>
-
-                <div className="gallery-item-content">
-                  <h3>{item.title}</h3>
-                  <p className="gallery-item-location">{item.location}</p>
-
-                  <div className="gallery-item-stats">
-                    <button
-                      className={`stat-btn ${likes[item.id] ? 'liked' : ''}`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleLike(item.id);
+                {row.items.map((item, itemIndex) => {
+                  const width = row.height * item.aspectRatio;
+                  return (
+                    <motion.div
+                      key={`${selectedTab}-${item.id}`}
+                      className="justified-item"
+                      whileHover={{ y: -8, boxShadow: '0 12px 35px rgba(0, 0, 0, 0.2)' }}
+                      transition={{ duration: 0.3 }}
+                      onClick={() => setSelectedMedia(item)}
+                      style={{
+                        width: `${width}px`,
+                        height: `${row.height}px`,
+                        flexShrink: 0,
+                        cursor: 'pointer',
+                        position: 'relative',
+                        borderRadius: '12px',
+                        overflow: 'hidden',
+                        background: '#ffffff',
+                        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)'
                       }}
                     >
-                      <Heart size={16} fill={likes[item.id] ? '#ff6b35' : 'none'} />
-                      <span>{item.likes + (likes[item.id] ? 1 : 0)}</span>
-                    </button>
-                    <div className="stat-btn">
-                      <Eye size={16} />
-                      <span>{item.views}</span>
-                    </div>
-                  </div>
-                </div>
+                      <div style={{
+                        position: 'relative',
+                        width: '100%',
+                        height: '100%'
+                      }}>
+                        <img
+                          src={selectedTab === 'photos' ? item.image : item.thumbnail}
+                          alt={item.title}
+                          style={{
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'cover',
+                            display: 'block',
+                            transition: 'transform 0.3s ease'
+                          }}
+                          onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+                          onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                        />
+                        {selectedTab === 'videos' && (
+                          <div className="video-overlay">
+                            <Play size={48} color="white" />
+                            <span className="video-duration">{item.duration}</span>
+                          </div>
+                        )}
+
+                        {/* 悬浮信息层 */}
+                        <div className="justified-item-overlay">
+                          <div className="justified-item-info">
+                            <h3>{item.title}</h3>
+                            <p className="location-text">{item.location}</p>
+                            <div className="stats-row">
+                              <button
+                                className={`stat-btn ${likes[item.id] ? 'liked' : ''}`}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleLike(item.id);
+                                }}
+                              >
+                                <Heart size={16} fill={likes[item.id] ? '#ff6b35' : 'none'} />
+                                <span>{item.likes + (likes[item.id] ? 1 : 0)}</span>
+                              </button>
+                              <div className="stat-btn">
+                                <Eye size={16} />
+                                <span>{item.views}</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  );
+                })}
               </motion.div>
             ))}
           </AnimatePresence>
-        </motion.div>
+        </div>
 
         {/* 详情模态框 */}
         <AnimatePresence>
