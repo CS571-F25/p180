@@ -832,6 +832,9 @@ code {
 /* Gallery Content */
 .gallery-content {
   margin-bottom: 3rem;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .gallery-loading,
@@ -847,6 +850,13 @@ code {
   position: relative;
   overflow: hidden;
   border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.photo-album-item:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
 }
 
 .photo-album-wrapper {

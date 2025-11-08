@@ -233,12 +233,19 @@ const Gallery = () => {
   // Custom photo render with overlay
   const renderPhoto = ({ photo, wrapperStyle, renderDefaultPhoto }) => {
     const itemId = photo.public_id || photo.id || photo.src;
+    // Find the original photo object with full-size src
+    const originalPhoto = photos.find(p =>
+      (p.public_id && p.public_id === photo.public_id) ||
+      (p.id && p.id === photo.id) ||
+      p.src === photo.src ||
+      p.thumbnail === photo.src
+    ) || photo;
 
     return (
       <div style={wrapperStyle} className="photo-album-item">
         <div
           className="photo-album-wrapper"
-          onClick={() => setSelectedMedia(photo)}
+          onClick={() => setSelectedMedia(originalPhoto)}
         >
           {renderDefaultPhoto({ wrapped: false })}
 
@@ -383,10 +390,13 @@ const Gallery = () => {
                 {photos.length > 0 && (
                   <PhotoAlbum
                     layout="rows"
-                    photos={photos}
+                    photos={photos.map(photo => ({
+                      ...photo,
+                      src: photo.thumbnail || photo.src
+                    }))}
                     renderPhoto={renderPhoto}
-                    targetRowHeight={320}
-                    spacing={12}
+                    targetRowHeight={280}
+                    spacing={8}
                   />
                 )}
               </motion.div>
