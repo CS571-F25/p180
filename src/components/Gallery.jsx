@@ -1,154 +1,158 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Heart, MessageCircle, Eye, Download, Share2, Play } from 'lucide-react';
+import PhotoAlbum from 'react-photo-album';
+import { Heart, MessageCircle, Eye, Download, Share2, X } from 'lucide-react';
 
 const Gallery = () => {
-  const [selectedTab, setSelectedTab] = useState('photos'); // 'photos' or 'videos'
-  const [selectedMedia, setSelectedMedia] = useState(null);
+  const [photos, setPhotos] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [selectedPhoto, setSelectedPhoto] = useState(null);
   const [likes, setLikes] = useState({});
 
-  // 照片数据
-  const photosData = [
-    {
-      id: 1,
-      title: 'Mountain Sunrise',
-      image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop',
-      description: 'Captured during a hiking trip in the Swiss Alps.',
-      location: 'Swiss Alps',
-      date: '2024-03-15',
-      likes: 1247,
-      views: 3542
-    },
-    {
-      id: 2,
-      title: 'Urban Portrait',
-      image: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=800&h=600&fit=crop',
-      description: 'Street photography session in downtown Chicago.',
-      location: 'Chicago, USA',
-      date: '2024-02-20',
-      likes: 892,
-      views: 2341
-    },
-    {
-      id: 3,
-      title: 'Ocean Waves',
-      image: 'https://images.unsplash.com/photo-1505142468610-359e7d316be0?w=800&h=600&fit=crop',
-      description: 'Long exposure of waves crashing against the rocky shore.',
-      location: 'Big Sur, California',
-      date: '2024-01-10',
-      likes: 1563,
-      views: 4123
-    },
-    {
-      id: 4,
-      title: 'City Lights',
-      image: 'https://images.unsplash.com/photo-1514565131-fce0801e5785?w=800&h=600&fit=crop',
-      description: 'Night photography from rooftop in Manhattan.',
-      location: 'New York, USA',
-      date: '2023-12-05',
-      likes: 2103,
-      views: 5234
-    },
-    {
-      id: 5,
-      title: 'Wildlife Close-up',
-      image: 'https://images.unsplash.com/photo-1564349683136-77e08dba1ef7?w=800&h=600&fit=crop',
-      description: 'Macro photography of a butterfly in botanical garden.',
-      location: 'Local Botanical Garden',
-      date: '2023-11-18',
-      likes: 743,
-      views: 1876
-    },
-    {
-      id: 6,
-      title: 'Architectural Detail',
-      image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&h=600&fit=crop',
-      description: 'Modern architecture photography focusing on patterns.',
-      location: 'Dubai, UAE',
-      date: '2023-10-22',
-      likes: 945,
-      views: 2654
-    }
-  ];
+  // 从 Cloudinary 获取照片数据
+  useEffect(() => {
+    const fetchPhotos = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch('https://res.cloudinary.com/dbpu6htkt/image/list/1.json');
 
-  // 视频数据
-  const videosData = [
-    {
-      id: 1,
-      title: 'Travel Vlog: Japan 2024',
-      thumbnail: 'https://images.unsplash.com/photo-1492571350019-22de08371fd3?w=800&h=600&fit=crop',
-      duration: '15:32',
-      description: '探索日本的美食和文化，从东京到京都的旅程记录。',
-      location: 'Japan',
-      date: '2024-04-10',
-      likes: 3456,
-      views: 12543
-    },
-    {
-      id: 2,
-      title: 'Gaming Highlights: Epic Moments',
-      thumbnail: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800&h=600&fit=crop',
-      duration: '8:45',
-      description: '本月最精彩的游戏时刻合集，包括多个惊险击杀。',
-      location: 'Online',
-      date: '2024-03-28',
-      likes: 2134,
-      views: 8765
-    },
-    {
-      id: 3,
-      title: 'Photography Tutorial: Golden Hour',
-      thumbnail: 'https://images.unsplash.com/photo-1452587925148-ce544e77e70d?w=800&h=600&fit=crop',
-      duration: '12:18',
-      description: '如何在黄金时段拍摄出令人惊艳的照片。',
-      location: 'Various',
-      date: '2024-03-15',
-      likes: 1876,
-      views: 6543
-    },
-    {
-      id: 4,
-      title: 'City Life: New York Timelapse',
-      thumbnail: 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=800&h=600&fit=crop',
-      duration: '3:24',
-      description: '纽约城市生活的延时摄影，展现都市的活力。',
-      location: 'New York, USA',
-      date: '2024-02-20',
-      likes: 4321,
-      views: 15234
-    },
-    {
-      id: 5,
-      title: 'Drone Footage: Mountain Adventure',
-      thumbnail: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800&h=600&fit=crop',
-      duration: '6:55',
-      description: '航拍视角下的山间探险，壮丽的自然风光。',
-      location: 'Rocky Mountains',
-      date: '2024-01-30',
-      likes: 2987,
-      views: 9876
-    },
-    {
-      id: 6,
-      title: 'Behind the Scenes: Photo Shoot',
-      thumbnail: 'https://images.unsplash.com/photo-1542038784456-1ea8e935640e?w=800&h=600&fit=crop',
-      duration: '10:12',
-      description: '专业摄影拍摄的幕后花絮，分享拍摄技巧。',
-      location: 'Studio',
-      date: '2024-01-15',
-      likes: 1654,
-      views: 5432
-    }
-  ];
+        if (!response.ok) {
+          throw new Error('Failed to fetch photos from Cloudinary');
+        }
 
-  const handleLike = (id) => {
+        const data = await response.json();
+
+        // 转换数据为 react-photo-album 所需格式
+        const formattedPhotos = data.resources.map((item, index) => ({
+          // react-photo-album 需要的字段
+          src: `https://res.cloudinary.com/dbpu6htkt/image/upload/v${item.version}/${item.public_id}.${item.format}`,
+          width: item.width,
+          height: item.height,
+
+          // 额外的元数据
+          id: item.public_id,
+          publicId: item.public_id,
+          format: item.format,
+          createdAt: item.created_at,
+          likes: Math.floor(Math.random() * 2000) + 100, // 模拟点赞数
+          views: Math.floor(Math.random() * 5000) + 500, // 模拟浏览数
+          title: item.public_id.split('/').pop().replace(/_/g, ' '),
+        }));
+
+        setPhotos(formattedPhotos);
+        setError(null);
+      } catch (err) {
+        console.error('Error fetching photos:', err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPhotos();
+  }, []);
+
+  const handleLike = (photoId) => {
     setLikes(prev => ({
       ...prev,
-      [id]: !prev[id]
+      [photoId]: !prev[photoId]
     }));
   };
 
-  const currentData = selectedTab === 'photos' ? photosData : videosData;
+  // 自定义照片渲染组件 - 添加悬停效果和交互
+  const renderPhoto = ({ photo, wrapperStyle, renderDefaultPhoto }) => {
+    const isLiked = likes[photo.id];
+
+    return (
+      <motion.div
+        style={{ position: 'relative', ...wrapperStyle }}
+        whileHover={{ scale: 1.02 }}
+        transition={{ duration: 0.2 }}
+        className="photo-wrapper"
+      >
+        {/* 基础图片 */}
+        <div
+          style={{ position: 'relative', cursor: 'pointer' }}
+          onClick={() => setSelectedPhoto(photo)}
+        >
+          {renderDefaultPhoto({ wrapped: true })}
+
+          {/* 悬停叠加层 */}
+          <motion.div
+            className="photo-overlay"
+            initial={{ opacity: 0 }}
+            whileHover={{ opacity: 1 }}
+            transition={{ duration: 0.2 }}
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: 'linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0) 100%)',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'flex-end',
+              padding: '1rem',
+              color: 'white',
+            }}
+          >
+            <h3 style={{
+              margin: '0 0 0.5rem 0',
+              fontSize: '1rem',
+              fontWeight: '600',
+              textTransform: 'capitalize'
+            }}>
+              {photo.title}
+            </h3>
+
+            <div style={{
+              display: 'flex',
+              gap: '1rem',
+              fontSize: '0.875rem'
+            }}>
+              <button
+                className={`photo-stat-btn ${isLiked ? 'liked' : ''}`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleLike(photo.id);
+                }}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: 'white',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.25rem',
+                  padding: '0.25rem 0.5rem',
+                  borderRadius: '4px',
+                  transition: 'background 0.2s',
+                }}
+              >
+                <Heart
+                  size={16}
+                  fill={isLiked ? '#ff6b35' : 'none'}
+                  color={isLiked ? '#ff6b35' : 'white'}
+                />
+                <span>{photo.likes + (isLiked ? 1 : 0)}</span>
+              </button>
+
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.25rem'
+              }}>
+                <Eye size={16} />
+                <span>{photo.views}</span>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </motion.div>
+    );
+  };
 
   return (
     <section id="gallery" className="section gallery-section">
@@ -173,136 +177,231 @@ const Gallery = () => {
           用镜头记录世界，用作品讲述故事
         </motion.p>
 
-        {/* 标签切换 */}
-        <motion.div
-          className="gallery-tabs"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-        >
-          <button
-            className={`gallery-tab ${selectedTab === 'photos' ? 'active' : ''}`}
-            onClick={() => setSelectedTab('photos')}
+        {/* 加载状态 */}
+        {loading && (
+          <motion.div
+            className="gallery-loading"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            style={{
+              textAlign: 'center',
+              padding: '4rem 0',
+              fontSize: '1.125rem',
+              color: 'var(--text-secondary)'
+            }}
           >
-            <Eye size={20} />
-            <span>照片 Photos</span>
-          </button>
-          <button
-            className={`gallery-tab ${selectedTab === 'videos' ? 'active' : ''}`}
-            onClick={() => setSelectedTab('videos')}
+            <div className="loading-spinner" style={{
+              width: '40px',
+              height: '40px',
+              border: '4px solid rgba(255, 107, 53, 0.2)',
+              borderTop: '4px solid #ff6b35',
+              borderRadius: '50%',
+              margin: '0 auto 1rem',
+              animation: 'spin 1s linear infinite'
+            }}></div>
+            正在加载照片...
+          </motion.div>
+        )}
+
+        {/* 错误状态 */}
+        {error && (
+          <motion.div
+            className="gallery-error"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            style={{
+              textAlign: 'center',
+              padding: '2rem',
+              background: 'rgba(255, 107, 53, 0.1)',
+              borderRadius: '8px',
+              color: '#ff6b35'
+            }}
           >
-            <Play size={20} />
-            <span>视频 Videos</span>
-          </button>
-        </motion.div>
+            <p>加载照片时出错: {error}</p>
+          </motion.div>
+        )}
 
-        {/* 内容网格 */}
-        <motion.div
-          className="gallery-grid"
-          layout
-        >
-          <AnimatePresence mode="wait">
-            {currentData.map((item, index) => (
-              <motion.div
-                key={`${selectedTab}-${item.id}`}
-                className="gallery-item"
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.3, delay: index * 0.05 }}
-                whileHover={{ y: -8 }}
-                onClick={() => setSelectedMedia(item)}
-              >
-                <div className="gallery-item-image">
-                  <img src={selectedTab === 'photos' ? item.image : item.thumbnail} alt={item.title} />
-                  {selectedTab === 'videos' && (
-                    <div className="video-overlay">
-                      <Play size={48} color="white" />
-                      <span className="video-duration">{item.duration}</span>
-                    </div>
-                  )}
-                </div>
+        {/* 照片墙 - 使用 react-photo-album 的 justified layout */}
+        {!loading && !error && photos.length > 0 && (
+          <motion.div
+            className="gallery-album"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+          >
+            <PhotoAlbum
+              layout="rows"
+              photos={photos}
+              renderPhoto={renderPhoto}
+              spacing={12}
+              targetRowHeight={320}
+            />
+          </motion.div>
+        )}
 
-                <div className="gallery-item-content">
-                  <h3>{item.title}</h3>
-                  <p className="gallery-item-location">{item.location}</p>
-
-                  <div className="gallery-item-stats">
-                    <button
-                      className={`stat-btn ${likes[item.id] ? 'liked' : ''}`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleLike(item.id);
-                      }}
-                    >
-                      <Heart size={16} fill={likes[item.id] ? '#ff6b35' : 'none'} />
-                      <span>{item.likes + (likes[item.id] ? 1 : 0)}</span>
-                    </button>
-                    <div className="stat-btn">
-                      <Eye size={16} />
-                      <span>{item.views}</span>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </AnimatePresence>
-        </motion.div>
-
-        {/* 详情模态框 */}
+        {/* Lightbox 模态弹窗 */}
         <AnimatePresence>
-          {selectedMedia && (
+          {selectedPhoto && (
             <motion.div
-              className="gallery-modal"
+              className="gallery-lightbox"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              onClick={() => setSelectedMedia(null)}
+              onClick={() => setSelectedPhoto(null)}
+              style={{
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                background: 'rgba(0, 0, 0, 0.95)',
+                zIndex: 9999,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '2rem',
+                cursor: 'zoom-out'
+              }}
             >
               <motion.div
-                className="modal-content"
-                initial={{ scale: 0.9, y: 50 }}
-                animate={{ scale: 1, y: 0 }}
-                exit={{ scale: 0.9, y: 50 }}
+                className="lightbox-content"
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.9, opacity: 0 }}
+                transition={{ type: 'spring', damping: 25, stiffness: 300 }}
                 onClick={(e) => e.stopPropagation()}
+                style={{
+                  position: 'relative',
+                  maxWidth: '90vw',
+                  maxHeight: '90vh',
+                  cursor: 'default'
+                }}
               >
-                <button className="modal-close" onClick={() => setSelectedMedia(null)}>×</button>
+                {/* 关闭按钮 */}
+                <button
+                  onClick={() => setSelectedPhoto(null)}
+                  style={{
+                    position: 'absolute',
+                    top: '-3rem',
+                    right: 0,
+                    background: 'none',
+                    border: 'none',
+                    color: 'white',
+                    fontSize: '2rem',
+                    cursor: 'pointer',
+                    width: '40px',
+                    height: '40px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderRadius: '50%',
+                    transition: 'background 0.2s',
+                  }}
+                  onMouseEnter={(e) => e.target.style.background = 'rgba(255,255,255,0.1)'}
+                  onMouseLeave={(e) => e.target.style.background = 'none'}
+                >
+                  <X size={32} />
+                </button>
 
-                <div className="modal-image">
-                  <img src={selectedTab === 'photos' ? selectedMedia.image : selectedMedia.thumbnail} alt={selectedMedia.title} />
-                  {selectedTab === 'videos' && (
-                    <div className="video-play-button">
-                      <Play size={64} color="white" />
-                    </div>
-                  )}
-                </div>
+                {/* 图片 */}
+                <img
+                  src={selectedPhoto.src}
+                  alt={selectedPhoto.title}
+                  style={{
+                    maxWidth: '100%',
+                    maxHeight: '80vh',
+                    objectFit: 'contain',
+                    borderRadius: '8px',
+                  }}
+                />
 
-                <div className="modal-info">
-                  <h2>{selectedMedia.title}</h2>
-                  <div className="modal-meta">
-                    <span>{selectedMedia.location}</span>
-                    <span>{selectedMedia.date}</span>
-                    {selectedTab === 'videos' && <span>{selectedMedia.duration}</span>}
-                  </div>
-                  <p>{selectedMedia.description}</p>
+                {/* 图片信息 */}
+                <div style={{
+                  marginTop: '1.5rem',
+                  color: 'white',
+                  textAlign: 'center'
+                }}>
+                  <h3 style={{
+                    margin: '0 0 1rem 0',
+                    fontSize: '1.5rem',
+                    textTransform: 'capitalize'
+                  }}>
+                    {selectedPhoto.title}
+                  </h3>
 
-                  <div className="modal-actions">
+                  <div style={{
+                    display: 'flex',
+                    gap: '2rem',
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                  }}>
                     <button
-                      className={`action-btn ${likes[selectedMedia.id] ? 'liked' : ''}`}
-                      onClick={() => handleLike(selectedMedia.id)}
+                      className={`lightbox-action-btn ${likes[selectedPhoto.id] ? 'liked' : ''}`}
+                      onClick={() => handleLike(selectedPhoto.id)}
+                      style={{
+                        background: 'rgba(255, 255, 255, 0.1)',
+                        border: 'none',
+                        color: 'white',
+                        padding: '0.5rem 1rem',
+                        borderRadius: '6px',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.5rem',
+                        fontSize: '1rem',
+                        transition: 'background 0.2s',
+                      }}
+                      onMouseEnter={(e) => e.target.style.background = 'rgba(255, 255, 255, 0.2)'}
+                      onMouseLeave={(e) => e.target.style.background = 'rgba(255, 255, 255, 0.1)'}
                     >
-                      <Heart size={20} fill={likes[selectedMedia.id] ? '#ff6b35' : 'none'} />
-                      <span>Like ({selectedMedia.likes + (likes[selectedMedia.id] ? 1 : 0)})</span>
+                      <Heart
+                        size={20}
+                        fill={likes[selectedPhoto.id] ? '#ff6b35' : 'none'}
+                        color={likes[selectedPhoto.id] ? '#ff6b35' : 'white'}
+                      />
+                      <span>
+                        {selectedPhoto.likes + (likes[selectedPhoto.id] ? 1 : 0)} Likes
+                      </span>
                     </button>
-                    <button className="action-btn">
-                      <Download size={20} />
-                      <span>Download</span>
-                    </button>
-                    <button className="action-btn">
+
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.5rem',
+                      fontSize: '1rem'
+                    }}>
+                      <Eye size={20} />
+                      <span>{selectedPhoto.views} Views</span>
+                    </div>
+
+                    <button
+                      style={{
+                        background: 'rgba(255, 255, 255, 0.1)',
+                        border: 'none',
+                        color: 'white',
+                        padding: '0.5rem 1rem',
+                        borderRadius: '6px',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.5rem',
+                        fontSize: '1rem',
+                        transition: 'background 0.2s',
+                      }}
+                      onMouseEnter={(e) => e.target.style.background = 'rgba(255, 255, 255, 0.2)'}
+                      onMouseLeave={(e) => e.target.style.background = 'rgba(255, 255, 255, 0.1)'}
+                    >
                       <Share2 size={20} />
                       <span>Share</span>
                     </button>
+                  </div>
+
+                  <div style={{
+                    marginTop: '1rem',
+                    fontSize: '0.875rem',
+                    color: 'rgba(255,255,255,0.6)'
+                  }}>
+                    {selectedPhoto.width} × {selectedPhoto.height} · {selectedPhoto.format.toUpperCase()}
                   </div>
                 </div>
               </motion.div>
@@ -310,6 +409,27 @@ const Gallery = () => {
           )}
         </AnimatePresence>
       </div>
+
+      <style jsx>{`
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+
+        .photo-wrapper {
+          overflow: hidden;
+          border-radius: 8px;
+        }
+
+        .photo-wrapper img {
+          display: block;
+          transition: transform 0.3s ease;
+        }
+
+        .photo-wrapper:hover img {
+          transform: scale(1.05);
+        }
+      `}</style>
     </section>
   );
 };
