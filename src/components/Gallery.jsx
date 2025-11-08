@@ -96,75 +96,118 @@ const Gallery = () => {
             alt={photo.title}
           />
 
-          {/* 悬停叠加层 */}
+          {/* 悬停信息栏 - 显示在图片下方 */}
           <motion.div
-            className="photo-overlay"
-            initial={{ opacity: 0 }}
-            whileHover={{ opacity: 1 }}
-            transition={{ duration: 0.2 }}
+            className="photo-info-bar"
+            initial={{ y: '100%', opacity: 0 }}
+            whileHover={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.3, ease: 'easeOut' }}
             style={{
               position: 'absolute',
-              top: 0,
               left: 0,
               right: 0,
               bottom: 0,
-              background: 'linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0) 100%)',
+              background: 'rgba(0, 0, 0, 0.75)',
+              backdropFilter: 'blur(10px)',
+              padding: '0.75rem 1rem',
               display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'flex-end',
-              padding: '1rem',
+              justifyContent: 'space-between',
+              alignItems: 'center',
               color: 'white',
             }}
+            onClick={(e) => e.stopPropagation()}
           >
+            {/* 左侧：标题 */}
             <h3 style={{
-              margin: '0 0 0.5rem 0',
-              fontSize: '0.95rem',
+              margin: 0,
+              fontSize: '0.9rem',
               fontWeight: '600',
-              textTransform: 'capitalize'
+              textTransform: 'capitalize',
+              flex: 1,
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+              paddingRight: '1rem'
             }}>
               {photo.title}
             </h3>
 
+            {/* 右侧：按钮组 */}
             <div style={{
               display: 'flex',
-              gap: '1rem',
-              fontSize: '0.85rem'
+              gap: '0.5rem',
+              alignItems: 'center'
             }}>
+              {/* 点赞按钮 */}
               <button
-                className={`photo-stat-btn ${isLiked ? 'liked' : ''}`}
+                className={`photo-action-btn ${isLiked ? 'liked' : ''}`}
                 onClick={(e) => {
                   e.stopPropagation();
                   handleLike(photo.id);
                 }}
                 style={{
-                  background: 'none',
+                  background: isLiked ? 'rgba(255, 107, 53, 0.2)' : 'rgba(255, 255, 255, 0.1)',
                   border: 'none',
                   color: 'white',
                   cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '0.25rem',
-                  padding: '0.25rem 0.5rem',
-                  borderRadius: '4px',
-                  transition: 'background 0.2s',
+                  gap: '0.35rem',
+                  padding: '0.4rem 0.7rem',
+                  borderRadius: '6px',
+                  transition: 'all 0.2s',
+                  fontSize: '0.85rem',
+                  fontWeight: '500'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = isLiked ? 'rgba(255, 107, 53, 0.3)' : 'rgba(255, 255, 255, 0.2)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = isLiked ? 'rgba(255, 107, 53, 0.2)' : 'rgba(255, 255, 255, 0.1)';
                 }}
               >
                 <Heart
-                  size={14}
+                  size={16}
                   fill={isLiked ? '#ff6b35' : 'none'}
                   color={isLiked ? '#ff6b35' : 'white'}
+                  strokeWidth={2}
                 />
                 <span>{photo.likes + (isLiked ? 1 : 0)}</span>
               </button>
 
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.25rem'
-              }}>
-                <Eye size={14} />
-                <span>{photo.views}</span>
-              </div>
+              {/* 下载按钮 */}
+              <button
+                className="photo-action-btn"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  // 下载功能
+                  const link = document.createElement('a');
+                  link.href = photo.src;
+                  link.download = `${photo.title}.${photo.format}`;
+                  link.click();
+                }}
+                style={{
+                  background: 'rgba(255, 255, 255, 0.1)',
+                  border: 'none',
+                  color: 'white',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: '0.4rem 0.7rem',
+                  borderRadius: '6px',
+                  transition: 'all 0.2s',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
+                }}
+                title="下载图片"
+              >
+                <Download size={16} strokeWidth={2} />
+              </button>
             </div>
           </motion.div>
         </div>
