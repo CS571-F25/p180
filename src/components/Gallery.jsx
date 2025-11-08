@@ -74,8 +74,9 @@ const Gallery = () => {
           borderRadius: '8px',
           ...wrapperStyle
         }}
-        whileHover={{ scale: 1.02 }}
-        transition={{ duration: 0.2 }}
+        initial="rest"
+        whileHover="hover"
+        animate="rest"
         className="photo-wrapper"
       >
         {/* 基础图片 */}
@@ -83,15 +84,19 @@ const Gallery = () => {
           style={{ position: 'relative', cursor: 'pointer' }}
           onClick={() => setSelectedPhoto(photo)}
         >
-          <img
+          <motion.img
             {...restImageProps}
+            variants={{
+              rest: { scale: 1 },
+              hover: { scale: 1.05 }
+            }}
+            transition={{ duration: 0.3 }}
             style={{
               ...style,
               display: 'block',
               width: '100%',
               height: '100%',
               objectFit: 'cover',
-              transition: 'transform 0.3s ease'
             }}
             alt={photo.title}
           />
@@ -99,8 +104,10 @@ const Gallery = () => {
           {/* 悬停信息栏 - 显示在图片下方 */}
           <motion.div
             className="photo-info-bar"
-            initial={{ y: '100%', opacity: 0 }}
-            whileHover={{ y: 0, opacity: 1 }}
+            variants={{
+              rest: { y: '100%', opacity: 0 },
+              hover: { y: 0, opacity: 1 }
+            }}
             transition={{ duration: 0.3, ease: 'easeOut' }}
             style={{
               position: 'absolute',
@@ -484,10 +491,6 @@ const Gallery = () => {
         @keyframes spin {
           0% { transform: rotate(0deg); }
           100% { transform: rotate(360deg); }
-        }
-
-        .photo-wrapper img:hover {
-          transform: scale(1.05);
         }
       `}</style>
     </section>
