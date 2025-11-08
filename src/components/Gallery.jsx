@@ -63,21 +63,21 @@ const Gallery = () => {
 
   // 自定义照片渲染组件 - 添加悬停效果和交互
   const renderPhoto = ({ photo, imageProps, wrapperStyle }) => {
+    const [isHovered, setIsHovered] = useState(false);
     const isLiked = likes[photo.id];
     const { style, ...restImageProps } = imageProps;
 
     return (
-      <motion.div
+      <div
         style={{
           position: 'relative',
           overflow: 'hidden',
           borderRadius: '8px',
           ...wrapperStyle
         }}
-        initial="rest"
-        whileHover="hover"
-        animate="rest"
         className="photo-wrapper"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
       >
         {/* 基础图片 */}
         <div
@@ -86,9 +86,8 @@ const Gallery = () => {
         >
           <motion.img
             {...restImageProps}
-            variants={{
-              rest: { scale: 1 },
-              hover: { scale: 1.05 }
+            animate={{
+              scale: isHovered ? 1.05 : 1
             }}
             transition={{ duration: 0.3 }}
             style={{
@@ -104,9 +103,9 @@ const Gallery = () => {
           {/* 悬停信息栏 - 显示在图片下方 */}
           <motion.div
             className="photo-info-bar"
-            variants={{
-              rest: { y: '100%', opacity: 0 },
-              hover: { y: 0, opacity: 1 }
+            animate={{
+              y: isHovered ? 0 : '100%',
+              opacity: isHovered ? 1 : 0
             }}
             transition={{ duration: 0.3, ease: 'easeOut' }}
             style={{
@@ -121,6 +120,7 @@ const Gallery = () => {
               justifyContent: 'space-between',
               alignItems: 'center',
               color: 'white',
+              pointerEvents: isHovered ? 'auto' : 'none',
             }}
             onClick={(e) => e.stopPropagation()}
           >
@@ -218,7 +218,7 @@ const Gallery = () => {
             </div>
           </motion.div>
         </div>
-      </motion.div>
+      </div>
     );
   };
 
