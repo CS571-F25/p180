@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import PhotoAlbum from 'react-photo-album';
+import 'react-photo-album/rows.css';
 import { Heart, MessageCircle, Eye, Download, Share2, X } from 'lucide-react';
 
 const Gallery = () => {
@@ -61,12 +62,18 @@ const Gallery = () => {
   };
 
   // 自定义照片渲染组件 - 添加悬停效果和交互
-  const renderPhoto = ({ photo, wrapperStyle, renderDefaultPhoto }) => {
+  const renderPhoto = ({ photo, imageProps, wrapperStyle }) => {
     const isLiked = likes[photo.id];
+    const { style, ...restImageProps } = imageProps;
 
     return (
       <motion.div
-        style={{ position: 'relative', ...wrapperStyle }}
+        style={{
+          position: 'relative',
+          overflow: 'hidden',
+          borderRadius: '8px',
+          ...wrapperStyle
+        }}
         whileHover={{ scale: 1.02 }}
         transition={{ duration: 0.2 }}
         className="photo-wrapper"
@@ -76,7 +83,18 @@ const Gallery = () => {
           style={{ position: 'relative', cursor: 'pointer' }}
           onClick={() => setSelectedPhoto(photo)}
         >
-          {renderDefaultPhoto({ wrapped: true })}
+          <img
+            {...restImageProps}
+            style={{
+              ...style,
+              display: 'block',
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              transition: 'transform 0.3s ease'
+            }}
+            alt={photo.title}
+          />
 
           {/* 悬停叠加层 */}
           <motion.div
@@ -100,7 +118,7 @@ const Gallery = () => {
           >
             <h3 style={{
               margin: '0 0 0.5rem 0',
-              fontSize: '1rem',
+              fontSize: '0.95rem',
               fontWeight: '600',
               textTransform: 'capitalize'
             }}>
@@ -110,7 +128,7 @@ const Gallery = () => {
             <div style={{
               display: 'flex',
               gap: '1rem',
-              fontSize: '0.875rem'
+              fontSize: '0.85rem'
             }}>
               <button
                 className={`photo-stat-btn ${isLiked ? 'liked' : ''}`}
@@ -132,7 +150,7 @@ const Gallery = () => {
                 }}
               >
                 <Heart
-                  size={16}
+                  size={14}
                   fill={isLiked ? '#ff6b35' : 'none'}
                   color={isLiked ? '#ff6b35' : 'white'}
                 />
@@ -144,7 +162,7 @@ const Gallery = () => {
                 alignItems: 'center',
                 gap: '0.25rem'
               }}>
-                <Eye size={16} />
+                <Eye size={14} />
                 <span>{photo.views}</span>
               </div>
             </div>
@@ -228,13 +246,22 @@ const Gallery = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
+            style={{
+              maxWidth: '1400px',
+              margin: '0 auto',
+              width: '100%'
+            }}
           >
             <PhotoAlbum
               layout="rows"
               photos={photos}
               renderPhoto={renderPhoto}
-              spacing={12}
-              targetRowHeight={320}
+              spacing={10}
+              targetRowHeight={250}
+              rowConstraints={{
+                minPhotos: 1,
+                maxPhotos: 5
+              }}
             />
           </motion.div>
         )}
@@ -410,23 +437,13 @@ const Gallery = () => {
         </AnimatePresence>
       </div>
 
-      <style jsx>{`
+      <style>{`
         @keyframes spin {
           0% { transform: rotate(0deg); }
           100% { transform: rotate(360deg); }
         }
 
-        .photo-wrapper {
-          overflow: hidden;
-          border-radius: 8px;
-        }
-
-        .photo-wrapper img {
-          display: block;
-          transition: transform 0.3s ease;
-        }
-
-        .photo-wrapper:hover img {
+        .photo-wrapper img:hover {
           transform: scale(1.05);
         }
       `}</style>
