@@ -11,11 +11,7 @@ const PhotoItem = ({ photo, imageProps, wrapperStyle, likes, onLike, onSelect })
   const { style, ...restImageProps } = imageProps;
 
   return (
-    <div
-      style={wrapperStyle}
-      className="photo-wrapper"
-    >
-      {/* 内层容器：处理 hover 事件和相对定位，overflow: visible 允许信息栏超出边界 */}
+    <div style={wrapperStyle} className="photo-wrapper">
       <div
         style={{
           position: 'relative',
@@ -27,7 +23,6 @@ const PhotoItem = ({ photo, imageProps, wrapperStyle, likes, onLike, onSelect })
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        {/* 基础图片容器 (保持 overflow: hidden 以便缩放动画) */}
         <div
           style={{
             position: 'relative',
@@ -39,55 +34,48 @@ const PhotoItem = ({ photo, imageProps, wrapperStyle, likes, onLike, onSelect })
           }}
           onClick={() => onSelect(photo)}
         >
-        <motion.img
-          {...restImageProps}
+          <motion.img
+            {...restImageProps}
+            animate={{ scale: isHovered ? 1.05 : 1 }}
+            transition={{ duration: 0.3 }}
+            style={{
+              ...style,
+              display: 'block',
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+            }}
+            alt={photo.title}
+          />
+        </div>
+
+        <motion.div
+          className="photo-info-bar"
+          initial={{ y: '100%', opacity: 0 }}
           animate={{
-            scale: isHovered ? 1.05 : 1
+            y: isHovered ? 0 : '100%',
+            opacity: isHovered ? 1 : 0
           }}
-          transition={{ duration: 0.3 }}
+          transition={{ duration: 0.3, ease: 'easeOut' }}
           style={{
-            ...style,
-            display: 'block',
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            background: 'rgba(0, 0, 0, 0.75)',
+            backdropFilter: 'blur(10px)',
+            padding: '0.75rem 1rem',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            color: 'white',
+            pointerEvents: isHovered ? 'auto' : 'none',
+            borderBottomLeftRadius: '8px',
+            borderBottomRightRadius: '8px',
+            zIndex: 10,
           }}
-          alt={photo.title}
-        />
-
-      </div>
-
-      {/* 悬停信息栏：定位在图片底部，悬停时从下方滑入 */}
-      <motion.div
-        className="photo-info-bar"
-        initial={{
-          y: '100%',
-          opacity: 0
-        }}
-        animate={{
-          y: isHovered ? 0 : '100%',
-          opacity: isHovered ? 1 : 0
-        }}
-        transition={{ duration: 0.3, ease: 'easeOut' }}
-        style={{
-          position: 'absolute',
-          bottom: 0,
-          left: 0,
-          right: 0,
-          background: 'rgba(0, 0, 0, 0.75)',
-          backdropFilter: 'blur(10px)',
-          padding: '0.75rem 1rem',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          color: 'white',
-          pointerEvents: isHovered ? 'auto' : 'none',
-          borderBottomLeftRadius: '8px',
-          borderBottomRightRadius: '8px',
-          zIndex: 10,
-        }}
-        onClick={(e) => e.stopPropagation()}
-      >
+          onClick={(e) => e.stopPropagation()}
+        >
         {/* 左侧：标题 */}
         <h3 style={{
           margin: 0,
@@ -181,8 +169,8 @@ const PhotoItem = ({ photo, imageProps, wrapperStyle, likes, onLike, onSelect })
           </button>
         </div>
       </motion.div>
-      </div> {/* 关闭内层 hover 容器 */}
-    </div> {/* 关闭外层 wrapperStyle 容器 */}
+      </div>
+    </div>
   );
 };
 
