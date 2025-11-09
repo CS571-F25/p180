@@ -5,7 +5,6 @@ import 'react-photo-album/rows.css';
 import { Heart, MessageCircle, Eye, Download, Share2, X } from 'lucide-react';
 
 // 单独的照片组件 - 支持 hover 状态
-// 单独的照片组件 - 支持 hover 状态 (已修复)
 const PhotoItem = ({ photo, imageProps, wrapperStyle, likes, onLike, onSelect }) => {
   const [isHovered, setIsHovered] = useState(false);
   const isLiked = likes[photo.id];
@@ -13,27 +12,33 @@ const PhotoItem = ({ photo, imageProps, wrapperStyle, likes, onLike, onSelect })
 
   return (
     <div
-      style={{
-        ...wrapperStyle,
-        // 关键属性必须在 wrapperStyle 之后，以确保覆盖
-        position: 'relative',
-        overflow: 'visible',
-        borderRadius: '8px',
-      }}
+      style={wrapperStyle}
       className="photo-wrapper"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
     >
-      {/* 基础图片容器 (保持 overflow: hidden 以便缩放动画) */}
+      {/* 内层容器：处理 hover 事件和相对定位，overflow: visible 允许信息栏超出边界 */}
       <div
         style={{
           position: 'relative',
-          cursor: 'pointer',
-          overflow: 'hidden',
+          overflow: 'visible',
           borderRadius: '8px',
+          width: '100%',
+          height: '100%',
         }}
-        onClick={() => onSelect(photo)}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
       >
+        {/* 基础图片容器 (保持 overflow: hidden 以便缩放动画) */}
+        <div
+          style={{
+            position: 'relative',
+            cursor: 'pointer',
+            overflow: 'hidden',
+            borderRadius: '8px',
+            width: '100%',
+            height: '100%',
+          }}
+          onClick={() => onSelect(photo)}
+        >
         <motion.img
           {...restImageProps}
           animate={{
@@ -50,10 +55,9 @@ const PhotoItem = ({ photo, imageProps, wrapperStyle, likes, onLike, onSelect })
           alt={photo.title}
         />
 
-        {/* 悬停信息栏被移到这里 (外面) */}
       </div>
 
-      {/* 修复 2: 悬停信息栏移至 overflow:hidden 的容器之外 */}
+      {/* 悬停信息栏：定位在图片底部，悬停时从下方滑入 */}
       <motion.div
         className="photo-info-bar"
         initial={{
@@ -66,13 +70,11 @@ const PhotoItem = ({ photo, imageProps, wrapperStyle, likes, onLike, onSelect })
         }}
         transition={{ duration: 0.3, ease: 'easeOut' }}
         style={{
-          // 修复 3: 定位回图片内部的底部
           position: 'absolute',
-          bottom: 0, // 定位到父容器(图片)的底部
+          bottom: 0,
           left: 0,
           right: 0,
-          // 移除 marginTop
-          background: 'rgba(0, 0, 0, 0.75)', // 你可以按需调整透明度
+          background: 'rgba(0, 0, 0, 0.75)',
           backdropFilter: 'blur(10px)',
           padding: '0.75rem 1rem',
           display: 'flex',
@@ -80,10 +82,9 @@ const PhotoItem = ({ photo, imageProps, wrapperStyle, likes, onLike, onSelect })
           alignItems: 'center',
           color: 'white',
           pointerEvents: isHovered ? 'auto' : 'none',
-          // 注意: 我们把圆角应用到这里，使其只匹配底部的圆角
           borderBottomLeftRadius: '8px',
           borderBottomRightRadius: '8px',
-          zIndex: 10, // 确保信息栏在最上层
+          zIndex: 10,
         }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -180,7 +181,8 @@ const PhotoItem = ({ photo, imageProps, wrapperStyle, likes, onLike, onSelect })
           </button>
         </div>
       </motion.div>
-    </div>
+      </div> {/* 关闭内层 hover 容器 */}
+    </div> {/* 关闭外层 wrapperStyle 容器 */}
   );
 };
 
