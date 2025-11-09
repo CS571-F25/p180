@@ -14,9 +14,10 @@ const PhotoItem = ({ photo, imageProps, wrapperStyle, likes, onLike, onSelect })
   return (
     <div
       style={{
-        ...wrapperStyle, // <-- 修复 1: 将 wrapperStyle 移到最前面
+        ...wrapperStyle,
+        // 关键属性必须在 wrapperStyle 之后，以确保覆盖
         position: 'relative',
-        overflow: 'visible', // <-- 确保 'visible' 属性生效
+        overflow: 'visible',
         borderRadius: '8px',
       }}
       className="photo-wrapper"
@@ -55,9 +56,13 @@ const PhotoItem = ({ photo, imageProps, wrapperStyle, likes, onLike, onSelect })
       {/* 修复 2: 悬停信息栏移至 overflow:hidden 的容器之外 */}
       <motion.div
         className="photo-info-bar"
+        initial={{
+          y: '100%',
+          opacity: 0
+        }}
         animate={{
-          y: isHovered ? 0 : '100%', // 动画: 从 y: 100% (完全隐藏) 到 y: 0
-          opacity: 1 // 保持不透明
+          y: isHovered ? 0 : '100%',
+          opacity: isHovered ? 1 : 0
         }}
         transition={{ duration: 0.3, ease: 'easeOut' }}
         style={{
@@ -77,7 +82,8 @@ const PhotoItem = ({ photo, imageProps, wrapperStyle, likes, onLike, onSelect })
           pointerEvents: isHovered ? 'auto' : 'none',
           // 注意: 我们把圆角应用到这里，使其只匹配底部的圆角
           borderBottomLeftRadius: '8px',
-          borderBottomRightRadius: '8px'
+          borderBottomRightRadius: '8px',
+          zIndex: 10, // 确保信息栏在最上层
         }}
         onClick={(e) => e.stopPropagation()}
       >
