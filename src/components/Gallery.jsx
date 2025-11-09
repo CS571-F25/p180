@@ -222,6 +222,38 @@ const Gallery = () => {
                       <span className="video-duration">{item.duration}</span>
                     </div>
                   )}
+
+                  {/* 悬浮时显示的透明栏 */}
+                  <div className="image-hover-overlay">
+                    <h3 className="overlay-title">{item.title}</h3>
+                    <div className="overlay-actions">
+                      <button
+                        className={`overlay-btn ${likes[item.id] ? 'liked' : ''}`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleLike(item.id);
+                        }}
+                      >
+                        <Heart size={20} fill={likes[item.id] ? '#ff6b35' : 'none'} />
+                        <span>{item.likes + (likes[item.id] ? 1 : 0)}</span>
+                      </button>
+                      <button
+                        className="overlay-btn"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          // 下载功能
+                          const link = document.createElement('a');
+                          link.href = selectedTab === 'photos' ? item.image : item.thumbnail;
+                          link.download = `${item.title}.jpg`;
+                          document.body.appendChild(link);
+                          link.click();
+                          document.body.removeChild(link);
+                        }}
+                      >
+                        <Download size={20} />
+                      </button>
+                    </div>
+                  </div>
                 </div>
 
                 <div className="gallery-item-content">
