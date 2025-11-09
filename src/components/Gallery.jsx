@@ -2,11 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import PhotoAlbum from 'react-photo-album';
 import 'react-photo-album/rows.css';
-import { Heart, MessageCircle, Eye, Download, Share2, X } from 'lucide-react';
+import { Heart, Download, Eye, X } from 'lucide-react';
 
-// 单独的照片组件 - 支持 hover 状态
-// 单独的照片组件 - 支持 hover 状态 (已修复)
-const PhotoItem = ({ photo, imageProps, wrapperStyle, likes, onLike, onSelect }) => {
+// 照片卡片组件 - 支持悬浮效果和点击放大
+const PhotoCard = ({ photo, imageProps, wrapperStyle, likes, onLike, onSelect }) => {
   const [isHovered, setIsHovered] = useState(false);
   const isLiked = likes[photo.id];
   const { style, ...restImageProps } = imageProps;
@@ -14,165 +13,191 @@ const PhotoItem = ({ photo, imageProps, wrapperStyle, likes, onLike, onSelect })
   return (
     <div
       style={{
-        ...wrapperStyle, // <-- 修复 1: 将 wrapperStyle 移到最前面
+        ...wrapperStyle,
         position: 'relative',
-        overflow: 'visible', // <-- 确保 'visible' 属性生效
-        borderRadius: '8px',
+        overflow: 'hidden',
+        borderRadius: '12px',
+        cursor: 'pointer',
       }}
-      className="photo-wrapper"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      onClick={() => onSelect(photo)}
     >
-      {/* 基础图片容器 (保持 overflow: hidden 以便缩放动画) */}
-      <div
-        style={{
-          position: 'relative',
-          cursor: 'pointer',
-          overflow: 'hidden',
-          borderRadius: '8px',
-        }}
-        onClick={() => onSelect(photo)}
-      >
-        <motion.img
-          {...restImageProps}
-          animate={{
-            scale: isHovered ? 1.05 : 1
-          }}
-          transition={{ duration: 0.3 }}
-          style={{
-            ...style,
-            display: 'block',
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-          }}
-          alt={photo.title}
-        />
-
-        {/* 悬停信息栏被移到这里 (外面) */}
-      </div>
-
-      {/* 修复 2: 悬停信息栏移至 overflow:hidden 的容器之外 */}
-      <motion.div
-        className="photo-info-bar"
+      {/* 图片 */}
+      <motion.img
+        {...restImageProps}
         animate={{
-          y: isHovered ? 0 : '100%', // 动画: 从 y: 100% (完全隐藏) 到 y: 0
-          opacity: 1 // 保持不透明
+          scale: isHovered ? 1.08 : 1,
         }}
-        transition={{ duration: 0.3, ease: 'easeOut' }}
+        transition={{ duration: 0.4, ease: 'easeOut' }}
         style={{
-          // 修复 3: 定位回图片内部的底部
+          ...style,
+          display: 'block',
+          width: '100%',
+          height: '100%',
+          objectFit: 'cover',
+        }}
+        alt={photo.title}
+      />
+
+      {/* 悬浮遮罩层 */}
+      <motion.div
+        animate={{
+          opacity: isHovered ? 1 : 0,
+        }}
+        transition={{ duration: 0.3 }}
+        style={{
           position: 'absolute',
-          bottom: 0, // 定位到父容器(图片)的底部
+          top: 0,
           left: 0,
           right: 0,
-          // 移除 marginTop
-          background: 'rgba(0, 0, 0, 0.75)', // 你可以按需调整透明度
-          backdropFilter: 'blur(10px)',
-          padding: '0.75rem 1rem',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          color: 'white',
+          bottom: 0,
+          background: 'linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.2) 100%)',
           pointerEvents: isHovered ? 'auto' : 'none',
-          // 注意: 我们把圆角应用到这里，使其只匹配底部的圆角
-          borderBottomLeftRadius: '8px',
-          borderBottomRightRadius: '8px'
-        }}
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* 左侧：标题 */}
-        <h3 style={{
-          margin: 0,
-          fontSize: '0.9rem',
-          fontWeight: '600',
-          textTransform: 'capitalize',
-          flex: 1,
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          whiteSpace: 'nowrap',
-          paddingRight: '1rem'
-        }}>
-          {photo.title}
-        </h3>
-
-        {/* 右侧：按钮组 */}
-        <div style={{
           display: 'flex',
-          gap: '0.5rem',
-          alignItems: 'center'
-        }}>
-          {/* 点赞按钮 (代码不变) */}
-          <button
-            className={`photo-action-btn ${isLiked ? 'liked' : ''}`}
-            onClick={(e) => {
-              e.stopPropagation();
-              onLike(photo.id);
-            }}
-            style={{
-              background: isLiked ? 'rgba(255, 107, 53, 0.2)' : 'rgba(255, 255, 255, 0.1)',
-              border: 'none',
-              color: 'white',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.35rem',
-              padding: '0.4rem 0.7rem',
-              borderRadius: '6px',
-              transition: 'all 0.2s',
-              fontSize: '0.85rem',
-              fontWeight: '500'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = isLiked ? 'rgba(255, 107, 53, 0.3)' : 'rgba(255, 255, 255, 0.2)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = isLiked ? 'rgba(255, 107, 53, 0.2)' : 'rgba(255, 255, 255, 0.1)';
-            }}
-          >
-            <Heart
-              size={16}
-              fill={isLiked ? '#ff6b35' : 'none'}
-              color={isLiked ? '#ff6b35' : 'white'}
-              strokeWidth={2}
-            />
-            <span>{photo.likes + (isLiked ? 1 : 0)}</span>
-          </button>
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          padding: '1.5rem',
+        }}
+      >
+        {/* 顶部：点击提示 */}
+        <motion.div
+          initial={{ y: -10, opacity: 0 }}
+          animate={{
+            y: isHovered ? 0 : -10,
+            opacity: isHovered ? 1 : 0,
+          }}
+          transition={{ duration: 0.3, delay: 0.1 }}
+          style={{
+            textAlign: 'center',
+            color: 'white',
+            fontSize: '0.9rem',
+            fontWeight: '500',
+            textShadow: '0 2px 4px rgba(0,0,0,0.3)',
+          }}
+        >
+          🔍 点击查看大图
+        </motion.div>
 
-          {/* 下载按钮 (代码不变) */}
-          <button
-            className="photo-action-btn"
-            onClick={(e) => {
-              e.stopPropagation();
-              // 下载功能
-              const link = document.createElement('a');
-              link.href = photo.src;
-              link.download = `${photo.title}.${photo.format}`;
-              link.click();
-            }}
-            style={{
-              background: 'rgba(255, 255, 255, 0.1)',
-              border: 'none',
+        {/* 底部：标题和操作按钮 */}
+        <motion.div
+          initial={{ y: 10, opacity: 0 }}
+          animate={{
+            y: isHovered ? 0 : 10,
+            opacity: isHovered ? 1 : 0,
+          }}
+          transition={{ duration: 0.3, delay: 0.1 }}
+        >
+          {/* 标题 */}
+          <h3 style={{
+            margin: '0 0 1rem 0',
+            fontSize: '1.1rem',
+            fontWeight: '600',
+            color: 'white',
+            textTransform: 'capitalize',
+            textShadow: '0 2px 4px rgba(0,0,0,0.5)',
+          }}>
+            {photo.title}
+          </h3>
+
+          {/* 操作按钮 */}
+          <div style={{
+            display: 'flex',
+            gap: '0.75rem',
+            alignItems: 'center',
+          }}>
+            {/* 点赞按钮 */}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onLike(photo.id);
+              }}
+              style={{
+                background: isLiked ? 'rgba(255, 107, 53, 0.9)' : 'rgba(255, 255, 255, 0.2)',
+                backdropFilter: 'blur(10px)',
+                border: isLiked ? '2px solid #ff6b35' : '2px solid rgba(255,255,255,0.3)',
+                color: 'white',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.4rem',
+                padding: '0.5rem 0.9rem',
+                borderRadius: '8px',
+                transition: 'all 0.2s',
+                fontSize: '0.9rem',
+                fontWeight: '600',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'scale(1.05)';
+                e.currentTarget.style.background = isLiked ? '#ff6b35' : 'rgba(255, 255, 255, 0.3)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'scale(1)';
+                e.currentTarget.style.background = isLiked ? 'rgba(255, 107, 53, 0.9)' : 'rgba(255, 255, 255, 0.2)';
+              }}
+            >
+              <Heart
+                size={18}
+                fill={isLiked ? 'white' : 'none'}
+                strokeWidth={2}
+              />
+              <span>{photo.likes + (isLiked ? 1 : 0)}</span>
+            </button>
+
+            {/* 下载按钮 */}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                const link = document.createElement('a');
+                link.href = photo.src;
+                link.download = `${photo.title}.${photo.format}`;
+                link.click();
+              }}
+              style={{
+                background: 'rgba(255, 255, 255, 0.2)',
+                backdropFilter: 'blur(10px)',
+                border: '2px solid rgba(255,255,255,0.3)',
+                color: 'white',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '0.5rem 0.9rem',
+                borderRadius: '8px',
+                transition: 'all 0.2s',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'scale(1.05)';
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.3)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'scale(1)';
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)';
+              }}
+              title="下载图片"
+            >
+              <Download size={18} strokeWidth={2} />
+            </button>
+
+            {/* 浏览数 */}
+            <div style={{
+              background: 'rgba(255, 255, 255, 0.2)',
+              backdropFilter: 'blur(10px)',
+              border: '2px solid rgba(255,255,255,0.3)',
               color: 'white',
-              cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
-              justifyContent: 'center',
-              padding: '0.4rem 0.7rem',
-              borderRadius: '6px',
-              transition: 'all 0.2s',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
-            }}
-            title="下载图片"
-          >
-            <Download size={16} strokeWidth={2} />
-          </button>
-        </div>
+              gap: '0.4rem',
+              padding: '0.5rem 0.9rem',
+              borderRadius: '8px',
+              fontSize: '0.9rem',
+              fontWeight: '600',
+            }}>
+              <Eye size={18} strokeWidth={2} />
+              <span>{photo.views}</span>
+            </div>
+          </div>
+        </motion.div>
       </motion.div>
     </div>
   );
@@ -199,7 +224,7 @@ const Gallery = () => {
         const data = await response.json();
 
         // 转换数据为 react-photo-album 所需格式
-        const formattedPhotos = data.resources.map((item, index) => ({
+        const formattedPhotos = data.resources.map((item) => ({
           // react-photo-album 需要的字段
           src: `https://res.cloudinary.com/dbpu6htkt/image/upload/v${item.version}/${item.public_id}.${item.format}`,
           width: item.width,
@@ -210,8 +235,8 @@ const Gallery = () => {
           publicId: item.public_id,
           format: item.format,
           createdAt: item.created_at,
-          likes: Math.floor(Math.random() * 2000) + 100, // 模拟点赞数
-          views: Math.floor(Math.random() * 5000) + 500, // 模拟浏览数
+          likes: Math.floor(Math.random() * 2000) + 100,
+          views: Math.floor(Math.random() * 5000) + 500,
           title: item.public_id.split('/').pop().replace(/_/g, ' '),
         }));
 
@@ -235,9 +260,9 @@ const Gallery = () => {
     }));
   };
 
-  // 渲染函数 - 使用 PhotoItem 组件
+  // 渲染函数
   const renderPhoto = (props) => (
-    <PhotoItem
+    <PhotoCard
       {...props}
       likes={likes}
       onLike={handleLike}
@@ -312,7 +337,7 @@ const Gallery = () => {
           </motion.div>
         )}
 
-        {/* 照片墙 - 使用 react-photo-album 的 justified layout */}
+        {/* 照片墙 */}
         {!loading && !error && photos.length > 0 && (
           <motion.div
             className="gallery-album"
@@ -329,8 +354,8 @@ const Gallery = () => {
               layout="rows"
               photos={photos}
               renderPhoto={renderPhoto}
-              spacing={10}
-              targetRowHeight={250}
+              spacing={12}
+              targetRowHeight={280}
               rowConstraints={{
                 minPhotos: 1,
                 maxPhotos: 5
@@ -339,7 +364,7 @@ const Gallery = () => {
           </motion.div>
         )}
 
-        {/* Lightbox 模态弹窗 */}
+        {/* Lightbox 放大视图 */}
         <AnimatePresence>
           {selectedPhoto && (
             <motion.div
@@ -363,11 +388,49 @@ const Gallery = () => {
                 cursor: 'zoom-out'
               }}
             >
+              {/* 关闭按钮 */}
+              <motion.button
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.2 }}
+                onClick={() => setSelectedPhoto(null)}
+                style={{
+                  position: 'fixed',
+                  top: '2rem',
+                  right: '2rem',
+                  background: 'rgba(255, 255, 255, 0.1)',
+                  backdropFilter: 'blur(10px)',
+                  border: '2px solid rgba(255, 255, 255, 0.2)',
+                  color: 'white',
+                  fontSize: '1.5rem',
+                  cursor: 'pointer',
+                  width: '50px',
+                  height: '50px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: '50%',
+                  transition: 'all 0.3s',
+                  zIndex: 10000,
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)';
+                  e.currentTarget.style.transform = 'scale(1.1) rotate(90deg)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
+                  e.currentTarget.style.transform = 'scale(1) rotate(0deg)';
+                }}
+              >
+                <X size={28} strokeWidth={2.5} />
+              </motion.button>
+
+              {/* 图片容器 */}
               <motion.div
                 className="lightbox-content"
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.9, opacity: 0 }}
+                initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                animate={{ scale: 1, opacity: 1, y: 0 }}
+                exit={{ scale: 0.9, opacity: 0, y: 20 }}
                 transition={{ type: 'spring', damping: 25, stiffness: 300 }}
                 onClick={(e) => e.stopPropagation()}
                 style={{
@@ -377,133 +440,148 @@ const Gallery = () => {
                   cursor: 'default'
                 }}
               >
-                {/* 关闭按钮 */}
-                <button
-                  onClick={() => setSelectedPhoto(null)}
-                  style={{
-                    position: 'absolute',
-                    top: '-3rem',
-                    right: 0,
-                    background: 'none',
-                    border: 'none',
-                    color: 'white',
-                    fontSize: '2rem',
-                    cursor: 'pointer',
-                    width: '40px',
-                    height: '40px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    borderRadius: '50%',
-                    transition: 'background 0.2s',
-                  }}
-                  onMouseEnter={(e) => e.target.style.background = 'rgba(255,255,255,0.1)'}
-                  onMouseLeave={(e) => e.target.style.background = 'none'}
-                >
-                  <X size={32} />
-                </button>
-
-                {/* 图片 */}
+                {/* 大图 */}
                 <img
                   src={selectedPhoto.src}
                   alt={selectedPhoto.title}
                   style={{
                     maxWidth: '100%',
-                    maxHeight: '80vh',
+                    maxHeight: '75vh',
                     objectFit: 'contain',
-                    borderRadius: '8px',
+                    borderRadius: '12px',
+                    boxShadow: '0 20px 60px rgba(0,0,0,0.5)',
                   }}
                 />
 
-                {/* 图片信息 */}
-                <div style={{
-                  marginTop: '1.5rem',
-                  color: 'white',
-                  textAlign: 'center'
-                }}>
+                {/* 图片信息卡片 */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 }}
+                  style={{
+                    marginTop: '2rem',
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    backdropFilter: 'blur(20px)',
+                    borderRadius: '12px',
+                    padding: '1.5rem',
+                    border: '1px solid rgba(255, 255, 255, 0.2)',
+                  }}
+                >
+                  {/* 标题 */}
                   <h3 style={{
-                    margin: '0 0 1rem 0',
-                    fontSize: '1.5rem',
-                    textTransform: 'capitalize'
+                    margin: '0 0 1.5rem 0',
+                    fontSize: '1.75rem',
+                    color: 'white',
+                    textTransform: 'capitalize',
+                    fontWeight: '600',
                   }}>
                     {selectedPhoto.title}
                   </h3>
 
+                  {/* 操作按钮和信息 */}
                   <div style={{
                     display: 'flex',
-                    gap: '2rem',
-                    justifyContent: 'center',
+                    gap: '1rem',
+                    flexWrap: 'wrap',
                     alignItems: 'center'
                   }}>
+                    {/* 点赞按钮 */}
                     <button
-                      className={`lightbox-action-btn ${likes[selectedPhoto.id] ? 'liked' : ''}`}
                       onClick={() => handleLike(selectedPhoto.id)}
                       style={{
-                        background: 'rgba(255, 255, 255, 0.1)',
-                        border: 'none',
+                        background: likes[selectedPhoto.id] ? '#ff6b35' : 'rgba(255, 255, 255, 0.15)',
+                        border: '2px solid ' + (likes[selectedPhoto.id] ? '#ff6b35' : 'rgba(255,255,255,0.3)'),
                         color: 'white',
-                        padding: '0.5rem 1rem',
-                        borderRadius: '6px',
+                        padding: '0.75rem 1.5rem',
+                        borderRadius: '10px',
                         cursor: 'pointer',
                         display: 'flex',
                         alignItems: 'center',
                         gap: '0.5rem',
                         fontSize: '1rem',
-                        transition: 'background 0.2s',
+                        fontWeight: '600',
+                        transition: 'all 0.3s',
                       }}
-                      onMouseEnter={(e) => e.target.style.background = 'rgba(255, 255, 255, 0.2)'}
-                      onMouseLeave={(e) => e.target.style.background = 'rgba(255, 255, 255, 0.1)'}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.transform = 'translateY(-2px)';
+                        e.currentTarget.style.boxShadow = '0 4px 12px rgba(255,107,53,0.3)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.transform = 'translateY(0)';
+                        e.currentTarget.style.boxShadow = 'none';
+                      }}
                     >
                       <Heart
                         size={20}
-                        fill={likes[selectedPhoto.id] ? '#ff6b35' : 'none'}
-                        color={likes[selectedPhoto.id] ? '#ff6b35' : 'white'}
+                        fill={likes[selectedPhoto.id] ? 'white' : 'none'}
+                        strokeWidth={2}
                       />
-                      <span>
-                        {selectedPhoto.likes + (likes[selectedPhoto.id] ? 1 : 0)} Likes
-                      </span>
+                      <span>{selectedPhoto.likes + (likes[selectedPhoto.id] ? 1 : 0)} Likes</span>
                     </button>
 
+                    {/* 浏览数 */}
                     <div style={{
+                      background: 'rgba(255, 255, 255, 0.15)',
+                      border: '2px solid rgba(255,255,255,0.3)',
+                      color: 'white',
+                      padding: '0.75rem 1.5rem',
+                      borderRadius: '10px',
                       display: 'flex',
                       alignItems: 'center',
                       gap: '0.5rem',
-                      fontSize: '1rem'
+                      fontSize: '1rem',
+                      fontWeight: '600',
                     }}>
-                      <Eye size={20} />
+                      <Eye size={20} strokeWidth={2} />
                       <span>{selectedPhoto.views} Views</span>
                     </div>
 
+                    {/* 下载按钮 */}
                     <button
+                      onClick={() => {
+                        const link = document.createElement('a');
+                        link.href = selectedPhoto.src;
+                        link.download = `${selectedPhoto.title}.${selectedPhoto.format}`;
+                        link.click();
+                      }}
                       style={{
-                        background: 'rgba(255, 255, 255, 0.1)',
-                        border: 'none',
+                        background: 'rgba(255, 255, 255, 0.15)',
+                        border: '2px solid rgba(255,255,255,0.3)',
                         color: 'white',
-                        padding: '0.5rem 1rem',
-                        borderRadius: '6px',
+                        padding: '0.75rem 1.5rem',
+                        borderRadius: '10px',
                         cursor: 'pointer',
                         display: 'flex',
                         alignItems: 'center',
                         gap: '0.5rem',
                         fontSize: '1rem',
-                        transition: 'background 0.2s',
+                        fontWeight: '600',
+                        transition: 'all 0.3s',
                       }}
-                      onMouseEnter={(e) => e.target.style.background = 'rgba(255, 255, 255, 0.2)'}
-                      onMouseLeave={(e) => e.target.style.background = 'rgba(255, 255, 255, 0.1)'}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.transform = 'translateY(-2px)';
+                        e.currentTarget.style.background = 'rgba(255, 255, 255, 0.25)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.transform = 'translateY(0)';
+                        e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)';
+                      }}
                     >
-                      <Share2 size={20} />
-                      <span>Share</span>
+                      <Download size={20} strokeWidth={2} />
+                      <span>Download</span>
                     </button>
-                  </div>
 
-                  <div style={{
-                    marginTop: '1rem',
-                    fontSize: '0.875rem',
-                    color: 'rgba(255,255,255,0.6)'
-                  }}>
-                    {selectedPhoto.width} × {selectedPhoto.height} · {selectedPhoto.format.toUpperCase()}
+                    {/* 图片规格 */}
+                    <div style={{
+                      marginLeft: 'auto',
+                      fontSize: '0.9rem',
+                      color: 'rgba(255,255,255,0.7)',
+                      fontWeight: '500',
+                    }}>
+                      {selectedPhoto.width} × {selectedPhoto.height} · {selectedPhoto.format.toUpperCase()}
+                    </div>
                   </div>
-                </div>
+                </motion.div>
               </motion.div>
             </motion.div>
           )}
