@@ -14,14 +14,19 @@ const PhotoItem = ({ photo, imageProps, wrapperStyle, likes, onLike, onSelect })
   return (
     <div
       style={{
-        ...wrapperStyle, // <-- 修复 1: 将 wrapperStyle 移到最前面
+        ...wrapperStyle,
         position: 'relative',
-        overflow: 'visible', // <-- 确保 'visible' 属性生效
         borderRadius: '8px',
       }}
-      className="photo-wrapper"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      className="photo-wrapper-overflow-fix"
+      onMouseEnter={() => {
+        console.log('Mouse entered:', photo.title);
+        setIsHovered(true);
+      }}
+      onMouseLeave={() => {
+        console.log('Mouse left:', photo.title);
+        setIsHovered(false);
+      }}
     >
       {/* 基础图片容器 (保持 overflow: hidden 以便缩放动画) */}
       <div
@@ -55,6 +60,7 @@ const PhotoItem = ({ photo, imageProps, wrapperStyle, likes, onLike, onSelect })
       {/* 修复 2: 悬停信息栏移至 overflow:hidden 的容器之外 */}
       <motion.div
         className="photo-info-bar"
+        initial={{ y: '100%', opacity: 1 }}
         animate={{
           y: isHovered ? 0 : '100%', // 动画: 从 y: 100% (完全隐藏) 到 y: 0
           opacity: 1 // 保持不透明
@@ -514,6 +520,22 @@ const Gallery = () => {
         @keyframes spin {
           0% { transform: rotate(0deg); }
           100% { transform: rotate(360deg); }
+        }
+
+        /* 强制设置外层容器 overflow 为 visible */
+        .photo-wrapper-overflow-fix {
+          overflow: visible !important;
+        }
+
+        /* 确保 PhotoAlbum 容器也不会裁切 */
+        .gallery-album,
+        .gallery-album > div {
+          overflow: visible !important;
+        }
+
+        /* 调试用：给信息栏添加背景，确保它存在 */
+        .photo-info-bar {
+          z-index: 10;
         }
       `}</style>
     </section>
