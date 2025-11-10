@@ -4,6 +4,117 @@ import PhotoAlbum from 'react-photo-album';
 import 'react-photo-album/rows.css';
 import { Heart, Eye, Download, Share2, X } from 'lucide-react';
 
+// 自定义照片组件 - 支持悬浮效果
+const PhotoItem = ({ photo, imageProps, wrapperStyle, likes, onLike, onSelect }) => {
+  const [isHovered, setIsHovered] = useState(false);
+  const isLiked = likes[photo.id];
+  const { style, ...restImageProps } = imageProps;
+
+  return (
+    <div
+      style={{
+        ...wrapperStyle,
+        position: 'relative',
+        overflow: 'hidden',
+        borderRadius: '8px',
+      }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      {/* 图片 */}
+      <motion.img
+        {...restImageProps}
+        animate={{
+          scale: isHovered ? 1.05 : 1
+        }}
+        transition={{ duration: 0.3 }}
+        style={{
+          ...style,
+          display: 'block',
+          cursor: 'pointer',
+        }}
+        alt={photo.title}
+        onClick={() => onSelect(photo)}
+      />
+
+      {/* 悬浮信息栏 */}
+      <motion.div
+        animate={{
+          y: isHovered ? 0 : '100%',
+          opacity: isHovered ? 1 : 0
+        }}
+        transition={{ duration: 0.3, ease: 'easeOut' }}
+        style={{
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          background: 'rgba(0, 0, 0, 0.75)',
+          backdropFilter: 'blur(10px)',
+          padding: '0.75rem 1rem',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          color: 'white',
+          pointerEvents: isHovered ? 'auto' : 'none',
+        }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* 左侧：标题 */}
+        <h3 style={{
+          margin: 0,
+          fontSize: '0.9rem',
+          fontWeight: '600',
+          textTransform: 'capitalize',
+          flex: 1,
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap',
+          paddingRight: '1rem'
+        }}>
+          {photo.title}
+        </h3>
+
+        {/* 右侧：点赞按钮 */}
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onLike(photo.id);
+          }}
+          style={{
+            background: isLiked ? 'rgba(255, 107, 53, 0.2)' : 'rgba(255, 255, 255, 0.1)',
+            border: 'none',
+            color: 'white',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.35rem',
+            padding: '0.4rem 0.7rem',
+            borderRadius: '6px',
+            transition: 'all 0.2s',
+            fontSize: '0.85rem',
+            fontWeight: '500'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = isLiked ? 'rgba(255, 107, 53, 0.3)' : 'rgba(255, 255, 255, 0.2)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = isLiked ? 'rgba(255, 107, 53, 0.2)' : 'rgba(255, 255, 255, 0.1)';
+          }}
+        >
+          <Heart
+            size={16}
+            fill={isLiked ? '#ff6b35' : 'none'}
+            color={isLiked ? '#ff6b35' : 'white'}
+            strokeWidth={2}
+          />
+          <span>{photo.likes + (isLiked ? 1 : 0)}</span>
+        </button>
+      </motion.div>
+    </div>
+  );
+};
+
 const Gallery = () => {
   const [photos, setPhotos] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -60,6 +171,16 @@ const Gallery = () => {
       [photoId]: !prev[photoId]
     }));
   };
+
+  // 渲染函数 - 使用 PhotoItem 组件
+  const renderPhoto = (props) => (
+    <PhotoItem
+      {...props}
+      likes={likes}
+      onLike={handleLike}
+      onSelect={setSelectedPhoto}
+    />
+  );
 
   return (
     <section id="gallery" className="section gallery-section">
@@ -142,13 +263,13 @@ const Gallery = () => {
             <PhotoAlbum
               layout="rows"
               photos={photos}
+              renderPhoto={renderPhoto}
               targetRowHeight={250}
               spacing={8}
               rowConstraints={{
                 minPhotos: 1,
                 maxPhotos: 5
               }}
-              onClick={({ photo }) => setSelectedPhoto(photo)}
             />
           </motion.div>
         )}
