@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import JustifiedGallery from 'react-justified-gallery';
+import { Gallery as GridGallery } from 'react-grid-gallery';
 import { Heart, Eye, Download, Share2, X } from 'lucide-react';
 
 const Gallery = () => {
@@ -127,7 +127,7 @@ const Gallery = () => {
           </motion.div>
         )}
 
-        {/* 照片墙 - 使用 react-justified-gallery */}
+        {/* 照片墙 - 使用 react-grid-gallery */}
         {!loading && !error && photos.length > 0 && (
           <motion.div
             className="gallery-album"
@@ -140,12 +140,12 @@ const Gallery = () => {
               width: '100%'
             }}
           >
-            <JustifiedGallery
+            <GridGallery
               images={photos}
+              enableImageSelection={false}
               rowHeight={220}
-              maxRowHeight={300}
               margin={4}
-              onClick={(e, image) => setSelectedPhoto(image)}
+              onClick={(index) => setSelectedPhoto(photos[index])}
             />
           </motion.div>
         )}
