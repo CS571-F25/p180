@@ -9,6 +9,7 @@ import GamingShowcase from './components/GamingShowcase';
 import TechnicalStack from './components/TechnicalStack';
 import TravelMap from './components/TravelMap';
 import Footer from './components/Footer';
+import PageTransition from './components/PageTransition';
 import logo from './assets/logo.svg';
 import './App.css';
 
@@ -74,22 +75,6 @@ function App() {
     }
   };
 
-  // Animation variants
-  const variants = {
-    enter: (direction) => ({
-      x: direction > 0 ? '100%' : '-100%',
-      opacity: 0
-    }),
-    center: {
-      x: 0,
-      opacity: 1
-    },
-    exit: (direction) => ({
-      x: direction > 0 ? '-100%' : '100%',
-      opacity: 0
-    })
-  };
-
   const CurrentPageComponent = pages[currentPage].component;
 
   return (
@@ -107,23 +92,20 @@ function App() {
         />
 
         <div className="page-container">
-          <AnimatePresence initial={false} custom={direction} mode="wait">
-            <motion.div
-              key={currentPage}
-              custom={direction}
-              variants={variants}
-              initial="enter"
-              animate="center"
-              exit="exit"
-              transition={{
-                x: { type: "spring", stiffness: 300, damping: 30 },
-                opacity: { duration: 0.2 }
-              }}
-              className="page-wrapper"
-            >
-              <CurrentPageComponent setActiveSection={() => {}} />
-            </motion.div>
-          </AnimatePresence>
+          <PageTransition
+            pageKey={currentPage}
+            direction={direction}
+            onTransitionStart={() => {
+              // 可以在这里添加转场开始时的回调逻辑
+              console.log('Page transition started');
+            }}
+            onTransitionComplete={() => {
+              // 可以在这里添加转场完成时的回调逻辑
+              console.log('Page transition completed');
+            }}
+          >
+            <CurrentPageComponent setActiveSection={() => {}} />
+          </PageTransition>
         </div>
 
         {/* Navigation Controls */}

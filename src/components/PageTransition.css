@@ -1,0 +1,84 @@
+/* PageTransition 容器 */
+.page-transition-container {
+  width: 100%;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 页面内容 */
+.page-content {
+  width: 100%;
+  height: 100vh;
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* 转场遮罩层 */
+.transition-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #ffffff; /* 白色遮罩 */
+  z-index: 9999; /* 确保在所有内容之上 */
+  pointer-events: none; /* 不阻止鼠标事件 */
+  will-change: transform; /* 优化性能 */
+}
+
+/* 可选：品牌色遮罩层变体 */
+.transition-overlay.brand-color {
+  background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+}
+
+/* 可选：渐变遮罩层 */
+.transition-overlay.gradient {
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(255, 255, 255, 1) 50%,
+    rgba(255, 255, 255, 0.95) 100%
+  );
+}
+
+/* 加载动画容器 */
+.transition-loader {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 加载 Spinner */
+.loader-spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-top-color: #ff6b35; /* 默认颜色，会被内联样式覆盖 */
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .page-transition-container {
+    height: 100dvh; /* 使用动态视口高度，适配移动端 */
+  }
+
+  .page-content {
+    height: 100dvh;
+  }
+}
