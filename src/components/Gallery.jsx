@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Gallery as GridGallery } from 'react-grid-gallery';
+import PhotoAlbum from 'react-photo-album';
 import { Heart, Eye, Download, Share2, X } from 'lucide-react';
 
 const Gallery = () => {
@@ -127,7 +127,7 @@ const Gallery = () => {
           </motion.div>
         )}
 
-        {/* 照片墙 - 使用 react-grid-gallery */}
+        {/* 照片墙 - 使用 react-photo-album */}
         {!loading && !error && photos.length > 0 && (
           <motion.div
             className="gallery-album"
@@ -138,12 +138,12 @@ const Gallery = () => {
               width: '100%'
             }}
           >
-            <GridGallery
-              images={photos}
-              enableImageSelection={false}
-              rowHeight={320}
-              margin={8}
-              onClick={(index) => setSelectedPhoto(photos[index])}
+            <PhotoAlbum
+              layout="rows"
+              photos={photos}
+              targetRowHeight={320}
+              spacing={8}
+              onClick={({ photo }) => setSelectedPhoto(photo)}
             />
           </motion.div>
         )}
