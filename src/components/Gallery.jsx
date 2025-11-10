@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import PhotoAlbum from 'react-photo-album';
+import 'react-photo-album/rows.css';
 import { Heart, Eye, Download, Share2, X } from 'lucide-react';
 
 const Gallery = () => {
@@ -141,7 +142,7 @@ const Gallery = () => {
             <PhotoAlbum
               layout="rows"
               photos={photos}
-              targetRowHeight={320}
+              targetRowHeight={200}
               spacing={8}
               onClick={({ photo }) => setSelectedPhoto(photo)}
             />
