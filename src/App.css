@@ -1,14 +1,13 @@
 .App {
   text-align: center;
-  overflow: hidden;
-  height: 100vh;
+  min-height: 100vh;
   position: relative;
 }
 
-/* Disable scrolling for paginated mode */
+/* Allow vertical scrolling */
 html, body {
-  overflow: hidden;
-  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
   margin: 0;
   padding: 0;
 }
@@ -16,20 +15,15 @@ html, body {
 /* Page container */
 .page-container {
   width: 100%;
-  height: 100vh;
+  min-height: 100vh;
   position: relative;
-  overflow: hidden;
 }
 
 /* Page wrapper */
 .page-wrapper {
   width: 100%;
-  height: 100vh;
-  position: absolute;
-  top: 0;
-  left: 0;
-  overflow-y: auto;
-  overflow-x: hidden;
+  min-height: 100vh;
+  position: relative;
 }
 
 /* Navigation styles */

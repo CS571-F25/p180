@@ -74,20 +74,20 @@ function App() {
     }
   };
 
-  // Animation variants
+  // Animation variants - Mask Transition
   const variants = {
-    enter: (direction) => ({
-      x: direction > 0 ? '100%' : '-100%',
+    enter: {
+      clipPath: 'circle(0% at 50% 50%)',
       opacity: 0
-    }),
+    },
     center: {
-      x: 0,
+      clipPath: 'circle(150% at 50% 50%)',
       opacity: 1
     },
-    exit: (direction) => ({
-      x: direction > 0 ? '-100%' : '100%',
+    exit: {
+      clipPath: 'circle(0% at 50% 50%)',
       opacity: 0
-    })
+    }
   };
 
   const CurrentPageComponent = pages[currentPage].component;
@@ -116,8 +116,8 @@ function App() {
               animate="center"
               exit="exit"
               transition={{
-                x: { type: "spring", stiffness: 300, damping: 30 },
-                opacity: { duration: 0.2 }
+                clipPath: { duration: 0.5, ease: "easeInOut" },
+                opacity: { duration: 0.3 }
               }}
               className="page-wrapper"
             >
