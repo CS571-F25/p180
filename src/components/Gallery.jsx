@@ -18,6 +18,7 @@ const PhotoItem = ({ photo, imageProps, wrapperStyle, likes, onLike, onSelect })
         position: 'relative',
         overflow: 'visible', // <-- 确保 'visible' 属性生效
         borderRadius: '8px',
+        pointerEvents: 'auto', // <-- 确保可以接收鼠标事件
       }}
       className="photo-wrapper"
       onMouseEnter={() => setIsHovered(true)}
@@ -55,6 +56,7 @@ const PhotoItem = ({ photo, imageProps, wrapperStyle, likes, onLike, onSelect })
       {/* 修复 2: 悬停信息栏移至 overflow:hidden 的容器之外 */}
       <motion.div
         className="photo-info-bar"
+        initial={{ y: '100%', opacity: 1 }}
         animate={{
           y: isHovered ? 0 : '100%', // 动画: 从 y: 100% (完全隐藏) 到 y: 0
           opacity: 1 // 保持不透明
