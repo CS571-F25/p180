@@ -142,8 +142,12 @@ const Gallery = () => {
             <PhotoAlbum
               layout="rows"
               photos={photos}
-              targetRowHeight={200}
+              targetRowHeight={250}
               spacing={8}
+              rowConstraints={{
+                minPhotos: 1,
+                maxPhotos: 5
+              }}
               onClick={({ photo }) => setSelectedPhoto(photo)}
             />
           </motion.div>
