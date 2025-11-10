@@ -135,7 +135,7 @@ const Gallery = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
             style={{
-              maxWidth: '1400px',
+              maxWidth: '95%',
               margin: '0 auto',
               width: '100%'
             }}
@@ -143,8 +143,8 @@ const Gallery = () => {
             <GridGallery
               images={photos}
               enableImageSelection={false}
-              rowHeight={220}
-              margin={4}
+              rowHeight={320}
+              margin={8}
               onClick={(index) => setSelectedPhoto(photos[index])}
             />
           </motion.div>
