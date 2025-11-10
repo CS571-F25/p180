@@ -1,182 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import PhotoAlbum from 'react-photo-album';
-import 'react-photo-album/rows.css';
-import { Heart, MessageCircle, Eye, Download, Share2, X } from 'lucide-react';
-
-// 单独的照片组件 - 支持 hover 状态
-// 单独的照片组件 - 支持 hover 状态 (已修复)
-const PhotoItem = ({ photo, imageProps, wrapperStyle, likes, onLike, onSelect }) => {
-  const [isHovered, setIsHovered] = useState(false);
-  const isLiked = likes[photo.id];
-  const { style, ...restImageProps } = imageProps;
-
-  return (
-    <div
-      style={{
-        ...wrapperStyle, // <-- 修复 1: 将 wrapperStyle 移到最前面
-        position: 'relative',
-        overflow: 'visible', // <-- 确保 'visible' 属性生效
-        borderRadius: '8px',
-      }}
-      className="photo-wrapper"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
-      {/* 基础图片容器 (保持 overflow: hidden 以便缩放动画) */}
-      <div
-        style={{
-          position: 'relative',
-          cursor: 'pointer',
-          overflow: 'hidden',
-          borderRadius: '8px',
-        }}
-        onClick={() => onSelect(photo)}
-      >
-        <motion.img
-          {...restImageProps}
-          animate={{
-            scale: isHovered ? 1.05 : 1
-          }}
-          transition={{ duration: 0.3 }}
-          style={{
-            ...style,
-            display: 'block',
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-          }}
-          alt={photo.title}
-        />
-
-        {/* 悬停信息栏被移到这里 (外面) */}
-      </div>
-
-      {/* 修复 2: 悬停信息栏移至 overflow:hidden 的容器之外 */}
-      <motion.div
-        className="photo-info-bar"
-        animate={{
-          y: isHovered ? 0 : '100%', // 动画: 从 y: 100% (完全隐藏) 到 y: 0
-          opacity: 1 // 保持不透明
-        }}
-        transition={{ duration: 0.3, ease: 'easeOut' }}
-        style={{
-          // 修复 3: 定位回图片内部的底部
-          position: 'absolute',
-          bottom: 0, // 定位到父容器(图片)的底部
-          left: 0,
-          right: 0,
-          // 移除 marginTop
-          background: 'rgba(0, 0, 0, 0.75)', // 你可以按需调整透明度
-          backdropFilter: 'blur(10px)',
-          padding: '0.75rem 1rem',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          color: 'white',
-          pointerEvents: isHovered ? 'auto' : 'none',
-          // 注意: 我们把圆角应用到这里，使其只匹配底部的圆角
-          borderBottomLeftRadius: '8px',
-          borderBottomRightRadius: '8px'
-        }}
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* 左侧：标题 */}
-        <h3 style={{
-          margin: 0,
-          fontSize: '0.9rem',
-          fontWeight: '600',
-          textTransform: 'capitalize',
-          flex: 1,
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          whiteSpace: 'nowrap',
-          paddingRight: '1rem'
-        }}>
-          {photo.title}
-        </h3>
-
-        {/* 右侧：按钮组 */}
-        <div style={{
-          display: 'flex',
-          gap: '0.5rem',
-          alignItems: 'center'
-        }}>
-          {/* 点赞按钮 (代码不变) */}
-          <button
-            className={`photo-action-btn ${isLiked ? 'liked' : ''}`}
-            onClick={(e) => {
-              e.stopPropagation();
-              onLike(photo.id);
-            }}
-            style={{
-              background: isLiked ? 'rgba(255, 107, 53, 0.2)' : 'rgba(255, 255, 255, 0.1)',
-              border: 'none',
-              color: 'white',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.35rem',
-              padding: '0.4rem 0.7rem',
-              borderRadius: '6px',
-              transition: 'all 0.2s',
-              fontSize: '0.85rem',
-              fontWeight: '500'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = isLiked ? 'rgba(255, 107, 53, 0.3)' : 'rgba(255, 255, 255, 0.2)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = isLiked ? 'rgba(255, 107, 53, 0.2)' : 'rgba(255, 255, 255, 0.1)';
-            }}
-          >
-            <Heart
-              size={16}
-              fill={isLiked ? '#ff6b35' : 'none'}
-              color={isLiked ? '#ff6b35' : 'white'}
-              strokeWidth={2}
-            />
-            <span>{photo.likes + (isLiked ? 1 : 0)}</span>
-          </button>
-
-          {/* 下载按钮 (代码不变) */}
-          <button
-            className="photo-action-btn"
-            onClick={(e) => {
-              e.stopPropagation();
-              // 下载功能
-              const link = document.createElement('a');
-              link.href = photo.src;
-              link.download = `${photo.title}.${photo.format}`;
-              link.click();
-            }}
-            style={{
-              background: 'rgba(255, 255, 255, 0.1)',
-              border: 'none',
-              color: 'white',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              padding: '0.4rem 0.7rem',
-              borderRadius: '6px',
-              transition: 'all 0.2s',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
-            }}
-            title="下载图片"
-          >
-            <Download size={16} strokeWidth={2} />
-          </button>
-        </div>
-      </motion.div>
-    </div>
-  );
-};
+import JustifiedGallery from 'react-justified-gallery';
+import { Heart, Eye, Download, Share2, X } from 'lucide-react';
 
 const Gallery = () => {
   const [photos, setPhotos] = useState([]);
@@ -234,16 +59,6 @@ const Gallery = () => {
       [photoId]: !prev[photoId]
     }));
   };
-
-  // 渲染函数 - 使用 PhotoItem 组件
-  const renderPhoto = (props) => (
-    <PhotoItem
-      {...props}
-      likes={likes}
-      onLike={handleLike}
-      onSelect={setSelectedPhoto}
-    />
-  );
 
   return (
     <section id="gallery" className="section gallery-section">
@@ -312,7 +127,7 @@ const Gallery = () => {
           </motion.div>
         )}
 
-        {/* 照片墙 - 使用 react-photo-album 的 justified layout */}
+        {/* 照片墙 - 使用 react-justified-gallery */}
         {!loading && !error && photos.length > 0 && (
           <motion.div
             className="gallery-album"
@@ -325,16 +140,12 @@ const Gallery = () => {
               width: '100%'
             }}
           >
-            <PhotoAlbum
-              layout="rows"
-              photos={photos}
-              renderPhoto={renderPhoto}
-              spacing={10}
-              targetRowHeight={250}
-              rowConstraints={{
-                minPhotos: 1,
-                maxPhotos: 5
-              }}
+            <JustifiedGallery
+              images={photos}
+              rowHeight={220}
+              maxRowHeight={300}
+              margin={4}
+              onClick={(e, image) => setSelectedPhoto(image)}
             />
           </motion.div>
         )}
