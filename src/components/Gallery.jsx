@@ -62,7 +62,7 @@ const Gallery = () => {
 
   return (
     <section id="gallery" className="section gallery-section">
-      <div className="container">
+      <div className="container" style={{ maxWidth: '95%' }}>
         <motion.h2
           className="section-title"
           initial={{ opacity: 0, y: 30 }}
@@ -135,8 +135,6 @@ const Gallery = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
             style={{
-              maxWidth: '95%',
-              margin: '0 auto',
               width: '100%'
             }}
           >
