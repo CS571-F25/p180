@@ -1796,6 +1796,9 @@ code {
   border-radius: 0;
   border: none;
   box-shadow: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .globe-title-overlay {
@@ -1811,6 +1814,13 @@ code {
 .globe-title-overlay .section-title,
 .globe-title-overlay .section-subtitle {
   pointer-events: none;
+}
+
+.globe-container-fullpage > div:not(.globe-title-overlay) {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .globe-container canvas {
