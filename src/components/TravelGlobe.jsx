@@ -329,7 +329,7 @@ const TravelGlobe = () => {
           htmlAltitude={0.01}
 
           // Styling
-          atmosphereColor="#ff6b35"
+          atmosphereColor="#ffffffff"
           atmosphereAltitude={0.15}
 
           // Performance
