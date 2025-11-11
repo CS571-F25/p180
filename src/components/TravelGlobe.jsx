@@ -240,41 +240,42 @@ const TravelGlobe = () => {
 
   return (
     <section id="travel" className="section travel-section-new">
-      <div className="container">
-        <motion.h2
-          className="section-title"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-        >
-          My Travel Globe
-        </motion.h2>
-
-        <motion.p
-          className="section-subtitle"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-        >
-          探索世界的足迹 - 点击地球上的标记查看照片
-        </motion.p>
-      </div>
-
-      {/* Globe container */}
+      {/* Globe container - full page */}
       <motion.div
         ref={containerRef}
-        className="globe-container"
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
+        className="globe-container globe-container-fullpage"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.8, delay: 0.3 }}
+        transition={{ duration: 0.8 }}
       >
+        {/* Title overlay */}
+        <div className="globe-title-overlay">
+          <motion.h2
+            className="section-title"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            My Travel Globe
+          </motion.h2>
+
+          <motion.p
+            className="section-subtitle"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            探索世界的足迹 - 点击地球上的标记查看照片
+          </motion.p>
+        </div>
+
         <Globe
           ref={globeEl}
-          width={containerRef.current?.offsetWidth}
-          height={850}
+          width={containerRef.current?.offsetWidth || window.innerWidth}
+          height={containerRef.current?.offsetHeight || window.innerHeight}
 
           globeImageUrl="//unpkg.com/three-globe/example/img/earth-blue-marble.jpg"
           bumpImageUrl="//unpkg.com/three-globe/example/img/earth-topology.png"
