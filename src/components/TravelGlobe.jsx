@@ -277,7 +277,7 @@ const TravelGlobe = () => {
           width={containerRef.current?.offsetWidth || window.innerWidth}
           height={containerRef.current?.offsetHeight || window.innerHeight}
 
-          globeImageUrl="//unpkg.com/three-globe/example/img/earth-blue-marble.jpg"
+          globeImageUrl="https://eoimages.gsfc.nasa.gov/images/imagerecords/57000/57730/land_ocean_ice_2048.png"
           bumpImageUrl="//unpkg.com/three-globe/example/img/earth-topology.png"
           backgroundColor="rgba(255,255,255,1)"
 
