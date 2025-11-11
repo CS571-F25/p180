@@ -174,6 +174,20 @@ const TravelGlobe = () => {
     }
   ];
 
+  // Arc links connecting travel locations (by visit date order)
+  const arcsData = [
+    // Tokyo to Sydney
+    { startLat: 35.6895, startLng: 139.6917, endLat: -33.8688, endLng: 151.2093, color: ['#ff6b35', '#ff6b35'] },
+    // Sydney to NYC
+    { startLat: -33.8688, startLng: 151.2093, endLat: 40.7128, endLng: -74.0060, color: ['#ff6b35', '#ff6b35'] },
+    // NYC to Paris
+    { startLat: 40.7128, startLng: -74.0060, endLat: 48.8566, endLng: 2.3522, color: ['#ff6b35', '#ff6b35'] },
+    // Paris to Beijing
+    { startLat: 48.8566, startLng: 2.3522, endLat: 39.9042, endLng: 116.4074, color: ['#ff6b35', '#ff6b35'] },
+    // Beijing to Madison
+    { startLat: 39.9042, startLng: 116.4074, endLat: 43.0731, endLng: -89.4012, color: ['#ff6b35', '#ff6b35'] }
+  ];
+
   // Initialize globe and set up auto-rotation
   useEffect(() => {
     if (!globeEl.current) return;
@@ -328,6 +342,14 @@ const TravelGlobe = () => {
           htmlLat={d => d.lat}
           htmlLng={d => d.lng}
           htmlAltitude={0.01}
+
+          // Arc links
+          arcsData={arcsData}
+          arcColor={'color'}
+          arcDashLength={0.4}
+          arcDashGap={0.2}
+          arcDashAnimateTime={2000}
+          arcStroke={0.5}
 
           // Styling
           atmosphereColor="#ffffffff"
