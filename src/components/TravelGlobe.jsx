@@ -284,24 +284,44 @@ const TravelGlobe = () => {
           htmlElementsData={locations}
           htmlElement={(d) => {
             const el = document.createElement('div');
-            el.innerHTML = `<div style="
-              width: 20px;
-              height: 20px;
-              background: #ff6b35;
-              border: 2px solid white;
-              border-radius: 50%;
-              box-shadow: 0 2px 8px rgba(255, 107, 53, 0.5);
-              transition: transform 0.2s;
-            "></div>`;
+            el.innerHTML = `
+              <div style="
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 4px;
+              ">
+                <div style="
+                  background: rgba(255, 255, 255, 0.95);
+                  color: #1d1d1f;
+                  padding: 4px 8px;
+                  border-radius: 8px;
+                  font-size: 12px;
+                  font-weight: 600;
+                  white-space: nowrap;
+                  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+                  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                ">${d.name}</div>
+                <div style="
+                  width: 20px;
+                  height: 20px;
+                  background: #ff6b35;
+                  border: 2px solid white;
+                  border-radius: 50%;
+                  box-shadow: 0 2px 8px rgba(255, 107, 53, 0.5);
+                  transition: transform 0.2s;
+                "></div>
+              </div>
+            `;
 
             el.style['pointer-events'] = 'auto';
             el.style.cursor = 'pointer';
 
             el.onmouseenter = () => {
-              el.children[0].style.transform = 'scale(1.3)';
+              el.children[0].children[1].style.transform = 'scale(1.3)';
             };
             el.onmouseleave = () => {
-              el.children[0].style.transform = 'scale(1)';
+              el.children[0].children[1].style.transform = 'scale(1)';
             };
             el.onclick = () => handleMarkerClick(d);
 
