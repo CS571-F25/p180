@@ -1773,6 +1773,25 @@ code {
   z-index: 1;
 }
 
+/* Globe container for 3D globe */
+.globe-container {
+  width: calc(100% - 80px);
+  max-width: 1800px;
+  margin: 2rem auto;
+  height: 850px;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+  border: 2px solid #f5f5f7;
+  background: #000;
+  position: relative;
+}
+
+.globe-container canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
 .map-tooltip {
   background: white;
   padding: 8px 12px;
@@ -1881,9 +1900,11 @@ code {
 
 /* Responsive */
 @media (max-width: 768px) {
-  .world-map-container {
+  .world-map-container,
+  .globe-container {
     height: 500px;
     border-radius: 16px;
+    width: calc(100% - 40px);
   }
 
   .travel-modal-content {

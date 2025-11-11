@@ -7,7 +7,7 @@ import Hero from './components/Hero';
 import Gallery from './components/Gallery';
 import GamingShowcase from './components/GamingShowcase';
 import TechnicalStack from './components/TechnicalStack';
-import TravelMap from './components/TravelMap';
+import TravelGlobe from './components/TravelGlobe';
 import Footer from './components/Footer';
 import logo from './assets/logo.svg';
 import './App.css';
@@ -19,7 +19,7 @@ function App() {
   const pages = [
     { id: 'home', label: 'Home', component: Hero },
     { id: 'gallery', label: 'Gallery', component: Gallery },
-    { id: 'travel', label: 'Travel', component: TravelMap },
+    { id: 'travel', label: 'Travel', component: TravelGlobe },
     { id: 'gaming', label: 'Gaming', component: GamingShowcase },
     { id: 'skills', label: 'Skills', component: TechnicalStack }
   ];
