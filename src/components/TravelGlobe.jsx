@@ -292,14 +292,11 @@ const TravelGlobe = () => {
                 gap: 4px;
               ">
                 <div style="
-                  background: rgba(255, 255, 255, 0.95);
-                  color: #1d1d1f;
-                  padding: 4px 8px;
-                  border-radius: 8px;
+                  color: #ff6b35;
                   font-size: 12px;
-                  font-weight: 600;
+                  font-weight: 700;
                   white-space: nowrap;
-                  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+                  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3), 0 0 8px rgba(0, 0, 0, 0.5);
                   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
                 ">${d.name}</div>
                 <div style="
