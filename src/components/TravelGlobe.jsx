@@ -238,25 +238,6 @@ const TravelGlobe = () => {
     }
   };
 
-  // Custom marker HTML
-  const markerHtml = (location) => {
-    return `
-      <div style="
-        width: 20px;
-        height: 20px;
-        background: #ff6b35;
-        border: 2px solid white;
-        border-radius: 50%;
-        box-shadow: 0 2px 8px rgba(255, 107, 53, 0.5);
-        cursor: pointer;
-        transition: transform 0.2s;
-      "
-      onmouseover="this.style.transform='scale(1.3)'"
-      onmouseout="this.style.transform='scale(1)'"
-      ></div>
-    `;
-  };
-
   return (
     <section id="travel" className="section travel-section-new">
       <div className="container">
@@ -303,9 +284,26 @@ const TravelGlobe = () => {
           htmlElementsData={locations}
           htmlElement={(d) => {
             const el = document.createElement('div');
-            el.innerHTML = markerHtml(d);
+            el.style.width = '20px';
+            el.style.height = '20px';
+            el.style.background = '#ff6b35';
+            el.style.border = '2px solid white';
+            el.style.borderRadius = '50%';
+            el.style.boxShadow = '0 2px 8px rgba(255, 107, 53, 0.5)';
             el.style.cursor = 'pointer';
-            el.onclick = () => handleMarkerClick(d);
+            el.style.transition = 'transform 0.2s';
+
+            el.addEventListener('mouseenter', () => {
+              el.style.transform = 'scale(1.3)';
+            });
+            el.addEventListener('mouseleave', () => {
+              el.style.transform = 'scale(1)';
+            });
+            el.addEventListener('click', (e) => {
+              e.stopPropagation();
+              handleMarkerClick(d);
+            });
+
             return el;
           }}
           htmlLat={d => d.lat}
