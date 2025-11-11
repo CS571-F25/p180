@@ -5,8 +5,8 @@ import { X, Calendar, MapPin as MapPinIcon } from 'lucide-react';
 
 const TravelGlobe = () => {
   const [selectedLocation, setSelectedLocation] = useState(null);
-  const [globeReady, setGlobeReady] = useState(false);
   const globeEl = useRef();
+  const containerRef = useRef();
   const autoRotateRef = useRef(true);
 
   // Travel locations data
@@ -176,7 +176,9 @@ const TravelGlobe = () => {
 
   // Initialize globe and set up auto-rotation
   useEffect(() => {
-    if (globeEl.current) {
+    if (!globeEl.current) return;
+
+    try {
       const globe = globeEl.current;
 
       // Set initial view
@@ -184,33 +186,38 @@ const TravelGlobe = () => {
 
       // Set up controls
       const controls = globe.controls();
-      controls.autoRotate = true;
-      controls.autoRotateSpeed = 0.5;
-      controls.enableZoom = true;
-      controls.minDistance = 200;
-      controls.maxDistance = 600;
+      if (controls) {
+        controls.autoRotate = true;
+        controls.autoRotateSpeed = 0.5;
+        controls.enableZoom = true;
+        controls.minDistance = 200;
+        controls.maxDistance = 600;
 
-      setGlobeReady(true);
+        // Stop auto-rotation when user interacts
+        const handleInteraction = () => {
+          if (autoRotateRef.current && controls) {
+            controls.autoRotate = false;
+            autoRotateRef.current = false;
+          }
+        };
 
-      // Stop auto-rotation when user interacts
-      const handleInteraction = () => {
-        if (autoRotateRef.current) {
-          controls.autoRotate = false;
-          autoRotateRef.current = false;
+        // Add interaction listeners
+        const scene = globe.scene();
+        if (scene && scene.canvas) {
+          const canvas = scene.canvas;
+          canvas.addEventListener('mousedown', handleInteraction);
+          canvas.addEventListener('touchstart', handleInteraction);
+          canvas.addEventListener('wheel', handleInteraction);
+
+          return () => {
+            canvas.removeEventListener('mousedown', handleInteraction);
+            canvas.removeEventListener('touchstart', handleInteraction);
+            canvas.removeEventListener('wheel', handleInteraction);
+          };
         }
-      };
-
-      // Add interaction listeners
-      const canvas = globe.scene().canvas;
-      canvas.addEventListener('mousedown', handleInteraction);
-      canvas.addEventListener('touchstart', handleInteraction);
-      canvas.addEventListener('wheel', handleInteraction);
-
-      return () => {
-        canvas.removeEventListener('mousedown', handleInteraction);
-        canvas.removeEventListener('touchstart', handleInteraction);
-        canvas.removeEventListener('wheel', handleInteraction);
-      };
+      }
+    } catch (error) {
+      console.error('Error initializing globe:', error);
     }
   }, []);
 
@@ -218,12 +225,16 @@ const TravelGlobe = () => {
   const handleMarkerClick = (location) => {
     setSelectedLocation(location);
     if (globeEl.current) {
-      // Smoothly move camera to location
-      globeEl.current.pointOfView({
-        lat: location.lat,
-        lng: location.lng,
-        altitude: 2
-      }, 1000);
+      try {
+        // Smoothly move camera to location
+        globeEl.current.pointOfView({
+          lat: location.lat,
+          lng: location.lng,
+          altitude: 2
+        }, 1000);
+      } catch (error) {
+        console.error('Error moving to location:', error);
+      }
     }
   };
 
@@ -272,6 +283,7 @@ const TravelGlobe = () => {
 
       {/* Globe container */}
       <motion.div
+        ref={containerRef}
         className="globe-container"
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -280,6 +292,9 @@ const TravelGlobe = () => {
       >
         <Globe
           ref={globeEl}
+          width={containerRef.current?.offsetWidth}
+          height={850}
+
           globeImageUrl="//unpkg.com/three-globe/example/img/earth-blue-marble.jpg"
           bumpImageUrl="//unpkg.com/three-globe/example/img/earth-topology.png"
           backgroundImageUrl="//unpkg.com/three-globe/example/img/night-sky.png"
