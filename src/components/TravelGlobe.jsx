@@ -278,6 +278,7 @@ const TravelGlobe = () => {
 
           globeImageUrl="//unpkg.com/three-globe/example/img/earth-blue-marble.jpg"
           bumpImageUrl="//unpkg.com/three-globe/example/img/earth-topology.png"
+          backgroundColor="rgba(255,255,255,1)"
 
           // Custom markers
           htmlElementsData={locations}
