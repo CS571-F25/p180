@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Globe from 'react-globe.gl';
 import { X, Calendar, MapPin as MapPinIcon } from 'lucide-react';
+import globe from '../assets/globe.png'
+import bump from '../assets/bump.jpg'
 
 const TravelGlobe = () => {
   const [selectedLocation, setSelectedLocation] = useState(null);
@@ -291,8 +293,8 @@ const TravelGlobe = () => {
           width={containerRef.current?.offsetWidth || window.innerWidth}
           height={containerRef.current?.offsetHeight || window.innerHeight}
 
-          globeImageUrl="https://eoimages.gsfc.nasa.gov/images/imagerecords/57000/57730/land_ocean_ice_2048.png"
-          bumpImageUrl="//unpkg.com/three-globe/example/img/earth-topology.png"
+          globeImageUrl={globe}
+          bumpImageUrl={bump}
           backgroundColor="rgba(255,255,255,1)"
 
           // Custom markers
