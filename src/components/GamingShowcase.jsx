@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Trophy, 
-  Clock, 
-  Users, 
-  Star, 
+import {
+  Trophy,
+  Clock,
+  Users,
+  Star,
   MessageCircle,
   Heart,
   Play
 } from 'lucide-react';
+import TargetCursor from './TargetCursor';
 
 const GamingShowcase = () => {
   const [selectedGame, setSelectedGame] = useState(null);
@@ -160,6 +161,11 @@ const GamingShowcase = () => {
 
   return (
     <section id="gaming" className="section gaming-section">
+      <TargetCursor
+        spinDuration={2}
+        hideDefaultCursor={true}
+        parallaxOn={true}
+      />
       <div className="container">
         <motion.h2
           className="section-title"
@@ -197,7 +203,7 @@ const GamingShowcase = () => {
               {gamingData.currentGames.map(game => (
                 <motion.div
                   key={game.id}
-                  className="game-card current"
+                  className="game-card current cursor-target"
                   whileHover={{ scale: 1.05 }}
                   onClick={() => setSelectedGame(game)}
                 >
@@ -241,7 +247,7 @@ const GamingShowcase = () => {
               {gamingData.favoriteGames.map(game => (
                 <motion.div
                   key={game.id}
-                  className="game-card favorite"
+                  className="game-card favorite cursor-target"
                   whileHover={{ scale: 1.05 }}
                   onClick={() => setSelectedGame(game)}
                 >
@@ -285,7 +291,7 @@ const GamingShowcase = () => {
               {gamingData.multiplayerGames.map(game => (
                 <motion.div
                   key={game.id}
-                  className="game-card multiplayer"
+                  className="game-card multiplayer cursor-target"
                   whileHover={{ scale: 1.05 }}
                   onClick={() => setSelectedGame(game)}
                 >
