@@ -1749,6 +1749,297 @@ code {
   flex-wrap: wrap;
 }
 
+/* Gaming Section 3D */
+.gaming-section-3d {
+  position: relative;
+  min-height: 200vh;
+  background: #ffffff;
+}
+
+.gamepad-canvas-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: 1;
+  transition: opacity 0.3s ease;
+}
+
+.gamepad-hero-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  z-index: 10;
+  color: #1d1d1f;
+  pointer-events: none;
+}
+
+.gamepad-hero-text h1 {
+  font-size: 4rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  letter-spacing: -0.02em;
+}
+
+.gamepad-hero-text p {
+  font-size: 1.25rem;
+  color: #86868b;
+  font-weight: 400;
+}
+
+.game-cards-section {
+  position: relative;
+  z-index: 2;
+  background: #ffffff;
+}
+
+.games-grid-3d {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 2rem;
+  margin-top: 3rem;
+  padding-bottom: 4rem;
+}
+
+.game-card-3d {
+  background: #fff;
+  border-radius: 18px;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid #f5f5f7;
+  transition: all 0.3s ease;
+}
+
+.game-card-3d:hover {
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+.game-card-image {
+  position: relative;
+  height: 240px;
+  overflow: hidden;
+  background: #f5f5f7;
+}
+
+.game-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.game-card-3d:hover .game-card-image img {
+  transform: scale(1.1);
+}
+
+.game-card-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 107, 53, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.game-card-3d:hover .game-card-overlay {
+  opacity: 1;
+}
+
+.game-card-overlay svg {
+  color: white;
+}
+
+.game-card-content {
+  padding: 1.5rem;
+}
+
+.game-card-content h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #1d1d1f;
+  margin-bottom: 0.75rem;
+  line-height: 1.3;
+}
+
+.game-card-meta {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.game-platform,
+.game-genre {
+  font-size: 0.85rem;
+  padding: 0.25rem 0.75rem;
+  background: #f5f5f7;
+  border-radius: 12px;
+  color: #86868b;
+  font-weight: 500;
+}
+
+.game-stats-row {
+  display: flex;
+  gap: 1rem;
+}
+
+.game-stats-row .stat {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+/* Game Modal */
+.game-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3000;
+  padding: 2rem;
+}
+
+.game-modal-content {
+  background: white;
+  border-radius: 24px;
+  max-width: 700px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+.game-modal-content .modal-close {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  transition: background 0.2s ease;
+}
+
+.game-modal-content .modal-close:hover {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.game-modal-content .modal-image {
+  height: 300px;
+  overflow: hidden;
+  border-radius: 24px 24px 0 0;
+}
+
+.game-modal-content .modal-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.game-modal-content .modal-body {
+  padding: 2rem;
+}
+
+.game-modal-content .modal-body h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #1d1d1f;
+  margin-bottom: 1rem;
+}
+
+.game-modal-content .modal-meta {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.game-modal-content .badge {
+  padding: 0.5rem 1rem;
+  background: #f5f5f7;
+  border-radius: 16px;
+  color: #666;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.game-modal-content .modal-description {
+  color: #555;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+.game-modal-content .modal-stats {
+  display: flex;
+  gap: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #f5f5f7;
+}
+
+.game-modal-content .stat-large {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.game-modal-content .stat-large svg {
+  color: #ff6b35;
+}
+
+.game-modal-content .stat-value {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1d1d1f;
+}
+
+.game-modal-content .stat-label {
+  display: block;
+  font-size: 0.85rem;
+  color: #86868b;
+}
+
+@media (max-width: 768px) {
+  .gamepad-hero-text h1 {
+    font-size: 2.5rem;
+  }
+
+  .gamepad-hero-text p {
+    font-size: 1rem;
+  }
+
+  .games-grid-3d {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .game-modal-content .modal-stats {
+    flex-direction: column;
+    gap: 1rem;
+  }
+}
+
 /* Travel Section - New Design */
 .travel-section-new {
   background: #ffffff;

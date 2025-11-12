@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@react-three/drei": "^10.7.6",
+    "@react-three/fiber": "^8.15.0",
     "framer-motion": "^7.6.5",
     "gsap": "^3.12.5",
     "leaflet": "^1.8.0",
