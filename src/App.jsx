@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
 import PillNav from './components/PillNav';
 import Hero from './components/Hero';
 import Gallery from './components/Gallery';
@@ -125,19 +124,6 @@ function App() {
             </motion.div>
           </AnimatePresence>
         </div>
-
-        {/* Navigation Controls */}
-        {currentPage > 0 && (
-          <button className="nav-arrow nav-arrow-left" onClick={prevPage}>
-            <ChevronLeft size={32} />
-          </button>
-        )}
-
-        {currentPage < pages.length - 1 && (
-          <button className="nav-arrow nav-arrow-right" onClick={nextPage}>
-            <ChevronRight size={32} />
-          </button>
-        )}
 
         {/* Footer only on last page */}
         {currentPage === pages.length - 1 && <Footer />}
