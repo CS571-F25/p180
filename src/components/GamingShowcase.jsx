@@ -10,6 +10,7 @@ import {
   Play
 } from 'lucide-react';
 import TargetCursor from './TargetCursor';
+import ModelViewer from './ModelViewer';
 
 const GamingShowcase = () => {
   const [selectedGame, setSelectedGame] = useState(null);
@@ -347,6 +348,27 @@ const GamingShowcase = () => {
               <div className="stat-label">Years Gaming</div>
             </div>
           </div>
+        </motion.div>
+
+        <motion.div
+          className="gaming-3d-model"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.7 }}
+          viewport={{ once: true }}
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            marginTop: '4rem'
+          }}
+        >
+          <h3 style={{ marginBottom: '2rem' }}>3D Gaming Collection</h3>
+          <ModelViewer
+            url="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/main/2.0/ToyCar/glTF-Binary/ToyCar.glb"
+            width={400}
+            height={400}
+          />
         </motion.div>
       </div>
 
