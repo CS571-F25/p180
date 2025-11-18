@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Clock } from 'lucide-react';
 import ProgressCircle from './ProgressCircle';
 import RatingStars from './RatingStars';
+import TiltedCard from './TiltedCard';
 
 /**
  * 游戏卡片组件
@@ -14,25 +15,31 @@ const GameCard = ({ game, onClick }) => {
     <motion.div
       className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl
                  transition-all duration-300 cursor-pointer group"
-      whileHover={{ scale: 1.03 }}
       onClick={onClick}
     >
-      {/* 封面图 */}
-      <div className="relative w-full h-48 overflow-hidden">
-        <img
-          src={game.cover}
-          alt={game.title}
-          className="w-full h-full object-cover transition-transform duration-300
-                     group-hover:scale-110"
+      {/* 封面图 - 使用 TiltedCard */}
+      <div className="relative w-full h-48 bg-gray-100">
+        <TiltedCard
+          imageSrc={game.cover}
+          altText={game.title}
+          captionText={game.title}
+          containerHeight="100%"
+          containerWidth="100%"
+          imageHeight="100%"
+          imageWidth="100%"
+          scaleOnHover={1.05}
+          rotateAmplitude={8}
+          showMobileWarning={false}
+          showTooltip={true}
+          displayOverlayContent={true}
+          overlayContent={
+            <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 via-black/40 to-transparent">
+              <h3 className="text-white font-bold text-lg line-clamp-2 drop-shadow-lg">
+                {game.title}
+              </h3>
+            </div>
+          }
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-
-        {/* 游戏标题覆盖在图片上 */}
-        <div className="absolute bottom-0 left-0 right-0 p-4">
-          <h3 className="text-white font-bold text-lg line-clamp-2">
-            {game.title}
-          </h3>
-        </div>
       </div>
 
       {/* 核心数据区 */}
