@@ -274,18 +274,8 @@ const TravelGlobe = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            My Travel Globe
+            Footprints of Exploration
           </motion.h2>
-
-          <motion.p
-            className="section-subtitle"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
-            探索世界的足迹 - 点击地球上的标记查看照片
-          </motion.p>
         </div>
 
         <Globe

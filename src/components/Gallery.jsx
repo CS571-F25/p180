@@ -71,18 +71,18 @@ const Gallery = () => {
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          Gallery · 展览馆
+          Gallery
         </motion.h2>
 
-        <motion.p
+        <motion.h3
           className="section-subtitle"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.2 }}
         >
-          用镜头记录世界，用作品讲述故事
-        </motion.p>
+          These are some of my photographic works.
+        </motion.h3>
 
         {/* 加载状态 */}
         {loading && (
