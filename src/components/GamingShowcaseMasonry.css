@@ -1,0 +1,255 @@
+/* Gaming Showcase Masonry Layout Styles */
+
+.gaming-section-masonry {
+  position: relative;
+  min-height: 100vh;
+  padding: 4rem 0;
+  background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+  overflow: hidden;
+}
+
+.gaming-container-masonry {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+/* 标题区域 */
+.gaming-header-masonry {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.gaming-title-masonry {
+  font-size: 3.5rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 1rem;
+  letter-spacing: -0.02em;
+}
+
+.gaming-subtitle-masonry {
+  font-size: 1.25rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 300;
+}
+
+/* Masonry Grid */
+.masonry-grid {
+  display: flex;
+  margin-left: -1.5rem; /* gutter size */
+  width: auto;
+}
+
+.masonry-grid-column {
+  padding-left: 1.5rem; /* gutter size */
+  background-clip: padding-box;
+}
+
+.masonry-grid-column > div {
+  margin-bottom: 1.5rem;
+}
+
+/* 游戏统计区域 */
+.gaming-stats-masonry {
+  margin-top: 5rem;
+  padding: 3rem;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  border-radius: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stats-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #fff;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.stats-grid-masonry {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+}
+
+.stat-item-masonry {
+  text-align: center;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.stat-item-masonry:hover {
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.stat-number {
+  font-size: 3rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.5rem;
+}
+
+.stat-label {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 400;
+}
+
+/* 响应式设计 */
+
+/* 平板 (768px - 1023px) */
+@media (max-width: 1023px) {
+  .gaming-container-masonry {
+    padding: 0 1.5rem;
+  }
+
+  .gaming-title-masonry {
+    font-size: 2.5rem;
+  }
+
+  .gaming-subtitle-masonry {
+    font-size: 1.125rem;
+  }
+
+  .masonry-grid {
+    margin-left: -1rem;
+  }
+
+  .masonry-grid-column {
+    padding-left: 1rem;
+  }
+
+  .masonry-grid-column > div {
+    margin-bottom: 1rem;
+  }
+
+  .gaming-stats-masonry {
+    margin-top: 3rem;
+    padding: 2rem;
+  }
+
+  .stats-title {
+    font-size: 1.75rem;
+  }
+
+  .stats-grid-masonry {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+
+  .stat-number {
+    font-size: 2.5rem;
+  }
+}
+
+/* 手机 (< 768px) */
+@media (max-width: 767px) {
+  .gaming-section-masonry {
+    padding: 3rem 0;
+  }
+
+  .gaming-container-masonry {
+    padding: 0 1rem;
+  }
+
+  .gaming-header-masonry {
+    margin-bottom: 2.5rem;
+  }
+
+  .gaming-title-masonry {
+    font-size: 2rem;
+  }
+
+  .gaming-subtitle-masonry {
+    font-size: 1rem;
+  }
+
+  .masonry-grid {
+    margin-left: 0;
+  }
+
+  .masonry-grid-column {
+    padding-left: 0;
+  }
+
+  .masonry-grid-column > div {
+    margin-bottom: 1rem;
+  }
+
+  .gaming-stats-masonry {
+    margin-top: 2.5rem;
+    padding: 1.5rem;
+  }
+
+  .stats-title {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .stats-grid-masonry {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  .stat-item-masonry {
+    padding: 1.25rem;
+  }
+
+  .stat-number {
+    font-size: 2rem;
+  }
+
+  .stat-label {
+    font-size: 0.875rem;
+  }
+}
+
+/* 超小屏幕 (< 480px) */
+@media (max-width: 479px) {
+  .gaming-title-masonry {
+    font-size: 1.75rem;
+  }
+
+  .gaming-subtitle-masonry {
+    font-size: 0.9375rem;
+  }
+
+  .stats-grid-masonry {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .stat-number {
+    font-size: 2.25rem;
+  }
+}
+
+/* 动画效果 */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 确保在手机端卡片数据区域可以换行 */
+@media (max-width: 640px) {
+  /* GameCard 内部的响应式处理已在组件内完成 */
+}
