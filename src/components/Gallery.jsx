@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import PhotoAlbum from 'react-photo-album';
 import 'react-photo-album/rows.css';
 import { Heart, Eye, Download, Share2, X } from 'lucide-react';
+import ShinyText from './ShinyText';
 
 const Gallery = () => {
   const [photos, setPhotos] = useState([]);
@@ -81,7 +82,12 @@ const Gallery = () => {
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.2 }}
         >
-          These are some of my photographic works.
+          <ShinyText
+            text="These are some of my photographic works."
+            disabled={false}
+            speed={3}
+            className='custom-class'
+          />
         </motion.h3>
 
         {/* 加载状态 */}
