@@ -4,6 +4,7 @@ import PhotoAlbum from 'react-photo-album';
 import 'react-photo-album/rows.css';
 import { Heart, Eye, Download, Share2, X } from 'lucide-react';
 
+
 const Gallery = () => {
   const [photos, setPhotos] = useState([]);
   const [loading, setLoading] = useState(true);
