@@ -3699,3 +3699,61 @@ code {
   border-radius: 20px;
   pointer-events: none;
 }
+
+/* ... 接在之前的 CSS 后面 ... */
+
+/* === 背景流星雨 Canvas === */
+.meteor-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0; /* 位于地球(Canvas)的下方，但在渐变背景的上方 */
+  pointer-events: none; /* 不阻挡鼠标交互 */
+}
+
+/* ... 接在之前的 CSS 后面 ... */
+
+/* === 漂浮纸飞机动画 (JS控制随机版) === */
+.floating-plane-container {
+  position: absolute;
+  /* left: -100px;  初始位置在屏幕左外侧 */
+  left: -150px; 
+  z-index: 0;
+  opacity: 0.6;
+  color: #ff5533;
+  
+  /* 动画定义：由 JS 控制 duration 和 delay */
+  animation-name: flyAcross;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards; /* 动画结束后停在终点，等待 JS 重置 */
+  
+  transform: rotate(-15deg);
+  pointer-events: none;
+}
+
+.paper-plane {
+  transform: rotate(45deg); 
+  filter: drop-shadow(0 5px 5px rgba(255, 85, 51, 0.2));
+}
+
+@keyframes flyAcross {
+  0% {
+    left: -150px; /* 起点 */
+    transform: rotate(-10deg) scale(0.8);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.6;
+  }
+  90% {
+    opacity: 0.6;
+  }
+  100% {
+    /* 终点：飞到屏幕右下角很远的地方 */
+    left: 120vw; 
+    transform: translateY(30vh) rotate(10deg) scale(1); 
+    opacity: 0;
+  }
+}
