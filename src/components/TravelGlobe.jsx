@@ -1,416 +1,257 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import Globe from 'react-globe.gl';
-import { X, Calendar, MapPin as MapPinIcon } from 'lucide-react';
-import globe from '../assets/globe.png'
-import bump from '../assets/bump.jpg'
+import { X, Calendar, Trophy, ChevronLeft, ChevronRight, ArrowLeft } from 'lucide-react'; 
+
+// --- 环形进度条组件 (保持不变) ---
+const ProgressRing = ({ label, current, total, delay }) => {
+   const radius = 36;
+   const circumference = 2 * Math.PI * radius;
+   const percent = Math.min(100, (current / total) * 100);
+   const offset = circumference - (percent / 100) * circumference;
+
+   return (
+     <div className="achievement-item fade-in" style={{ animationDelay: `${delay}s` }}>
+       <div className="ring-container">
+         <svg width="100" height="100" viewBox="0 0 100 100">
+           <circle className="ring-bg" cx="50" cy="50" r={radius} strokeWidth="8" />
+           <circle className="ring-progress" cx="50" cy="50" r={radius} strokeWidth="8" strokeDasharray={`${circumference} ${circumference}`} style={{ strokeDashoffset: offset }} transform="rotate(-90 50 50)" />
+         </svg>
+         <div className="ring-text">
+           <span className="ring-value">{current}</span>
+           <span className="ring-total">/{total}</span>
+         </div>
+       </div>
+       <div className="achievement-label">{label}</div>
+     </div>
+   );
+};
 
 const TravelGlobe = () => {
-  const [selectedLocation, setSelectedLocation] = useState(null);
   const globeEl = useRef();
-  const containerRef = useRef();
-  const autoRotateRef = useRef(true);
+  const markerClickRef = useRef(false); 
+  
+  const [dimensions, setDimensions] = useState({ width: window.innerWidth, height: window.innerHeight });
+  const [selectedPlace, setSelectedPlace] = useState(null);
+  const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false); 
 
-  // Travel locations data
-  const locations = [
-    {
-      id: 1,
-      name: 'Beijing, China',
-      lat: 39.9042,
-      lng: 116.4074,
-      visitDate: '2023-08-15',
-      description: 'My hometown and where I spent my undergraduate years.',
-      img: 'https://images.unsplash.com/photo-1508804185872-d7badad00f7d?w=800&h=600&fit=crop',
+  // 数据 (保持不变)
+  const places = [
+    { 
+      id: 1, name: 'Beijing', lat: 39.9042, lng: 116.4074, country: 'China', continent: 'Asia', date: '2018.10.01', 
+      desc: 'The ancient capital combined with modern vibes.',
       photos: [
-        {
-          id: 1,
-          url: 'https://images.unsplash.com/photo-1508804185872-d7badad00f7d?w=800&h=600&fit=crop',
-          caption: 'The magnificent Forbidden City'
-        },
-        {
-          id: 2,
-          url: 'https://images.unsplash.com/photo-1547981609-4b6bfe67ca0b?w=800&h=600&fit=crop',
-          caption: 'Great Wall at Mutianyu'
-        },
-        {
-          id: 3,
-          url: 'https://images.unsplash.com/photo-1570797197190-8e003a00c846?w=800&h=600&fit=crop',
-          caption: 'Traditional hutong architecture'
-        },
-        {
-          id: 4,
-          url: 'https://images.unsplash.com/photo-1551655510-34fde1bad8fc?w=800&h=600&fit=crop',
-          caption: 'Temple of Heaven'
-        }
+        'https://images.unsplash.com/photo-1508804185872-d7badad00f7d?auto=format&fit=crop&w=1200&q=80',
+        'https://images.unsplash.com/photo-1543158352-55f72253951f?auto=format&fit=crop&w=1200&q=80',
+        'https://images.unsplash.com/photo-1604062657566-753051549943?auto=format&fit=crop&w=1200&q=80'
       ]
     },
-    {
-      id: 2,
-      name: 'Madison, Wisconsin',
-      lat: 43.0731,
-      lng: -89.4012,
-      visitDate: '2023-09-01',
-      description: 'Currently pursuing my Master\'s degree here.',
-      img: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&h=600&fit=crop',
+    { 
+      id: 2, name: 'Tokyo', lat: 35.6895, lng: 139.6917, country: 'Japan', continent: 'Asia', date: '2019.04.15', 
+      desc: 'Cherry blossoms and neon lights.',
       photos: [
-        {
-          id: 1,
-          url: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&h=600&fit=crop',
-          caption: 'Beautiful sunset over Lake Mendota'
-        },
-        {
-          id: 2,
-          url: 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=800&h=600&fit=crop',
-          caption: 'Wisconsin State Capitol'
-        },
-        {
-          id: 3,
-          url: 'https://images.unsplash.com/photo-1562774053-701939374585?w=800&h=600&fit=crop',
-          caption: 'Campus at UW-Madison'
-        }
+        'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=1200&q=80',
+        'https://images.unsplash.com/photo-1536098561742-ca998e48cbcc?auto=format&fit=crop&w=1200&q=80'
       ]
     },
-    {
-      id: 3,
-      name: 'Tokyo, Japan',
-      lat: 35.6895,
-      lng: 139.6917,
-      visitDate: '2022-12-20',
-      description: 'Experience the perfect blend of tradition and modernity.',
-      img: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=800&h=600&fit=crop',
+    { 
+      id: 3, name: 'Sydney', lat: -33.8688, lng: 151.2093, country: 'Australia', continent: 'Oceania', date: '2021.12.25', 
+      desc: 'Opera House view.',
       photos: [
-        {
-          id: 1,
-          url: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=800&h=600&fit=crop',
-          caption: 'Shibuya Crossing at night'
-        },
-        {
-          id: 2,
-          url: 'https://images.unsplash.com/photo-1503899036084-c55cdd92da26?w=800&h=600&fit=crop',
-          caption: 'Mount Fuji view'
-        },
-        {
-          id: 3,
-          url: 'https://images.unsplash.com/photo-1513407030348-c983a97b98d8?w=800&h=600&fit=crop',
-          caption: 'Traditional temple in Asakusa'
-        }
+        'https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?auto=format&fit=crop&w=1200&q=80',
+        'https://images.unsplash.com/photo-1523059623039-a9ed027e7fad?auto=format&fit=crop&w=1200&q=80'
       ]
     },
-    {
-      id: 4,
-      name: 'Paris, France',
-      lat: 48.8566,
-      lng: 2.3522,
-      visitDate: '2023-06-10',
-      description: 'The city of lights and endless romance.',
-      img: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=800&h=600&fit=crop',
+    { 
+      id: 4, name: 'Paris', lat: 48.8566, lng: 2.3522, country: 'France', continent: 'Europe', date: '2023.06.10', 
+      desc: 'Sunset at the Eiffel Tower.',
       photos: [
-        {
-          id: 1,
-          url: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=800&h=600&fit=crop',
-          caption: 'Eiffel Tower at sunset'
-        },
-        {
-          id: 2,
-          url: 'https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=800&h=600&fit=crop',
-          caption: 'The Louvre Museum'
-        },
-        {
-          id: 3,
-          url: 'https://images.unsplash.com/photo-1511739001486-6bfe10ce785f?w=800&h=600&fit=crop',
-          caption: 'Seine River cruise'
-        }
+        'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=1200&q=80',
+        'https://images.unsplash.com/photo-1431274172761-fca41d930114?auto=format&fit=crop&w=1200&q=80'
       ]
     },
-    {
-      id: 5,
-      name: 'New York City, USA',
-      lat: 40.7128,
-      lng: -74.0060,
-      visitDate: '2023-03-15',
-      description: 'The city that never sleeps.',
-      img: 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=800&h=600&fit=crop',
+    { 
+      id: 5, name: 'New York', lat: 40.7128, lng: -74.0060, country: 'USA', continent: 'North America', date: '2024.01.01', 
+      desc: 'Concrete jungle.',
       photos: [
-        {
-          id: 1,
-          url: 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=800&h=600&fit=crop',
-          caption: 'Manhattan skyline'
-        },
-        {
-          id: 2,
-          url: 'https://images.unsplash.com/photo-1518391846015-55a9cc003b25?w=800&h=600&fit=crop',
-          caption: 'Times Square at night'
-        },
-        {
-          id: 3,
-          url: 'https://images.unsplash.com/photo-1485871981521-5b1fd3805eee?w=800&h=600&fit=crop',
-          caption: 'Brooklyn Bridge'
-        }
+        'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?auto=format&fit=crop&w=1200&q=80',
+        'https://images.unsplash.com/photo-1538970272646-f61fabb05b3b?auto=format&fit=crop&w=1200&q=80'
       ]
     },
-    {
-      id: 6,
-      name: 'Sydney, Australia',
-      lat: -33.8688,
-      lng: 151.2093,
-      visitDate: '2023-01-20',
-      description: 'Beautiful harbor city with iconic landmarks.',
-      img: 'https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?w=800&h=600&fit=crop',
-      photos: [
-        {
-          id: 1,
-          url: 'https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?w=800&h=600&fit=crop',
-          caption: 'Sydney Opera House'
-        },
-        {
-          id: 2,
-          url: 'https://images.unsplash.com/photo-1523482580672-f109ba8cb9be?w=800&h=600&fit=crop',
-          caption: 'Sydney Harbour Bridge'
-        },
-        {
-          id: 3,
-          url: 'https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?w=800&h=600&fit=crop',
-          caption: 'Bondi Beach'
-        }
-      ]
-    }
   ];
 
-  // Arc links connecting travel locations (by visit date order)
-  const arcsData = [
-    // Tokyo to Sydney
-    { startLat: 35.6895, startLng: 139.6917, endLat: -33.8688, endLng: 151.2093, color: ['#ff6b35', '#ff6b35'] },
-    // Sydney to NYC
-    { startLat: -33.8688, startLng: 151.2093, endLat: 40.7128, endLng: -74.0060, color: ['#ff6b35', '#ff6b35'] },
-    // NYC to Paris
-    { startLat: 40.7128, startLng: -74.0060, endLat: 48.8566, endLng: 2.3522, color: ['#ff6b35', '#ff6b35'] },
-    // Paris to Beijing
-    { startLat: 48.8566, startLng: 2.3522, endLat: 39.9042, endLng: 116.4074, color: ['#ff6b35', '#ff6b35'] },
-    // Beijing to Madison
-    { startLat: 39.9042, startLng: 116.4074, endLat: 43.0731, endLng: -89.4012, color: ['#ff6b35', '#ff6b35'] }
-  ];
+  const arcsData = useMemo(() => {
+    const start = places[0]; 
+    return places.slice(1).map(end => ({ startLat: start.lat, startLng: start.lng, endLat: end.lat, endLng: end.lng, color: '#ff8855' }));
+  }, [places]);
 
-  // Initialize globe and set up auto-rotation
+  const stats = useMemo(() => {
+    const uniqueCountries = new Set(places.map(p => p.country)).size;
+    const uniqueContinents = new Set(places.map(p => p.continent)).size;
+    return { uniqueCountries, uniqueContinents };
+  }, [places]);
+
   useEffect(() => {
-    if (!globeEl.current) return;
+    const updateSize = () => setDimensions({ width: window.innerWidth, height: window.innerHeight });
+    window.addEventListener('resize', updateSize);
+    return () => window.removeEventListener('resize', updateSize);
+  }, []);
 
-    try {
-      const globe = globeEl.current;
-
-      // Set initial view
-      globe.pointOfView({ altitude: 2.5 }, 0);
-
-      // Set up controls
-      const controls = globe.controls();
-      if (controls) {
-        controls.autoRotate = true;
-        controls.autoRotateSpeed = 0.5;
-        controls.enableZoom = true;
-        controls.minDistance = 200;
-        controls.maxDistance = 600;
-
-        // Stop auto-rotation when user interacts
-        const handleInteraction = () => {
-          if (autoRotateRef.current && controls) {
-            controls.autoRotate = false;
-            autoRotateRef.current = false;
-          }
-        };
-
-        // Add interaction listeners
-        const scene = globe.scene();
-        if (scene && scene.canvas) {
-          const canvas = scene.canvas;
-          canvas.addEventListener('mousedown', handleInteraction);
-          canvas.addEventListener('touchstart', handleInteraction);
-          canvas.addEventListener('wheel', handleInteraction);
-
-          return () => {
-            canvas.removeEventListener('mousedown', handleInteraction);
-            canvas.removeEventListener('touchstart', handleInteraction);
-            canvas.removeEventListener('wheel', handleInteraction);
-          };
-        }
-      }
-    } catch (error) {
-      console.error('Error initializing globe:', error);
+  useEffect(() => {
+    if (globeEl.current) {
+      globeEl.current.controls().autoRotate = true;
+      globeEl.current.controls().autoRotateSpeed = 0.6;
+      globeEl.current.pointOfView({ lat: 20, lng: 0, altitude: 2.2 });
+      globeEl.current.scene().background = null; 
     }
   }, []);
 
-  // Handle marker click
-  const handleMarkerClick = (location) => {
-    setSelectedLocation(location);
-    if (globeEl.current) {
-      try {
-        // Smoothly move camera to location
-        globeEl.current.pointOfView({
-          lat: location.lat,
-          lng: location.lng,
-          altitude: 2
-        }, 1000);
-      } catch (error) {
-        console.error('Error moving to location:', error);
-      }
+  useEffect(() => {
+    setCurrentPhotoIndex(0);
+    setIsLightboxOpen(false);
+  }, [selectedPlace]);
+
+  const handlePlaceClick = useCallback((place) => {
+    setSelectedPlace(place);
+    globeEl.current.pointOfView({ lat: place.lat, lng: place.lng, altitude: 1.8 }, 1500);
+    globeEl.current.controls().autoRotate = false;
+  }, []);
+
+  const handleGlobeClick = useCallback(() => {
+    if (markerClickRef.current) {
+      markerClickRef.current = false;
+      return;
     }
+    if (selectedPlace) {
+      setSelectedPlace(null);
+      globeEl.current.controls().autoRotate = true;
+    }
+  }, [selectedPlace]);
+
+  const renderCustomMarker = (d) => {
+    const el = document.createElement('div');
+    el.className = 'custom-marker-container';
+    const isActive = selectedPlace && selectedPlace.id === d.id;
+    const color = isActive ? '#d32f2f' : '#ff5533'; 
+    const scale = isActive ? '1.3' : '1';
+    el.innerHTML = `<div class="marker-pin" style="transform: scale(${scale}); color: ${color}"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="${color}" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3" fill="white"/></svg></div><div class="marker-label" style="color: ${isActive ? '#ff5533' : '#333'}">${d.name}</div>`;
+    el.onclick = (e) => { markerClickRef.current = true; e.stopPropagation(); handlePlaceClick(d); };
+    return el;
   };
 
-  return (
-    <section id="travel" className="section travel-section-new">
-      {/* Globe container - full page */}
-      <motion.div
-        ref={containerRef}
-        className="globe-container globe-container-fullpage"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.8 }}
-      >
-        {/* Title overlay */}
-        <div className="globe-title-overlay">
-          <motion.h2
-            className="section-title"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
-            Footprints of Exploration
-          </motion.h2>
-        </div>
+  const nextPhoto = (e) => { if(e) e.stopPropagation(); if (selectedPlace?.photos) setCurrentPhotoIndex((prev) => (prev + 1) % selectedPlace.photos.length); };
+  const prevPhoto = (e) => { if(e) e.stopPropagation(); if (selectedPlace?.photos) setCurrentPhotoIndex((prev) => (prev - 1 + selectedPlace.photos.length) % selectedPlace.photos.length); };
 
+  return createPortal(
+    <div className="full-screen-overlay">
+      <div className="globe-layer">
         <Globe
           ref={globeEl}
-          width={containerRef.current?.offsetWidth || window.innerWidth}
-          height={containerRef.current?.offsetHeight || window.innerHeight}
-
-          globeImageUrl={globe}
-          bumpImageUrl={bump}
-          backgroundColor="rgba(255,255,255,1)"
-
-          // Custom markers
-          htmlElementsData={locations}
-          htmlElement={(d) => {
-            const el = document.createElement('div');
-            el.innerHTML = `
-              <div style="
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                gap: 4px;
-              ">
-                <div style="
-                  color: #ff6b35;
-                  font-size: 12px;
-                  font-weight: 700;
-                  white-space: nowrap;
-                  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3), 0 0 8px rgba(0, 0, 0, 0.5);
-                  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-                ">${d.name}</div>
-                <div style="
-                  width: 20px;
-                  height: 20px;
-                  background: #ff6b35;
-                  border: 2px solid white;
-                  border-radius: 50%;
-                  box-shadow: 0 2px 8px rgba(255, 107, 53, 0.5);
-                  transition: transform 0.2s;
-                "></div>
-              </div>
-            `;
-
-            el.style['pointer-events'] = 'auto';
-            el.style.cursor = 'pointer';
-
-            el.onmouseenter = () => {
-              el.children[0].children[1].style.transform = 'scale(1.3)';
-            };
-            el.onmouseleave = () => {
-              el.children[0].children[1].style.transform = 'scale(1)';
-            };
-            el.onclick = () => handleMarkerClick(d);
-
-            return el;
-          }}
-          htmlLat={d => d.lat}
-          htmlLng={d => d.lng}
-          htmlAltitude={0.01}
-
-          // Arc links
+          width={dimensions.width}
+          height={dimensions.height}
+          globeImageUrl="//unpkg.com/three-globe/example/img/earth-blue-marble.jpg"
+          backgroundColor="rgba(0,0,0,0)" 
+          atmosphereColor="#ff5533"
+          atmosphereAltitude={0.15}
+          htmlElementsData={places}
+          htmlElement={renderCustomMarker}
+          onGlobeClick={handleGlobeClick}
           arcsData={arcsData}
-          arcColor={'color'}
+          arcColor="color"
           arcDashLength={0.4}
           arcDashGap={0.2}
-          arcDashAnimateTime={2000}
-          arcStroke={0.5}
-
-          // Styling
-          atmosphereColor="#ffffffff"
-          atmosphereAltitude={0.15}
-
-          // Performance
-          animateIn={true}
-          waitForGlobeReady={true}
+          arcDashAnimateTime={1500}
+          arcStroke={0.8}
         />
-      </motion.div>
+      </div>
 
-      {/* Photo modal popup */}
-      <AnimatePresence>
-        {selectedLocation && (
-          <motion.div
-            className="travel-photo-modal"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setSelectedLocation(null)}
-          >
-            <motion.div
-              className="modal-content travel-modal-content"
-              initial={{ scale: 0.9, y: 50 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, y: 50 }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <button
-                className="modal-close"
-                onClick={() => setSelectedLocation(null)}
-              >
-                <X size={24} />
-              </button>
+      <div className="sidebar-layer">
+        <div className="sidebar-content-wrapper">
+          {!selectedPlace && (
+            <div className="sidebar-header fade-in">
+              <h1>Footprints</h1>
+              <div className="divider"></div>
+              <p className="subtitle">My Journey Map</p>
+            </div>
+          )}
 
-              <div className="travel-modal-header">
-                <h2>
-                  <MapPinIcon size={24} style={{ display: 'inline', marginRight: '8px' }} />
-                  {selectedLocation.name}
-                </h2>
-                <div className="travel-modal-meta">
-                  <Calendar size={16} />
-                  <span>{selectedLocation.visitDate}</span>
+          <div className="sidebar-body">
+            {selectedPlace ? (
+              <div className="detail-container fade-in">
+                {/* 返回按钮 */}
+                <button className="detail-nav-btn" onClick={() => {
+                    setSelectedPlace(null);
+                    globeEl.current.controls().autoRotate = true;
+                }}>
+                  <ArrowLeft size={18} /> 
+                  <span>Back to Overview</span>
+                </button>
+                
+                {/* 头部信息 */}
+                <div className="detail-header">
+                  <div className="location-badge">{selectedPlace.country}</div>
+                  <h2 className="location-name">{selectedPlace.name}</h2>
+                  <div className="detail-meta">
+                    <Calendar size={14} /> 
+                    <span>First visited: {selectedPlace.date}</span>
+                  </div>
                 </div>
-                <p>{selectedLocation.description}</p>
-              </div>
 
-              <div className="travel-photo-grid">
-                {selectedLocation.photos.map((photo) => (
-                  <motion.div
-                    key={photo.id}
-                    className="travel-photo-item"
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.3, delay: photo.id * 0.1 }}
-                    whileHover={{ scale: 1.05 }}
-                  >
-                    <img src={photo.url} alt={photo.caption} />
-                    <div className="travel-photo-caption">
-                      {photo.caption}
-                    </div>
-                  </motion.div>
-                ))}
+                {/* 描述文字 - 现在移到了照片上方 */}
+                <div className="detail-description">
+                  <p>{selectedPlace.desc}</p>
+                </div>
+
+                {/* === 修改: 垂直瀑布流照片墙 === */}
+                {selectedPlace.photos && selectedPlace.photos.length > 0 && (
+                  <div className="photo-stack">
+                    {selectedPlace.photos.map((photo, index) => (
+                      <div 
+                        key={index}
+                        className="photo-block"
+                        onClick={() => {
+                          setCurrentPhotoIndex(index); // 记录点击的是哪张
+                          setIsLightboxOpen(true);     // 打开大图
+                        }}
+                      >
+                        <img src={photo} alt={`${selectedPlace.name} ${index}`} loading="lazy" />
+                        <div className="click-hint">Click to expand</div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </section>
+            ) : (
+              <div className="achievements-panel fade-in">
+                <div className="achievements-header">
+                  <Trophy size={18} className="trophy-icon"/>
+                  <h3>Exploration Status</h3>
+                </div>
+                <div className="achievements-grid">
+                  <ProgressRing label="Countries" current={stats.uniqueCountries} total={233} delay={0.1} />
+                  <ProgressRing label="Continents" current={stats.uniqueContinents} total={7} delay={0.2} />
+                </div>
+                <p className="hint-text">"The world is a book and those who do not travel read only one page."</p>
+              </div>
+            )}
+          </div>
+        </div>
+        <div className="sidebar-footer"><p>© 2025 JR Travel</p></div>
+      </div>
+
+      {/* 灯箱 (Lightbox) - 保持不变，支持左右轮播 */}
+      {isLightboxOpen && selectedPlace && (
+        <div className="lightbox-overlay fade-in" onClick={() => setIsLightboxOpen(false)}>
+          <button className="lightbox-close"><X size={32} color="white" /></button>
+          {selectedPlace.photos.length > 1 && ( <button className="lightbox-nav prev" onClick={prevPhoto}><ChevronLeft size={48} /></button> )}
+          <img src={selectedPlace.photos[currentPhotoIndex]} alt="Full screen" onClick={(e) => e.stopPropagation()} />
+          {selectedPlace.photos.length > 1 && ( <button className="lightbox-nav next" onClick={nextPhoto}><ChevronRight size={48} /></button> )}
+          <div className="lightbox-counter">{currentPhotoIndex + 1} / {selectedPlace.photos.length}</div>
+        </div>
+      )}
+    </div>,
+    document.body 
   );
 };
 
