@@ -3214,8 +3214,40 @@ code {
   color: #dfe6e9;
 }
 
-.fade-in { animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ... 接在文件末尾 ... */
+
+/* === 专属进场动画 (修复不自然的问题) === */
+
+/* 定义一个更现代的动画：带位移 + 透明度 + 模糊 */
+@keyframes sidebarSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(15px) scale(0.98); /* 稍微缩小一点点，更有质感 */
+    filter: blur(4px); /* 关键：加一点模糊，让出现更柔和 */
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+.sidebar-enter-anim {
+  /* 使用 both 确保动画开始前保持第一帧的状态，防止闪烁 */
+  animation: sidebarSlideUp 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  
+  /* 强制提升合成层，利用 GPU 加速，解决卡顿 */
+  will-change: transform, opacity, filter;
+  
+  /* 重置可能存在的全局 transition 干扰 */
+  transition: none !important;
+}
+
+/* 稍微错开一点时间，让 Header 和内容有层次感 */
+.anim-delay-1 { animation-delay: 0ms; }
+.anim-delay-2 { animation-delay: 100ms; }
+.anim-delay-3 { animation-delay: 200ms; }
 
 /* --- 图钉样式 --- */
 .custom-marker-container {

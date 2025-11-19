@@ -3,15 +3,16 @@ import { createPortal } from 'react-dom';
 import Globe from 'react-globe.gl';
 import { X, Calendar, Trophy, ChevronLeft, ChevronRight, ArrowLeft } from 'lucide-react'; 
 
-// --- 环形进度条组件 (保持不变) ---
+// --- 环形进度条组件 ---
 const ProgressRing = ({ label, current, total, delay }) => {
    const radius = 36;
    const circumference = 2 * Math.PI * radius;
    const percent = Math.min(100, (current / total) * 100);
    const offset = circumference - (percent / 100) * circumference;
 
+   // 这里也加上 sidebar-enter-anim
    return (
-     <div className="achievement-item fade-in" style={{ animationDelay: `${delay}s` }}>
+     <div className="achievement-item sidebar-enter-anim" style={{ animationDelay: `${delay}s` }}>
        <div className="ring-container">
          <svg width="100" height="100" viewBox="0 0 100 100">
            <circle className="ring-bg" cx="50" cy="50" r={radius} strokeWidth="8" />
@@ -169,7 +170,8 @@ const TravelGlobe = () => {
       <div className="sidebar-layer">
         <div className="sidebar-content-wrapper">
           {!selectedPlace && (
-            <div className="sidebar-header fade-in">
+            // 增加 key="overview" 确保 React 在切换时彻底重绘，触发动画
+            <div className="sidebar-header sidebar-enter-anim" key="overview-header">
               <h1>Footprints</h1>
               <div className="divider"></div>
               <p className="subtitle">My Journey Map</p>
@@ -178,8 +180,8 @@ const TravelGlobe = () => {
 
           <div className="sidebar-body">
             {selectedPlace ? (
-              <div className="detail-container fade-in">
-                {/* 返回按钮 */}
+              // 增加 key="detail" 和新的动画类名
+              <div className="detail-container sidebar-enter-anim" key="detail-container">
                 <button className="detail-nav-btn" onClick={() => {
                     setSelectedPlace(null);
                     globeEl.current.controls().autoRotate = true;
@@ -188,7 +190,6 @@ const TravelGlobe = () => {
                   <span>Back to Overview</span>
                 </button>
                 
-                {/* 头部信息 */}
                 <div className="detail-header">
                   <div className="location-badge">{selectedPlace.country}</div>
                   <h2 className="location-name">{selectedPlace.name}</h2>
@@ -198,21 +199,20 @@ const TravelGlobe = () => {
                   </div>
                 </div>
 
-                {/* 描述文字 - 现在移到了照片上方 */}
                 <div className="detail-description">
                   <p>{selectedPlace.desc}</p>
                 </div>
 
-                {/* === 修改: 垂直瀑布流照片墙 === */}
                 {selectedPlace.photos && selectedPlace.photos.length > 0 && (
                   <div className="photo-stack">
                     {selectedPlace.photos.map((photo, index) => (
                       <div 
                         key={index}
+                        // 也可以给图片加上 staggered 动画，这里简单处理
                         className="photo-block"
                         onClick={() => {
-                          setCurrentPhotoIndex(index); // 记录点击的是哪张
-                          setIsLightboxOpen(true);     // 打开大图
+                          setCurrentPhotoIndex(index); 
+                          setIsLightboxOpen(true);     
                         }}
                       >
                         <img src={photo} alt={`${selectedPlace.name} ${index}`} loading="lazy" />
@@ -223,12 +223,14 @@ const TravelGlobe = () => {
                 )}
               </div>
             ) : (
-              <div className="achievements-panel fade-in">
+              // 增加 key="achievements" 确保切换回 Overview 时也有动画
+              <div className="achievements-panel sidebar-enter-anim anim-delay-2" key="achievements-panel">
                 <div className="achievements-header">
                   <Trophy size={18} className="trophy-icon"/>
                   <h3>Exploration Status</h3>
                 </div>
                 <div className="achievements-grid">
+                  {/* 进度圈组件内部已经有动画类了，所以这里不用加 */}
                   <ProgressRing label="Countries" current={stats.uniqueCountries} total={233} delay={0.1} />
                   <ProgressRing label="Continents" current={stats.uniqueContinents} total={7} delay={0.2} />
                 </div>
@@ -240,9 +242,8 @@ const TravelGlobe = () => {
         <div className="sidebar-footer"><p>© 2025 JR Travel</p></div>
       </div>
 
-      {/* 灯箱 (Lightbox) - 保持不变，支持左右轮播 */}
       {isLightboxOpen && selectedPlace && (
-        <div className="lightbox-overlay fade-in" onClick={() => setIsLightboxOpen(false)}>
+        <div className="lightbox-overlay sidebar-enter-anim" onClick={() => setIsLightboxOpen(false)}>
           <button className="lightbox-close"><X size={32} color="white" /></button>
           {selectedPlace.photos.length > 1 && ( <button className="lightbox-nav prev" onClick={prevPhoto}><ChevronLeft size={48} /></button> )}
           <img src={selectedPlace.photos[currentPhotoIndex]} alt="Full screen" onClick={(e) => e.stopPropagation()} />
