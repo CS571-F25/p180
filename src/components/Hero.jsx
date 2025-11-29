@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { GraduationCap, ArrowRight, ChevronDown, UserCircle, Mail } from 'lucide-react';
+import { GraduationCap, ArrowRight, UserCircle, Mail, MapPin, Gamepad2, Code2 } from 'lucide-react';
 import Particles from './Particles';
 import DecryptedText from './DecryptedText';
 import LogoLoop from './LogoLoop';
@@ -11,6 +11,18 @@ import BilibiliLogo from '../assets/BilibiliLogo.png';
 import LinkedinLogo from '../assets/LinkedinLogo.png';
 import InsLogo from '../assets/InsLogo.png';
 import GitHubLogo from '../assets/GitHubLogo.png';
+
+// Bento Grid Item Component
+const BentoItem = ({ children, className, delay = 0 }) => (
+  <motion.div
+    className={`bg-white/80 backdrop-blur-md rounded-3xl p-6 border border-white/50 shadow-lg hover:shadow-xl transition-shadow duration-300 ${className}`}
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.5, delay }}
+  >
+    {children}
+  </motion.div>
+);
 
 const Hero = ({ setActiveSection }) => {
   const SESSION_KEY = 'heroExpanded';
@@ -97,7 +109,7 @@ const Hero = ({ setActiveSection }) => {
   ];
 
   return (
-    <section id="home" className="hero" style={{ position: 'relative', overflow: 'hidden' }}>
+    <section id="home" className="hero relative overflow-hidden min-h-screen flex items-center justify-center bg-gray-50">
       <Particles
         particleColors={particleColors}
         particleCount={400}
@@ -109,26 +121,15 @@ const Hero = ({ setActiveSection }) => {
         disableRotation={false}
       />
 
-      <div
-        className="container"
-        style={{
-          position: 'relative',
-          zIndex: 10,
-          minHeight: '100vh',
-          paddingTop: hasExpanded ? '100px' : '0',
-          paddingBottom: hasExpanded ? '80px' : '0',
-        }}
-      >
+      <div className="container relative z-10 w-full max-w-7xl px-4">
         {/* Typewriter Section - Always visible, moves from center to top */}
         <motion.div
-          className="hero-content"
+          className="hero-content mx-auto"
           initial={false}
           animate={{
-            position: 'absolute',
-            left: '50%',
-            top: hasExpanded ? '10%' : '50%',
-            x: '-50%',
-            y: hasExpanded ? '0' : '-50%',
+            marginTop: hasExpanded ? '2rem' : '0',
+            marginBottom: hasExpanded ? '2rem' : '0',
+            scale: hasExpanded ? 0.9 : 1,
           }}
           transition={{
             duration: 1,
@@ -136,26 +137,20 @@ const Hero = ({ setActiveSection }) => {
           }}
           style={{
             textAlign: 'center',
+            height: hasExpanded ? 'auto' : '100vh',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
           }}
         >
           <motion.h1
-            className="hero-title typewriter-title"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{
-              opacity: 1,
-              y: 0,
-              scale: hasExpanded ? 0.75 : 1
-            }}
-            transition={{
-              opacity: { duration: 0.8, delay: 0.2 },
-              y: { duration: 0.8, delay: 0.2 },
-              scale: { duration: 1, ease: [0.4, 0, 0.2, 1] }
-            }}
+            className="hero-title flex flex-col items-center justify-center gap-2"
           >
-            <div className="typewriter-line-1">Hi! I'm</div>
-            <div className="typewriter-line-2">
-              <span className="gradient-text">{displayedText}</span>
-              <span className="typewriter-cursor">|</span>
+            <div className="text-4xl md:text-6xl font-bold text-gray-900">Hi! I'm</div>
+            <div className="text-4xl md:text-6xl font-bold text-gray-900 flex items-center min-h-[4rem]">
+              <span className="text-[#ff6b35] mr-2">{displayedText}</span>
+              <span className="w-1 h-12 bg-[#ff6b35] animate-pulse"></span>
             </div>
           </motion.h1>
 
@@ -163,18 +158,13 @@ const Hero = ({ setActiveSection }) => {
           <AnimatePresence>
             {!hasExpanded && (
               <motion.button
-                className="btn btn-primary"
+                className="mt-8 px-8 py-3 bg-[#ff6b35] text-white rounded-full font-semibold shadow-lg hover:bg-[#e55a2b] hover:shadow-xl transition-all"
                 onClick={handleExpand}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.8 }}
-                transition={{ duration: 0.5, delay: 0.5 }}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                style={{
-                  marginTop: '2rem',
-                  boxShadow: '0 8px 30px rgba(255, 107, 53, 0.4)',
-                }}
               >
                 Show More
               </motion.button>
@@ -182,116 +172,127 @@ const Hero = ({ setActiveSection }) => {
           </AnimatePresence>
         </motion.div>
 
-        {/* Introduction Content - appears after expand */}
+        {/* Bento Grid Content - appears after expand */}
         <AnimatePresence>
           {hasExpanded && (
             <motion.div
-              initial={{ opacity: 0, y: 100 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 100 }}
-              transition={{
-                duration: 1,
-                ease: [0.4, 0, 0.2, 1],
-                delay: 0.5
-              }}
-              style={{
-                width: '100%',
-                paddingTop: '200px',
-              }}
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.8, ease: "easeInOut" }}
+              className="w-full pb-20"
             >
-              <div className="introduction-grid">
-                {/* Left side - About me */}
-                <motion.div
-                  className="introduction-about"
-                  initial={{ opacity: 0, x: -50 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.8, delay: 0.8 }}
-                >
-                  <h3 className="introduction-subtitle"><UserCircle size={28}/>WHOAMI</h3>
-                  <p className="introduction-text">
-                    <DecryptedText
-                      text={introText}
-                      animateOn="view"
-                      speed={20}
-                      sequential={true}
-                      revealDirection="start"
-                      parentClassName="decrypted-text-wrapper"
-                      className="decrypted-char"
-                      encryptedClassName="encrypted-char"
-                    />
-                  </p>
-                </motion.div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
 
-                {/* Right side - Education */}
-                <motion.div
-                  className="introduction-education"
-                  initial={{ opacity: 0, x: 50 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.8, delay: 1.0 }}
-                >
-                  <h3 className="introduction-subtitle">
-                    <GraduationCap size={28} />
-                    EDUCATION
-                  </h3>
-                  <div className="education-timeline">
-                    {education.map((edu, index) => (
-                      <motion.div
-                        key={index}
-                        className="education-card"
-                        initial={{ opacity: 0, y: 30 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6, delay: 1.2 + index * 0.2 }}
-                        whileHover={{ y: -5 }}
-                      >
-                        <div className={`education-icon ${index === 1 ? 'uw-madison-icon' : ''}`}>
-                          {typeof edu.icon === 'string' && (edu.icon.includes('/') || edu.icon.includes('.')) ? (
-                            <img src={edu.icon} alt={`${edu.school} Logo`} />
-                          ) : (
-                            <div style={{ fontSize: '3rem' }}>{edu.icon}</div>
-                          )}
-                        </div>
-                        <div className="education-content">
-                          <h4 className="education-school">{edu.school}</h4>
-                          <p className="education-degree">{edu.degree}</p>
-                          <p className="education-major">{edu.major}</p>
-                          <p className="education-period">{edu.period}</p>
-                        </div>
-                        {index < education.length - 1 && (
-                          <div className="education-arrow">
-                            <ArrowRight size={20} />
-                            <span className="transfer-label">Transfer</span>
-                          </div>
-                        )}
-                      </motion.div>
-                    ))}
+                {/* 1. Who Am I - Large Card */}
+                <BentoItem className="md:col-span-2 md:row-span-1 flex flex-col justify-center min-h-[280px]" delay={0.2}>
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="p-2 bg-orange-100 rounded-full text-[#ff6b35]">
+                      <UserCircle size={32} />
+                    </div>
+                    <h3 className="text-2xl font-bold text-gray-800">WHOAMI</h3>
                   </div>
-                </motion.div>
-              </div>
+                  <div className="text-xl md:text-2xl text-gray-600 leading-relaxed font-medium">
+                    Hi there! I'm TaoJR — a <span className="text-[#ff6b35] font-bold">developer</span> who builds,
+                    a <span className="text-[#ff6b35] font-bold">photographer</span> who captures,
+                    a <span className="text-[#ff6b35] font-bold">gamer</span> who competes,
+                    and a <span className="text-[#ff6b35] font-bold">traveler</span> who explores.
+                    This website is a collection of everything I create and experience — welcome to my world!
+                  </div>
+                </BentoItem>
 
-              {/* Social Media Logos */}
-              <h3 className='introduction-subtitle'><Mail size={28}/> CONTACT ME</h3>
-              <motion.div
-                className="introduction-social"
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 1.6 }}
-                style={{ marginTop: '3rem' }}
-              >
-                <div style={{ height: '200px', position: 'relative', overflow: 'hidden' }}>
-                  <LogoLoop
-                    logos={socialLogos}
-                    speed={50}
-                    direction="left"
-                    logoHeight={48}
-                    gap={40}
-                    pauseOnHover
-                    scaleOnHover
-                    fadeOut
-                    fadeOutColor="#f8f9fa"
-                    ariaLabel="Social media platforms"
-                  />
-                </div>
-              </motion.div>
+                {/* 2. Avatar - New Card */}
+                <BentoItem className="md:col-span-1 md:row-span-1 flex items-center justify-center p-0 overflow-hidden relative group min-h-[280px]" delay={0.3}>
+                  <div className="absolute inset-0 bg-gradient-to-br from-orange-100 to-orange-50 opacity-50"></div>
+                  <div className="relative z-10 text-center">
+                    <div className="w-32 h-32 mx-auto bg-white rounded-full shadow-lg flex items-center justify-center text-6xl mb-4 border-4 border-white">
+                      👨‍💻
+                    </div>
+                    <p className="font-bold text-gray-800 text-lg">Tao JR</p>
+                    <p className="text-[#ff6b35] font-medium">Full Stack Developer</p>
+                  </div>
+                </BentoItem>
+
+                {/* 3. Connect - Small Card (Shrunk) */}
+                <BentoItem className="md:col-span-1 md:row-span-1 flex flex-col justify-center py-6" delay={0.6}>
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="p-2 bg-purple-100 rounded-full text-purple-600">
+                      <Mail size={24} />
+                    </div>
+                    <h3 className="text-xl font-bold text-gray-800">CONNECT</h3>
+                  </div>
+
+                  <div className="h-24 relative overflow-hidden rounded-xl flex items-center justify-center">
+                    <LogoLoop
+                      logos={socialLogos}
+                      speed={30}
+                      direction="left"
+                      logoHeight={50}
+                      gap={30}
+                      pauseOnHover
+                      scaleOnHover
+                      ariaLabel="Social media platforms"
+                    />
+                  </div>
+                </BentoItem>
+
+                {/* 4. Education - Wide Card (Expanded) */}
+                <BentoItem className="md:col-span-2 md:row-span-1 flex flex-col justify-center" delay={0.4}>
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="p-2 bg-blue-100 rounded-full text-blue-600">
+                      <GraduationCap size={32} />
+                    </div>
+                    <h3 className="text-2xl font-bold text-gray-800">EDUCATION</h3>
+                  </div>
+
+                  <div className="flex flex-col md:flex-row items-center justify-between gap-4 relative">
+
+                    {/* School 1 */}
+                    <div className="flex-1 flex flex-col items-center text-center p-4 hover:bg-blue-50/50 rounded-2xl transition-colors duration-300">
+                      <div className="w-24 h-24 mb-4 p-2 bg-white rounded-2xl border border-gray-100 shadow-sm flex items-center justify-center overflow-hidden">
+                        {typeof education[0].icon === 'string' ? (
+                          <img src={education[0].icon} alt={education[0].school} className="w-full h-full object-contain" />
+                        ) : (
+                          <span className="text-4xl">🎓</span>
+                        )}
+                      </div>
+
+                      <h4 className="font-bold text-gray-900 leading-tight text-xl mb-1">{education[0].school}</h4>
+                      <p className="text-[#ff6b35] text-lg font-bold mb-1">{education[0].degree}</p>
+                      <p className="text-gray-600 text-base font-medium">{education[0].major}</p>
+                      <p className="text-gray-400 text-sm mt-2">{education[0].period}</p>
+                    </div>
+
+                    {/* Arrow */}
+                    <div className="hidden md:flex flex-col items-center justify-center text-[#ff6b35] opacity-60">
+                      <ArrowRight size={40} strokeWidth={2.5} />
+                      <span className="text-xs font-bold uppercase tracking-widest mt-1">Transfer</span>
+                    </div>
+                    {/* Mobile Arrow (Down) */}
+                    <div className="md:hidden flex items-center justify-center text-[#ff6b35] opacity-60 py-2">
+                      <ArrowRight size={32} strokeWidth={2.5} className="rotate-90" />
+                    </div>
+
+                    {/* School 2 */}
+                    <div className="flex-1 flex flex-col items-center text-center p-4 hover:bg-blue-50/50 rounded-2xl transition-colors duration-300">
+                      <div className="w-24 h-24 mb-4 p-2 bg-white rounded-2xl border border-gray-100 shadow-sm flex items-center justify-center overflow-hidden">
+                        {typeof education[1].icon === 'string' ? (
+                          <img src={education[1].icon} alt={education[1].school} className="w-full h-full object-contain" />
+                        ) : (
+                          <span className="text-4xl">🎓</span>
+                        )}
+                      </div>
+
+                      <h4 className="font-bold text-gray-900 leading-tight text-xl mb-1">{education[1].school}</h4>
+                      <p className="text-[#ff6b35] text-lg font-bold mb-1">{education[1].degree}</p>
+                      <p className="text-gray-600 text-base font-medium">{education[1].major}</p>
+                      <p className="text-gray-400 text-sm mt-2">{education[1].period}</p>
+                    </div>
+
+                  </div>
+                </BentoItem>
+
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
@@ -301,3 +302,4 @@ const Hero = ({ setActiveSection }) => {
 };
 
 export default Hero;
+
